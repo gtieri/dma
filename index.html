@@ -2623,8 +2623,8 @@ function renderVentasLista() {
     </button>` : '';
 
   // Separar ventas tradicionales y canjes para stats
-  var ventradicionales = ventasActivas.filter(function(v){return v.tipo!=='canje';});
-  var vencanjes = ventasActivas.filter(function(v){return v.tipo==='canje';});
+  var ventradicionales = visibles.filter(function(v){return v.tipo!=='canje';});
+  var vencanjes = visibles.filter(function(v){return v.tipo==='canje';});
   var tnTrad = ventradicionales.reduce(function(a,v){return a+(v.tnReales!==undefined?v.tnReales:v.tn);},0);
   var tnCanje = vencanjes.reduce(function(a,v){return a+(v.tnReales!==undefined?v.tnReales:v.tn);},0);
   var statsHTML = (ventradicionales.length||vencanjes.length) ? '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'
