@@ -1028,8 +1028,8 @@
           <label>Fecha operación</label>
           <div class="input-wrap"><input type="date" id="c-fecha" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
         </div>
-        <div class="field" style="margin-bottom:0">
-          <label>Fecha entrega <span style="font-size:8px;color:var(--muted);text-transform:none;letter-spacing:0">(base para vencimiento)</span></label>
+        <div class="field" style="display:none">
+          <label>Fecha entrega</label>
           <div class="input-wrap"><input type="date" id="c-fecha-entrega" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
         </div>
         <div class="field" style="margin-bottom:0">
@@ -1149,7 +1149,10 @@
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
       <div class="section-label" style="margin:0;border:none">Registro de Ventas</div>
-      <button onclick="abrirFormVenta()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Nueva venta</button>
+      <div style="display:flex;gap:8px">
+        <button id="btn-nueva-venta" onclick="abrirFormVenta()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Venta</button>
+        <button id="btn-nuevo-canje-venta" onclick="abrirFormCanjeVenta()" style="background:var(--dorado);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Canje</button>
+      </div>
     </div>
 
     <!-- Formulario nueva venta -->
@@ -1256,6 +1259,56 @@
       </div>
     </div>
 
+
+    <!-- Formulario nuevo canje -->
+    <div id="form-canje-venta" style="display:none" class="card">
+      <div style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--dorado-border);display:flex;align-items:center;gap:8px">
+        <span style="background:var(--dorado-light);color:var(--dorado);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:0.5px">CANJE</span>
+        Nuevo Canje
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field" style="margin-bottom:0">
+          <label>Fecha operación</label>
+          <div class="input-wrap"><input type="date" id="cv-fecha" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Cliente</label>
+          <div class="input-wrap"><input type="text" id="cv-cliente" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Producto</label>
+          <div class="input-wrap">
+            <select id="cv-producto" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+              <option value="Expeller de Soja">Expeller de Soja</option>
+              <option value="Aceite de Soja">Aceite de Soja</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Toneladas</label>
+          <div class="input-wrap"><input type="number" id="cv-tn" placeholder="0.00" step="0.01" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Condición de pago</label>
+          <div class="input-wrap">
+            <select id="cv-condpago" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+              <option value="Contado">Contado</option>
+              <option value="30 días">30 días</option>
+              <option value="60 días">60 días</option>
+              <option value="90 días">90 días</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Observaciones</label>
+          <div class="input-wrap"><input type="text" id="cv-obs" placeholder="Opcional" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button onclick="guardarCanjeVenta()" style="flex:1;background:var(--dorado);color:white;border:none;border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Registrar Canje</button>
+        <button onclick="cerrarFormCanjeVenta()" style="flex:1;background:var(--border);color:var(--muted);border:none;border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Cancelar</button>
+      </div>
+    </div>
 
     <!-- Lista de ventas -->
     <div id="lista-ventas" style="margin-top:12px"></div>
@@ -1480,7 +1533,7 @@ function mapCompraFromDB(r) {
 }
 function mapVentaFromDB(r) {
   return {id:r.id,fecha:r.fecha,fechaEntrega:r.fecha_entrega,vencimiento:r.vencimiento,
-    cliente:r.cliente,producto:r.producto,tn:Number(r.tn),
+    tipo:r.tipo||'venta',cliente:r.cliente,producto:r.producto,tn:Number(r.tn),
     tnReales:r.tn_reales!=null?Number(r.tn_reales):undefined,
     precio:Number(r.precio||0),precioUSD:r.precio_usd,tipoCambio:r.tipo_cambio,
     destino:r.destino,entrega:r.entrega,condpago:r.condpago,obs:r.obs,
@@ -1501,7 +1554,7 @@ function guardarCompraDB(reg) {
 }
 function guardarVentaDB(reg) {
   var row = {id:reg.id,fecha:reg.fecha,fecha_entrega:reg.fechaEntrega,vencimiento:reg.vencimiento,
-    cliente:reg.cliente,producto:reg.producto,tn:reg.tn,tn_reales:reg.tnReales||null,
+    tipo:reg.tipo||'venta',cliente:reg.cliente,producto:reg.producto,tn:reg.tn,tn_reales:reg.tnReales||null,
     precio:reg.precio,precio_usd:reg.precioUSD||null,tipo_cambio:reg.tipoCambio||null,
     destino:reg.destino,entrega:reg.entrega,condpago:reg.condpago,
     obs:reg.obs,vendedor:reg.vendedor,estado:reg.estado,
@@ -1599,9 +1652,11 @@ function aplicarPermisosTabs() {
   var btnNC=document.querySelector('[onclick="abrirFormCompra()"]');
   var btnNF=document.querySelector('[onclick="abrirFormFijacion()"]');
   var btnNV=document.querySelector('[onclick="abrirFormVenta()"]');
+  var btnNCJ=document.getElementById('btn-nuevo-canje-venta');
   if(btnNC) btnNC.style.display=pW.writeCompras?'':'none';
   if(btnNF) btnNF.style.display=pW.writeCompras?'':'none';
   if(btnNV) btnNV.style.display=pW.writeVentas?'':'none';
+  if(btnNCJ) btnNCJ.style.display=pW.writeVentas?'':'none';
   // Tab admin
   var adminBtn=document.getElementById('tab-btn-admin');
   if(adminBtn) adminBtn.style.display=rol==='admin'?'':'none';
@@ -2567,7 +2622,16 @@ function renderVentasLista() {
       ${mostrarArchivoVentas ? '▲ Ocultar archivo' : '▼ Ver archivo (' + archivadas.length + ' operaciones anteriores a 90 días)'}
     </button>` : '';
 
-  lista.innerHTML = btnArchivo + visibles.map(function(v){ return buildVentaCard(v); }).join('');
+  // Separar ventas tradicionales y canjes para stats
+  var ventradicionales = ventasActivas.filter(function(v){return v.tipo!=='canje';});
+  var vencanjes = ventasActivas.filter(function(v){return v.tipo==='canje';});
+  var tnTrad = ventradicionales.reduce(function(a,v){return a+(v.tnReales!==undefined?v.tnReales:v.tn);},0);
+  var tnCanje = vencanjes.reduce(function(a,v){return a+(v.tnReales!==undefined?v.tnReales:v.tn);},0);
+  var statsHTML = (ventradicionales.length||vencanjes.length) ? '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'
+    +'<div style="flex:1;background:var(--verde-light);border-radius:8px;padding:10px 12px;min-width:120px"><div style="font-size:8px;color:var(--muted);text-transform:uppercase;margin-bottom:2px">Ventas · '+ventradicionales.length+'</div><div style="font-size:14px;font-weight:700;color:var(--verde-oscuro)">'+tnTrad.toLocaleString('es-AR',{maximumFractionDigits:2})+' tn</div></div>'
+    +'<div style="flex:1;background:var(--dorado-light);border-radius:8px;padding:10px 12px;min-width:120px"><div style="font-size:8px;color:var(--muted);text-transform:uppercase;margin-bottom:2px">Canjes · '+vencanjes.length+'</div><div style="font-size:14px;font-weight:700;color:var(--dorado)">'+tnCanje.toLocaleString('es-AR',{maximumFractionDigits:2})+' tn</div></div>'
+    +'</div>' : '';
+  lista.innerHTML = btnArchivo + statsHTML + visibles.map(function(v){ return buildVentaCard(v); }).join('');
 }
 
 function calcVencimiento(fechaBase, condpago) {
@@ -2971,11 +3035,12 @@ function calcularFlete() {
 
 
 function mkBtn(oc,lb,bg,cl,bd){return '<button onclick="'+oc+'" style="background:'+bg+';border:1px solid '+bd+';border-radius:6px;padding:5px 10px;font-size:10px;font-weight:600;color:'+cl+';cursor:pointer">'+lb+'</button>';}
-function buildCompraCard(c,_idx){var e=c.estado||'Pactado';var fij=c.tipo==='fijacion';var brd=(fij&&e==='En deposito')?'#1d4ed8':(fij&&e==='Fijado')?'var(--dorado)':(e==='Liquidado')?'var(--verde-medio)':(e==='Entregado')?'var(--dorado)':'var(--border)';var fb=fij?'<span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;margin-right:4px">FIJ</span>':'';var ebg=(e==='En deposito')?'background:#dbeafe;color:#1d4ed8':(e==='Fijado'||e==='Entregado')?'background:var(--dorado-light);color:var(--dorado)':(e==='Liquidado')?'background:var(--verde-light);color:var(--verde-medio)':'background:#f0f0f0;color:var(--muted)';var bdg='<span data-badge="1" style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;'+ebg+'">'+e+'</span>';var ps=c.precio?('$ '+Math.round(c.precio).toLocaleString('es-AR')):'---';var ts=c.precio?('$ '+Math.round(c.tn*c.precio).toLocaleString('es-AR')):'---';var tnLabel=c.tnReales!==undefined?('<div style="font-size:9px;color:var(--dorado);margin-top:1px">Real: '+c.tnReales.toLocaleString('es-AR')+'</div>'):'';var tnDelta=c.tnReales!==undefined&&c.tnReales!==c.tn?(c.tnReales-c.tn>0?'<span style="color:var(--red);font-size:9px">+'+((c.tnReales-c.tn).toFixed(2))+'</span>':'<span style="color:var(--dorado);font-size:9px">'+(c.tnReales-c.tn).toFixed(2)+'</span>'):'';var tipoLabel=c.tipoPrecio==='pizarra'?('<span style="background:#f0f4ff;border-radius:5px;padding:3px 8px;font-size:10px;color:#5566aa;margin-right:4px">Piz−'+(c.descuentoRef||0)+'%</span>'):'';var totalReal=c.tnReales!==undefined&&c.precio?('$ '+Math.round(c.tnReales*c.precio).toLocaleString('es-AR')):null;var ch='';if(c.condpago)ch+='<span style="background:#f0f0f0;border-radius:5px;padding:3px 8px;font-size:10px;color:var(--muted)">'+c.condpago+'</span> ';if(c.entrega)ch+='<span style="background:#f0f0f0;border-radius:5px;padding:3px 8px;font-size:10px;color:var(--muted)">'+c.entrega+'</span> ';if(c.vencimiento)ch+='<span style="background:var(--dorado-light);border-radius:5px;padding:3px 8px;font-size:10px;color:var(--dorado)">Vence '+formatFecha(c.vencimiento)+'</span> ';if(c.obs)ch+='<span style="background:#f0f4ff;border-radius:5px;padding:3px 8px;font-size:10px;color:#5566aa">'+c.obs+'</span> ';if(c.comprador)ch+='<span style="background:#e8f2e8;border-radius:5px;padding:3px 8px;font-size:10px;color:var(--verde-medio)">&#128100; '+c.comprador+'</span>';var ac='';if(e==='En deposito')ac=mkBtn('abrirFormFijarPrecio('+c.id+')','Fijar precio','#dbeafe','#1d4ed8','#93c5fd');if(e==='Pactado'||e==='Fijado')ac+=mkBtn('accionCompra('+c.id+',1)','Marcar entregado','var(--dorado-light)','var(--dorado)','var(--dorado-border)');if(e==='Entregado')ac=mkBtn('accionCompra('+c.id+',2)','Marcar liquidado','var(--verde-light)','var(--verde-medio)','var(--border)')+' '+mkBtn('accionCompra('+c.id+',3)','Volver','none','var(--muted)','var(--border)');if(e==='Liquidado')ac=mkBtn('accionCompra('+c.id+',4)','Volver','none','var(--muted)','var(--border)');var pb=c.pasadoSistema?'var(--verde-medio)':'var(--border)';var pc=c.pasadoSistema?'var(--verde-medio)':'var(--muted)';var pbg=c.pasadoSistema?'var(--verde-medio)':'transparent';return '<div data-cardidx="'+_idx+'" style="background:white;border:1.5px solid '+brd+';border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(30,77,43,0.06)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="display:flex;align-items:center">'+fb+'<div style="font-size:13px;font-weight:700;color:var(--ink)">'+c.proveedor+'</div></div><div style="font-size:10px;color:var(--muted);margin-top:2px">'+formatFecha(c.fecha)+' - '+(c.producto||'Soja')+'</div></div><div style="display:flex;gap:6px;align-items:center">'+bdg+'<button onclick="editarCompra('+c.id+')" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:10px;cursor:pointer;padding:3px 8px">edit</button><button onclick="eliminarCompra('+c.id+')" style="background:none;border:none;color:#c0392b;font-size:16px;cursor:pointer;padding:0">x</button></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px"><div style="background:var(--verde-light);border-radius:6px;padding:7px 10px"><div style="font-size:8px;color:var(--muted);text-transform:uppercase">Tn pactado '+tnDelta+'</div><div style="font-size:14px;font-weight:700;color:var(--ink)">'+c.tn.toLocaleString('es-AR')+'</div>'+tnLabel+'</div><div style="background:var(--verde-light);border-radius:6px;padding:7px 10px"><div style="font-size:8px;color:var(--muted);text-transform:uppercase">Precio/tn</div><div style="font-size:14px;font-weight:700;color:var(--ink)">'+ps+'</div></div><div style="background:var(--verde-light);border-radius:6px;padding:7px 10px"><div style="font-size:8px;color:var(--muted);text-transform:uppercase">Total</div><div style="font-size:14px;font-weight:700;color:var(--verde-oscuro)">'+(totalReal||ts)+'</div></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">'+tipoLabel+ch+'</div>'+(ac?'<div style="margin-bottom:8px">'+ac+'</div>':'')+'<div style="border-top:1px solid var(--border);padding-top:8px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:10px;color:var(--muted)">Pasado al sistema</span><button onclick="toggleSistemaCompra('+c.id+')" style="display:flex;align-items:center;gap:6px;background:none;border:1.5px solid '+pb+';border-radius:7px;padding:5px 10px;cursor:pointer;font-size:10px;font-weight:600;color:'+pc+'"><span style="width:14px;height:14px;border-radius:3px;background:'+pbg+';border:1.5px solid '+pb+';display:inline-flex;align-items:center;justify-content:center;font-size:10px">'+(c.pasadoSistema?'&#10003;':'')+'</span> '+(c.pasadoSistema?'Pasado':'Marcar')+'</button></div></div>';}
+function buildCompraCard(c,_idx){var e=c.estado||'Pactado';var fij=c.tipo==='fijacion';var brd=(fij&&e==='En deposito')?'#1d4ed8':(fij&&e==='Fijado')?'var(--dorado)':(e==='Liquidado')?'var(--verde-medio)':(e==='Entregado')?'var(--dorado)':'var(--border)';var fb=fij?'<span style="background:#dbeafe;color:#1d4ed8;font-size:9px;font-weight:700;padding:2px 5px;border-radius:4px;margin-right:4px">FIJ</span>':'';var ebg=(e==='En deposito')?'background:#dbeafe;color:#1d4ed8':(e==='Fijado'||e==='Entregado')?'background:var(--dorado-light);color:var(--dorado)':(e==='Liquidado')?'background:var(--verde-light);color:var(--verde-medio)':'background:#f0f0f0;color:var(--muted)';var bdg='<span data-badge="1" style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;'+ebg+'">'+e+'</span>';var ps=c.precio?('$ '+Math.round(c.precio).toLocaleString('es-AR')):'---';var ts=c.precio?('$ '+Math.round(c.tn*c.precio).toLocaleString('es-AR')):'---';var tnLabel=c.tnReales!==undefined?('<div style="font-size:9px;color:var(--dorado);margin-top:1px">Real: '+c.tnReales.toLocaleString('es-AR')+'</div>'):'';var tnDelta=c.tnReales!==undefined&&c.tnReales!==c.tn?(c.tnReales-c.tn>0?'<span style="color:var(--red);font-size:9px">+'+((c.tnReales-c.tn).toFixed(2))+'</span>':'<span style="color:var(--dorado);font-size:9px">'+(c.tnReales-c.tn).toFixed(2)+'</span>'):'';var tipoLabel=c.tipoPrecio==='pizarra'?('<span style="background:#f0f4ff;border-radius:5px;padding:3px 8px;font-size:10px;color:#5566aa;margin-right:4px">Piz−'+(c.descuentoRef||0)+'%</span>'):'';var totalReal=c.tnReales!==undefined&&c.precio?('$ '+Math.round(c.tnReales*c.precio).toLocaleString('es-AR')):null;var ch='';if(c.condpago)ch+='<span style="background:#f0f0f0;border-radius:5px;padding:3px 8px;font-size:10px;color:var(--muted)">'+c.condpago+'</span> ';if(c.entrega)ch+='<span style="background:#f0f0f0;border-radius:5px;padding:3px 8px;font-size:10px;color:var(--muted)">'+c.entrega+'</span> ';if(c.vencimiento)ch+='<span style="background:var(--dorado-light);border-radius:5px;padding:3px 8px;font-size:10px;color:var(--dorado)">Vence '+formatFecha(c.vencimiento)+'</span> ';if(c.obs)ch+='<span style="background:#f0f4ff;border-radius:5px;padding:3px 8px;font-size:10px;color:#5566aa">'+c.obs+'</span> ';if(c.comprador)ch+='<span style="background:#e8f2e8;border-radius:5px;padding:3px 8px;font-size:10px;color:var(--verde-medio)">&#128100; '+c.comprador+'</span>';var ac='';if(e==='En deposito')ac=mkBtn('abrirFormFijarPrecio('+c.id+')','Fijar precio','#dbeafe','#1d4ed8','#93c5fd');if(e==='Pactado'||e==='Fijado')ac+=mkBtn('accionCompra('+c.id+',1)','Marcar entregado','var(--dorado-light)','var(--dorado)','var(--dorado-border)');if(e==='Entregado')ac=mkBtn('accionCompra('+c.id+',2)','Marcar liquidado','var(--verde-light)','var(--verde-medio)','var(--border)')+' '+mkBtn('accionCompra('+c.id+',3)','Volver','none','var(--muted)','var(--border)');if(e==='Liquidado')ac=mkBtn('accionCompra('+c.id+',4)','Volver','none','var(--muted)','var(--border)');var pb=c.pasadoSistema?'var(--verde-medio)':'var(--border)';var pc=c.pasadoSistema?'var(--verde-medio)':'var(--muted)';var pbg=c.pasadoSistema?'var(--verde-medio)':'transparent';return '<div data-cardidx="'+_idx+'" style="background:white;border:1.5px solid '+brd+';border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(30,77,43,0.06)"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div><div style="display:flex;align-items:center">'+fb+'<div style="font-size:13px;font-weight:700;color:var(--ink)">'+c.proveedor+'</div></div><div style="font-size:10px;color:var(--muted);margin-top:2px">'+formatFecha(c.fecha)+' - '+(c.producto||'Soja')+(c.fechaEntrega?' · Entregado: '+formatFecha(c.fechaEntrega):'')+'</div></div><div style="display:flex;gap:6px;align-items:center">'+bdg+'<button onclick="editarCompra('+c.id+')" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:10px;cursor:pointer;padding:3px 8px">edit</button><button onclick="eliminarCompra('+c.id+')" style="background:none;border:none;color:#c0392b;font-size:16px;cursor:pointer;padding:0">x</button></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px"><div style="background:var(--verde-light);border-radius:6px;padding:7px 10px"><div style="font-size:8px;color:var(--muted);text-transform:uppercase">Tn pactado '+tnDelta+'</div><div style="font-size:14px;font-weight:700;color:var(--ink)">'+c.tn.toLocaleString('es-AR')+'</div>'+tnLabel+'</div><div style="background:var(--verde-light);border-radius:6px;padding:7px 10px"><div style="font-size:8px;color:var(--muted);text-transform:uppercase">Precio/tn</div><div style="font-size:14px;font-weight:700;color:var(--ink)">'+ps+'</div></div><div style="background:var(--verde-light);border-radius:6px;padding:7px 10px"><div style="font-size:8px;color:var(--muted);text-transform:uppercase">Total</div><div style="font-size:14px;font-weight:700;color:var(--verde-oscuro)">'+(totalReal||ts)+'</div></div></div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">'+tipoLabel+ch+'</div>'+(ac?'<div style="margin-bottom:8px">'+ac+'</div>':'')+'<div style="border-top:1px solid var(--border);padding-top:8px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:10px;color:var(--muted)">Pasado al sistema</span><button onclick="toggleSistemaCompra('+c.id+')" style="display:flex;align-items:center;gap:6px;background:none;border:1.5px solid '+pb+';border-radius:7px;padding:5px 10px;cursor:pointer;font-size:10px;font-weight:600;color:'+pc+'"><span style="width:14px;height:14px;border-radius:3px;background:'+pbg+';border:1.5px solid '+pb+';display:inline-flex;align-items:center;justify-content:center;font-size:10px">'+(c.pasadoSistema?'&#10003;':'')+'</span> '+(c.pasadoSistema?'Pasado':'Marcar')+'</button></div></div>';}
 function buildVentaCard(v){
   var e=v.estado||'Pactado';
   var brd=(e==='Liquidado')?'var(--verde-medio)':(e==='Despachado')?'var(--dorado)':'var(--border)';
   var ebg=(e==='Despachado')?'background:var(--dorado-light);color:var(--dorado)':(e==='Liquidado')?'background:var(--verde-light);color:var(--verde-medio)':'background:#f0f0f0;color:var(--muted)';
+  var canjeBadge=v.tipo==='canje'?'<span style="background:var(--dorado-light);color:var(--dorado);font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;margin-right:4px;letter-spacing:0.5px">CANJE</span>':'';
   var bdg='<span style="font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;'+ebg+'">'+e+'</span>';
   var ch='';
   if(v.destino)  ch+='<span style="background:#f0f0f0;border-radius:5px;padding:3px 8px;font-size:10px;color:var(--muted)">'+v.destino+'</span> ';
@@ -3001,7 +3066,7 @@ function buildVentaCard(v){
 
   var html='<div style="background:white;border:1.5px solid '+brd+';border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(30,77,43,0.06)">';
   html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">';
-  html+='<div><div style="display:flex;align-items:center;gap:8px"><div style="font-size:13px;font-weight:700;color:var(--ink)">'+v.cliente+'</div>'+bdg+'</div>';
+  html+='<div><div style="display:flex;align-items:center;gap:8px"><div style="font-size:13px;font-weight:700;color:var(--ink)">'+canjeBadge+v.cliente+'</div>'+bdg+'</div>';
   html+='<div style="font-size:10px;color:var(--muted);margin-top:2px">'+formatFecha(v.fecha)+' - '+v.producto+'</div></div>';
   html+='<div style="display:flex;gap:6px"><button onclick="editarVenta('+v.id+')" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:10px;cursor:pointer;padding:3px 8px">edit</button>';
   html+='<button onclick="eliminarVenta('+v.id+')" style="background:none;border:none;color:#c0392b;font-size:16px;cursor:pointer;padding:0">x</button></div></div>';
@@ -3030,7 +3095,7 @@ function accionCompra(id,n){
   }
   cambiarEstadoCompra(id,nuevoEstado);
 }
-function cambiarEstadoCompra(id,e,tnReales){var i=comprasData.findIndex(function(x){return x.id==id;});if(i===-1)return;comprasData[i].estado=e;if(tnReales!==undefined)comprasData[i].tnReales=tnReales;guardarCompraDB(comprasData[i]);renderComprasLista();}
+function cambiarEstadoCompra(id,e,tnReales,fechaEntrega){var i=comprasData.findIndex(function(x){return x.id==id;});if(i===-1)return;comprasData[i].estado=e;if(tnReales!==undefined)comprasData[i].tnReales=tnReales;if(fechaEntrega!=null)comprasData[i].fechaEntrega=fechaEntrega;guardarCompraDB(comprasData[i]);renderComprasLista();}
 function toggleSistemaCompra(id){var i=comprasData.findIndex(function(x){return x.id==id;});if(i===-1)return;comprasData[i].pasadoSistema=!comprasData[i].pasadoSistema;guardarCompraDB(comprasData[i]);renderComprasLista();}
 function accionVenta(id,n){
   var m={1:'Despachado',2:'Liquidado',3:'Pactado',4:'Despachado'};
@@ -3044,6 +3109,53 @@ function accionVenta(id,n){
 }
 function cambiarEstadoVenta(id,e,tnReales){var i=ventasData.findIndex(function(x){return x.id==id;});if(i===-1)return;ventasData[i].estado=e;if(tnReales!==undefined)ventasData[i].tnReales=tnReales;guardarVentaDB(ventasData[i]);renderVentasLista();}
 
+// ============================================================
+// CANJE DE VENTAS
+// ============================================================
+function abrirFormCanjeVenta() {
+  cerrarFormVenta();
+  var f = document.getElementById('form-canje-venta');
+  if (!f) return;
+  f.style.display = 'block';
+  document.getElementById('cv-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('cv-cliente').value = '';
+  document.getElementById('cv-tn').value = '';
+  document.getElementById('cv-obs').value = '';
+  f.scrollIntoView({behavior:'smooth'});
+}
+
+function cerrarFormCanjeVenta() {
+  var f = document.getElementById('form-canje-venta');
+  if (f) f.style.display = 'none';
+}
+
+function guardarCanjeVenta() {
+  var fecha    = document.getElementById('cv-fecha').value;
+  var cliente  = document.getElementById('cv-cliente').value.trim();
+  var producto = document.getElementById('cv-producto').value;
+  var tn       = parseFloat(document.getElementById('cv-tn').value);
+  var condpago = document.getElementById('cv-condpago').value;
+  var obs      = document.getElementById('cv-obs').value.trim();
+  if (!fecha || !cliente || isNaN(tn) || tn <= 0) {
+    alert('Completá fecha, cliente y toneladas.');
+    return;
+  }
+  if (!checkEscritura('ventas')) { alert('Sin permisos para registrar ventas.'); return; }
+  var reg = {
+    id: Date.now(), fecha: fecha, fechaEntrega: fecha,
+    vencimiento: calcVencimiento(fecha, condpago),
+    cliente: cliente, producto: producto, tn: tn,
+    precio: 0, precioUSD: null, tipoCambio: null,
+    destino: 'Canje', entrega: 'Canje', condpago: condpago,
+    obs: obs, vendedor: sesion ? sesion.nombre : '',
+    estado: 'Pactado', pasadoSistema: false, tipo: 'canje'
+  };
+  ventasData.unshift(reg);
+  guardarVentaDB(reg);
+  cerrarFormCanjeVenta();
+  renderVentasLista();
+}
+
 // ---- MODAL TN REALES ----
 var _modalCtx=null;
 function abrirModalTnReales(tipo,id,tnPactado,nombre,nuevoEstado){
@@ -3052,6 +3164,12 @@ function abrirModalTnReales(tipo,id,tnPactado,nombre,nuevoEstado){
   document.getElementById('modal-tn-pactado').textContent=tnPactado.toLocaleString('es-AR')+' tn pactadas';
   document.getElementById('modal-tn-input').value='';
   document.getElementById('modal-tn-dif').textContent='';
+  var fw=document.getElementById('modal-fecha-entrega-wrap');
+  if(fw){
+    var mostrar=(tipo==='compra'&&nuevoEstado==='Entregado');
+    fw.style.display=mostrar?'block':'none';
+    if(mostrar) document.getElementById('modal-fecha-entrega').value=new Date().toISOString().split('T')[0];
+  }
   document.getElementById('modal-tn-reales').style.display='flex';
   setTimeout(function(){document.getElementById('modal-tn-input').focus();},100);
 }
@@ -3067,7 +3185,10 @@ function confirmarModalTn(){
   if(!_modalCtx)return;
   var tnR=parseFloat(document.getElementById('modal-tn-input').value);
   if(isNaN(tnR)||tnR<=0){alert('Ingresá las toneladas reales.');return;}
-  if(_modalCtx.tipo==='compra') cambiarEstadoCompra(_modalCtx.id,_modalCtx.nuevoEstado,tnR);
+  var fw=document.getElementById('modal-fecha-entrega-wrap');
+  var fe=null;
+  if(fw&&fw.style.display!=='none') fe=document.getElementById('modal-fecha-entrega').value||null;
+  if(_modalCtx.tipo==='compra') cambiarEstadoCompra(_modalCtx.id,_modalCtx.nuevoEstado,tnR,fe);
   else cambiarEstadoVenta(_modalCtx.id,_modalCtx.nuevoEstado,tnR);
   cerrarModalTn();
 }
@@ -3659,6 +3780,12 @@ function eliminarPost(id) {
     <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--verde-claro);font-weight:600;margin-bottom:4px">Confirmar entrega</div>
     <div id="modal-tn-nombre" style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:4px"></div>
     <div id="modal-tn-pactado" style="font-size:11px;color:var(--muted);margin-bottom:16px"></div>
+    <div id="modal-fecha-entrega-wrap" style="display:none;margin-bottom:12px">
+      <label style="display:block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:600">Fecha de entrega</label>
+      <div style="border:1.5px solid var(--border);border-radius:9px;overflow:hidden;background:var(--bg)">
+        <input type="date" id="modal-fecha-entrega" style="width:100%;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink);box-sizing:border-box">
+      </div>
+    </div>
     <label style="display:block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;font-weight:600">Toneladas reales entregadas</label>
     <div style="display:flex;align-items:center;border:2px solid var(--verde-medio);border-radius:9px;overflow:hidden;background:var(--bg);margin-bottom:6px">
       <input type="number" id="modal-tn-input" step="0.01" placeholder="0.00" oninput="modalTnCalcDif()"
