@@ -1176,6 +1176,8 @@
           <div class="input-wrap">
             <select id="v-producto" onchange="toggleVentaMoneda()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
               <option value="Expeller de Soja">Expeller de Soja</option>
+              <option value="Soja">Soja</option>
+              <option value="Maiz">Maíz</option>
               <option value="Aceite de Soja">Aceite de Soja</option>
               <option value="Canje">Canje</option>
             </select>
@@ -1281,6 +1283,8 @@
             <select id="cv-producto" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
               <option value="Expeller de Soja">Expeller de Soja</option>
               <option value="Aceite de Soja">Aceite de Soja</option>
+              <option value="Soja">Soja</option>
+              <option value="Maiz">Maíz</option>
             </select>
           </div>
         </div>
@@ -2101,7 +2105,12 @@ function cargarConfig() {
 function v(id) {
   const el = document.getElementById(id);
   if (!el) return '';
-  // Limpia puntos de miles y reemplaza coma por punto para parsear
+  // Campos type=number: parsear directo sin limpiar puntos (ya son decimales)
+  if (el.type === 'number') {
+    const n = parseFloat(el.value);
+    return isNaN(n) ? '' : n;
+  }
+  // Campos text con formato miles: limpiar puntos y reemplazar coma decimal
   const raw = el.value.replace(/\./g, '').replace(',', '.');
   const n = parseFloat(raw);
   return isNaN(n) ? '' : n;
@@ -2622,16 +2631,7 @@ function renderVentasLista() {
       ${mostrarArchivoVentas ? '▲ Ocultar archivo' : '▼ Ver archivo (' + archivadas.length + ' operaciones anteriores a 90 días)'}
     </button>` : '';
 
-  // Separar ventas tradicionales y canjes para stats
-  var ventradicionales = visibles.filter(function(v){return v.tipo!=='canje';});
-  var vencanjes = visibles.filter(function(v){return v.tipo==='canje';});
-  var tnTrad = ventradicionales.reduce(function(a,v){return a+(v.tnReales!==undefined?v.tnReales:v.tn);},0);
-  var tnCanje = vencanjes.reduce(function(a,v){return a+(v.tnReales!==undefined?v.tnReales:v.tn);},0);
-  var statsHTML = (ventradicionales.length||vencanjes.length) ? '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">'
-    +'<div style="flex:1;background:var(--verde-light);border-radius:8px;padding:10px 12px;min-width:120px"><div style="font-size:8px;color:var(--muted);text-transform:uppercase;margin-bottom:2px">Ventas · '+ventradicionales.length+'</div><div style="font-size:14px;font-weight:700;color:var(--verde-oscuro)">'+tnTrad.toLocaleString('es-AR',{maximumFractionDigits:2})+' tn</div></div>'
-    +'<div style="flex:1;background:var(--dorado-light);border-radius:8px;padding:10px 12px;min-width:120px"><div style="font-size:8px;color:var(--muted);text-transform:uppercase;margin-bottom:2px">Canjes · '+vencanjes.length+'</div><div style="font-size:14px;font-weight:700;color:var(--dorado)">'+tnCanje.toLocaleString('es-AR',{maximumFractionDigits:2})+' tn</div></div>'
-    +'</div>' : '';
-  lista.innerHTML = btnArchivo + statsHTML + visibles.map(function(v){ return buildVentaCard(v); }).join('');
+  lista.innerHTML = btnArchivo + visibles.map(function(v){ return buildVentaCard(v); }).join('');
 }
 
 function calcVencimiento(fechaBase, condpago) {
@@ -3425,11 +3425,33 @@ function renderHistorial() {
         +'<td style="padding:10px 12px;font-weight:600;color:var(--ink)">'+prod+'</td>'
         +'<td style="padding:10px 12px;text-align:center;color:var(--muted)">'+r.count+'</td>'
         +'<td style="padding:10px 12px;text-align:center">'+r.totalTn.toLocaleString('es-AR')+' tn</td>'
-        +'<td style="padding:10px 12px;text-align:right;font-weight:700;color:'+(esCompra?'var(--red)':'var(--verde-medio)')+'">'+fmtH(r.ppp)+'</td>'
-        +'<td style="padding:10px 12px;text-align:right;color:var(--muted)">'+fmtH(r.pps)+'</td>'
-        +'<td style="padding:10px 12px;text-align:right;font-weight:700">'+fmtH(r.totalMonto)+'</td>'
+        +'<td style="padding:10px 12px;text-align:right;font-weight:700;white-space:nowrap;color:'+(esCompra?'var(--red)':'var(--verde-medio)')+'">'+fmtH(r.ppp)+'</td>'
+        +'<td style="padding:10px 12px;text-align:right;white-space:nowrap;color:var(--muted)">'+fmtH(r.pps)+'</td>'
+        +'<td style="padding:10px 12px;text-align:right;font-weight:700;white-space:nowrap">'+fmtH(r.totalMonto)+'</td>'
         +'</tr>';
     });
+    // Fila extra de canjes (solo en ventas)
+    if (!esCompra) {
+      var canjeItems = items.filter(function(i){ return i.tipo==='canje'; });
+      if (canjeItems.length) {
+        var byProdCanje = {};
+        canjeItems.forEach(function(item) {
+          var p = item.producto||'Expeller de Soja';
+          if (!byProdCanje[p]) byProdCanje[p] = { count:0, totalTn:0 };
+          byProdCanje[p].count++;
+          byProdCanje[p].totalTn += Number(item.tnReales!==undefined?item.tnReales:item.tn);
+        });
+        Object.keys(byProdCanje).forEach(function(prod) {
+          var rc = byProdCanje[prod];
+          rows+='<tr style="border-bottom:1px solid var(--border);background:#fffbe6">'
+            +'<td style="padding:10px 12px;font-weight:600;color:var(--ink)">'+prod+' <span style="background:var(--dorado-light);color:var(--dorado);font-size:9px;font-weight:700;padding:1px 6px;border-radius:4px">CANJE</span></td>'
+            +'<td style="padding:10px 12px;text-align:center;color:var(--muted)">'+rc.count+'</td>'
+            +'<td style="padding:10px 12px;text-align:center;font-weight:600;color:var(--dorado)">'+rc.totalTn.toLocaleString('es-AR')+' tn</td>'
+            +'<td style="padding:10px 12px;text-align:right;color:var(--muted);font-size:10px" colspan="3">Sin precio — operación de canje</td>'
+            +'</tr>';
+        });
+      }
+    }
     return '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch"><table style="width:100%;min-width:420px;border-collapse:collapse;font-size:12px">'
       +'<thead><tr style="background:var(--bg)">'
       +'<th style="padding:8px 12px;text-align:left;font-size:9px;color:var(--muted);text-transform:uppercase">Producto</th>'
@@ -3451,9 +3473,11 @@ function renderHistorial() {
         +'<td style="padding:7px 12px;font-weight:600;font-size:11px">'+nombre+'</td>'
         +'<td style="padding:7px 12px;color:var(--muted);font-size:11px">'+(item.producto||'')+'</td>'
         +'<td style="padding:7px 12px;text-align:center;font-size:11px">'+tn+' tn</td>'
-        +'<td style="padding:7px 12px;text-align:right;font-size:11px">'+fmtH(item.precio)+'</td>'
-        +'<td style="padding:7px 12px;text-align:right;font-weight:600;font-size:11px;color:'+(esCompra?'var(--red)':'var(--verde-medio)')+'">'+fmtH(Number(tn)*Number(item.precio))+'</td>'
+        +'<td style="padding:7px 12px;text-align:right;font-size:11px;white-space:nowrap">'+fmtH(item.precio)+'</td>'
+        +'<td style="padding:7px 12px;text-align:right;font-weight:600;font-size:11px;white-space:nowrap;color:'+(esCompra?'var(--red)':'var(--verde-medio)')+'">'+fmtH(Number(tn)*Number(item.precio))+'</td>'
         +'<td style="padding:7px 12px;text-align:center;font-size:10px">'+(item.estado||'')+'</td>'
+        +'<td style="padding:7px 12px;text-align:center;font-size:10px;color:var(--muted)">'+(item.condpago||'')+'</td>'
+        +'<td style="padding:7px 12px;font-size:10px;color:#5566aa;max-width:120px">'+(item.obs||'')+'</td>'
         +'</tr>';
     }).join('');
     return '<details style="margin-top:8px"><summary style="font-size:11px;color:var(--muted);cursor:pointer;padding:4px 0">Ver detalle ('+items.length+' operaciones)</summary>'
@@ -3466,6 +3490,8 @@ function renderHistorial() {
       +'<th style="padding:6px 12px;text-align:right">Precio/tn</th>'
       +'<th style="padding:6px 12px;text-align:right">Total</th>'
       +'<th style="padding:6px 12px;text-align:center">Estado</th>'
+      +'<th style="padding:6px 12px;text-align:center">Cond. Pago</th>'
+      +'<th style="padding:6px 12px;text-align:left">Obs</th>'
       +'</tr></thead><tbody>'+rows+'</tbody></table></div></details>';
   }
 
@@ -3494,8 +3520,8 @@ function exportarHistorialPDF() {
   var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
   if (!jsPDFLib) { alert('Libreria PDF no cargada. Verificá conexión a internet.'); return; }
 
-  var doc = new jsPDFLib({ orientation:'portrait', unit:'mm', format:'a4' });
-  var PW=210, PH=297, ML=14, MR=14, CW=PW-ML-MR;
+  var doc = new jsPDFLib({ orientation:'landscape', unit:'mm', format:'a4' });
+  var PW=297, PH=210, ML=14, MR=14, CW=PW-ML-MR;
   var y=0;
   var VERDE=[30,100,50], GRIS=[100,100,100], NEGRO=[30,30,30], ROJO=[180,40,40], BGGRIS=[245,245,245];
 
@@ -3573,6 +3599,33 @@ function exportarHistorialPDF() {
       y+=6.5;
     });
 
+    // Filas de canjes (solo ventas)
+    if (!esCompra) {
+      var canjeItems = items.filter(function(i){ return i.tipo==='canje'; });
+      if (canjeItems.length) {
+        var byProdCanje={};
+        canjeItems.forEach(function(item){
+          var p=item.producto||'Expeller de Soja';
+          if(!byProdCanje[p]) byProdCanje[p]={count:0,totalTn:0};
+          byProdCanje[p].count++;
+          byProdCanje[p].totalTn+=Number(item.tnReales!==undefined?item.tnReales:item.tn);
+        });
+        Object.keys(byProdCanje).forEach(function(prod){
+          checkPage(7);
+          var rc=byProdCanje[prod];
+          drawRect(ML,y,CW,6.5,[255,251,230]);
+          doc.setTextColor(...NEGRO); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+          doc.text(prod+' [CANJE]', ML+2, y+4.5);
+          doc.text(String(rc.count), ML+55, y+4.5);
+          doc.setFont('helvetica','bold'); doc.setTextColor(180,130,0);
+          doc.text(rc.totalTn.toLocaleString('es-AR')+' tn', ML+70, y+4.5);
+          doc.setTextColor(...GRIS); doc.setFont('helvetica','italic'); doc.setFontSize(6);
+          doc.text('Sin precio - canje', ML+98, y+4.5);
+          y+=6.5;
+        });
+      }
+    }
+
     // Detail rows
     y+=3; checkPage(12);
     doc.setTextColor(...GRIS); doc.setFont('helvetica','bold'); doc.setFontSize(7);
@@ -3580,9 +3633,10 @@ function exportarHistorialPDF() {
 
     drawRect(ML,y,CW,5,BGGRIS);
     doc.setTextColor(...NEGRO); doc.setFont('helvetica','bold'); doc.setFontSize(6);
-    doc.text('Fecha',ML+2,y+3.5); doc.text(esCompra?'Proveedor':'Cliente',ML+22,y+3.5);
-    doc.text('Producto',ML+62,y+3.5); doc.text('Tn',ML+98,y+3.5);
-    doc.text('Precio/tn',ML+110,y+3.5); doc.text('Total',ML+140,y+3.5); doc.text('Estado',ML+170,y+3.5);
+    doc.text('Fecha',ML+2,y+3.5); doc.text(esCompra?'Proveedor':'Cliente',ML+24,y+3.5);
+    doc.text('Producto',ML+70,y+3.5); doc.text('Tn',ML+110,y+3.5);
+    doc.text('Precio/tn',ML+122,y+3.5); doc.text('Total',ML+152,y+3.5); doc.text('Estado',ML+182,y+3.5);
+    doc.text('C.Pago',ML+202,y+3.5); doc.text('Obs',ML+220,y+3.5);
     y+=5;
 
     items.forEach(function(item,ii){
@@ -3592,15 +3646,17 @@ function exportarHistorialPDF() {
       drawRect(ML,y,CW,5.5,ii%2===0?[255,255,255]:BGGRIS);
       doc.setTextColor(...NEGRO); doc.setFont('helvetica','normal'); doc.setFontSize(6);
       doc.text(fmtD(item.fecha),ML+2,y+4);
-      doc.text(nombre.substring(0,18),ML+22,y+4);
-      doc.text((item.producto||'').substring(0,14),ML+62,y+4);
-      doc.text(String(tn),ML+98,y+4);
-      doc.text(item.precioUSD?('USD '+item.precioUSD):fmtM(item.precio),ML+110,y+4);
+      doc.text(nombre.substring(0,20),ML+24,y+4);
+      doc.text((item.producto||'').substring(0,16),ML+70,y+4);
+      doc.text(String(tn),ML+110,y+4);
+      doc.text(item.precioUSD?('USD '+item.precioUSD):fmtM(item.precio),ML+122,y+4);
       doc.setTextColor(esCompra?ROJO[0]:VERDE[0],esCompra?ROJO[1]:VERDE[1],esCompra?ROJO[2]:VERDE[2]);
       doc.setFont('helvetica','bold');
-      doc.text(fmtM(Number(tn)*Number(item.precio)),ML+140,y+4);
+      doc.text(fmtM(Number(tn)*Number(item.precio)),ML+152,y+4);
       doc.setTextColor(...GRIS); doc.setFont('helvetica','normal');
-      doc.text(item.estado||'',ML+170,y+4);
+      doc.text((item.estado||'').substring(0,11),ML+182,y+4);
+      doc.text((item.condpago||'').substring(0,11),ML+202,y+4);
+      doc.text((item.obs||'').substring(0,25),ML+220,y+4);
       y+=5.5;
     });
     y+=4;
