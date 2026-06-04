@@ -147,6 +147,13 @@
     max-width: 680px;
     margin: 0 auto;
   }
+  /* Acopio necesita más ancho por el layout de dos columnas */
+  .main:has(#tab-acopio.active) {
+    max-width: 100%;
+  }
+  #tab-acopio {
+    max-width: 100%;
+  }
 
   /* SECTION LABEL */
   .section-label {
@@ -194,6 +201,31 @@
     color: var(--muted);
     margin-bottom: 5px;
     font-weight: 600;
+  }
+
+  /* Acopio: en pantallas chicas las columnas se apilan */
+  @media (max-width: 860px) {
+    .acopio-grid { grid-template-columns: 1fr !important; }
+    .acopio-pizarra-col { position: static !important; max-height: none !important; overflow-y: visible !important; }
+  }
+
+  .piz-fbtn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: white;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+  .piz-fbtn.active-piz {
+    background: var(--verde-oscuro);
+    color: white;
+    border-color: var(--verde-oscuro);
   }
 
   /* INPUTS */
@@ -512,6 +544,7 @@
   <button class="tab" onclick="switchTab('ventas')">Ventas</button>
   <button class="tab" onclick="switchTab('financiero')">Financiero</button>
   <button class="tab" onclick="switchTab('historial')">Historial</button>
+  <button class="tab" onclick="switchTab('acopio')">🌾 Acopio</button>
   <button class="tab" id="tab-btn-admin" onclick="switchTab('admin')" style="display:none">&#9881; Admin</button>
 </div>
 
@@ -886,41 +919,139 @@
 
     <div class="section-label">Costos Variables</div>
     <div class="card">
-      <div class="field">
-        <label>Energía Eléctrica 1</label>
-        <div class="input-wrap">
-          <span class="unit">$</span>
-          <input type="text" inputmode="numeric" id="cv_energia1" oninput="fmtInput(this);calcularCostos()" placeholder="0" >
+
+      <!-- Energía Eléctrica 1 -->
+      <div style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:0.3px">⚡ Energía Eléctrica 1</div>
+        <div class="field">
+          <label>Costo total factura</label>
+          <div class="input-wrap"><span class="unit">$</span>
+            <input type="text" inputmode="numeric" id="cv_energia1" oninput="fmtInput(this);calcularCostos()" placeholder="0">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="field" style="margin-bottom:0">
+            <label>Kw consumidos <span style="font-size:8px;color:var(--muted)">(ref.)</span></label>
+            <div class="input-wrap">
+              <input type="text" inputmode="numeric" id="cv_energia1_kw" oninput="fmtInput(this)" placeholder="0">
+              <span class="unit" style="font-size:10px">Kw</span>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Costo por Kw <span style="font-size:8px;color:var(--muted)">(ref.)</span></label>
+            <div class="input-wrap"><span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="cv_energia1_costo_kw" oninput="fmtInput(this)" placeholder="0">
+            </div>
+          </div>
         </div>
       </div>
-      <div class="field">
-        <label>Energía Eléctrica 2</label>
-        <div class="input-wrap">
-          <span class="unit">$</span>
-          <input type="text" inputmode="numeric" id="cv_energia2" oninput="fmtInput(this);calcularCostos()" placeholder="0" >
+
+      <!-- Energía Eléctrica 2 -->
+      <div style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:0.3px">⚡ Energía Eléctrica 2</div>
+        <div class="field">
+          <label>Costo total factura</label>
+          <div class="input-wrap"><span class="unit">$</span>
+            <input type="text" inputmode="numeric" id="cv_energia2" oninput="fmtInput(this);calcularCostos()" placeholder="0">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="field" style="margin-bottom:0">
+            <label>Kw consumidos <span style="font-size:8px;color:var(--muted)">(ref.)</span></label>
+            <div class="input-wrap">
+              <input type="text" inputmode="numeric" id="cv_energia2_kw" oninput="fmtInput(this)" placeholder="0">
+              <span class="unit" style="font-size:10px">Kw</span>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Costo por Kw <span style="font-size:8px;color:var(--muted)">(ref.)</span></label>
+            <div class="input-wrap"><span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="cv_energia2_costo_kw" oninput="fmtInput(this)" placeholder="0">
+            </div>
+          </div>
         </div>
       </div>
-      <div class="field">
-        <label>Gas Camuzzi</label>
-        <div class="input-wrap">
-          <span class="unit">$</span>
-          <input type="text" inputmode="numeric" id="cv_gas_camuzzi" oninput="fmtInput(this);calcularCostos()" placeholder="0" >
+
+      <!-- Gas Camuzzi -->
+      <div style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:0.3px">🔥 Gas Camuzzi</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="field" style="margin-bottom:0">
+            <label>Costo total factura</label>
+            <div class="input-wrap"><span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="cv_gas_camuzzi" oninput="fmtInput(this);calcularCostos()" placeholder="0">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Peaje <span style="font-size:8px;color:var(--muted)">(ref.)</span></label>
+            <div class="input-wrap"><span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="cv_gas_camuzzi_peaje" oninput="fmtInput(this)" placeholder="0">
+            </div>
+          </div>
         </div>
       </div>
-      <div class="field">
-        <label>Gas Alpes</label>
-        <div class="input-wrap">
-          <span class="unit">$</span>
-          <input type="text" inputmode="numeric" id="cv_gas_alpes" oninput="fmtInput(this);calcularCostos()" placeholder="0" >
+
+      <!-- Gas Alpes -->
+      <div style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:0.3px">🔥 Gas Alpes</div>
+        <div class="field">
+          <label>Costo total (ambas facturas)</label>
+          <div class="input-wrap"><span class="unit">$</span>
+            <input type="text" inputmode="numeric" id="cv_gas_alpes" oninput="fmtInput(this);calcularCostos()" placeholder="0">
+          </div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);font-weight:600;margin:8px 0 6px;text-transform:uppercase;letter-spacing:0.5px">Alpes con FC</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div class="field" style="margin-bottom:0">
+            <label>M³ consumidos <span style="font-size:8px;color:var(--muted)">(ref.)</span></label>
+            <div class="input-wrap">
+              <input type="text" inputmode="numeric" id="cv_alpes_fc_m3" oninput="fmtInput(this)" placeholder="0">
+              <span class="unit" style="font-size:10px">m³</span>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Valor por m³ <span style="font-size:8px;color:var(--muted)">(ref.)</span></label>
+            <div class="input-wrap"><span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="cv_alpes_fc_valor_m3" oninput="fmtInput(this)" placeholder="0">
+            </div>
+          </div>
+        </div>
+        <div style="font-size:9px;color:var(--muted);font-weight:600;margin:8px 0 6px;text-transform:uppercase;letter-spacing:0.5px">Alpes sin FC</div>
+        <div class="field" style="margin-bottom:0">
+          <label>M³ consumidos <span style="font-size:8px;color:var(--muted)">(ref.)</span></label>
+          <div class="input-wrap">
+            <input type="text" inputmode="numeric" id="cv_alpes_sfc_m3" oninput="fmtInput(this)" placeholder="0">
+            <span class="unit" style="font-size:10px">m³</span>
+          </div>
         </div>
       </div>
+
+      <!-- Horas Extras -->
+      <div style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;color:var(--ink);margin-bottom:8px;letter-spacing:0.3px">👷 Horas Extras</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="field" style="margin-bottom:0">
+            <label>Personal Producción</label>
+            <div class="input-wrap"><span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="cv_hs_extra_prod" oninput="fmtInput(this);calcularCostos()" placeholder="0">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Personal Mantenimiento</label>
+            <div class="input-wrap"><span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="cv_hs_extra_mant" oninput="fmtInput(this);calcularCostos()" placeholder="0">
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="field" style="margin-bottom:0">
         <label>Costo Desgaste Planta</label>
-        <div class="input-wrap">
-          <span class="unit">$</span>
-          <input type="text" inputmode="numeric" id="cv_desgaste" oninput="fmtInput(this);calcularCostos()" placeholder="0" >
+        <div class="input-wrap"><span class="unit">$</span>
+          <input type="text" inputmode="numeric" id="cv_desgaste" oninput="fmtInput(this);calcularCostos()" placeholder="0">
         </div>
       </div>
+
       <div style="background:var(--verde-bg);border:1px solid var(--border);border-radius:7px;padding:8px 12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;">
         <span style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Total Costos Variables</span>
         <span id="total_cv" style="font-family:'Fraunces',serif;font-size:16px;font-weight:700;color:var(--ink)">—</span>
@@ -956,6 +1087,10 @@
       <div id="config-saved-msg" style="display:none;text-align:center;margin-top:10px;font-size:11px;color:var(--verde-medio);font-weight:600">
         &#10003; Datos guardados correctamente
       </div>
+      <button onclick="exportarDatosPlantaPDF()"
+        style="width:100%;padding:11px;background:white;color:var(--verde-medio);border:1.5px solid var(--verde-medio);border-radius:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;margin-top:8px;letter-spacing:0.3px">
+        &#128196; Exportar informe mensual PDF
+      </button>
     </div>
 
   </div>
@@ -1044,6 +1179,8 @@
               <option value="Maíz">Maíz</option>
               <option value="Trigo">Trigo</option>
               <option value="Cáscara de Soja">Cáscara de Soja</option>
+              <option value="Expeller de Soja">Expeller de Soja</option>
+              <option value="Aceite de Soja">Aceite de Soja</option>
             </select>
           </div>
         </div>
@@ -1392,6 +1529,412 @@
     <div id='historial-content'></div>
   </div>
 
+  <!-- ACOPIO -->
+  <div class="panel" id="tab-acopio">
+
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+      <div class="section-label" style="margin:0;border:none">Compra-Venta Acopio</div>
+      <div style="display:flex;gap:8px"><button onclick="togglePizarra()" id="btn-toggle-pizarra" style="background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">📋 Ocultar pizarra</button><button onclick="abrirFormAcopio()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Nueva operación</button></div>
+    </div>
+
+    <!-- Layout dos columnas: izquierda = ops, derecha = pizarra -->
+    <div style="display:grid;grid-template-columns:60% 40%;gap:20px;align-items:start;margin-top:14px" id="acopio-grid" class="acopio-grid">
+
+      <!-- COLUMNA IZQUIERDA — Resumen + Form + Lista -->
+      <div>
+
+        <!-- Resumen rápido -->
+        <div id="acopio-resumen" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:4px">
+          <div class="card" style="margin-bottom:0;text-align:center;padding:12px 8px">
+            <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Operaciones</div>
+            <div id="ac-res-ops" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--verde-oscuro)">—</div>
+          </div>
+          <div class="card" style="margin-bottom:0;text-align:center;padding:12px 8px">
+            <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Total toneladas</div>
+            <div id="ac-res-tn" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--verde-oscuro)">—</div>
+          </div>
+          <div class="card" style="margin-bottom:0;text-align:center;padding:12px 8px">
+            <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Ganancia total</div>
+            <div id="ac-res-comision" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--dorado)">—</div>
+          </div>
+        </div>
+
+
+    <!-- Formulario nueva operación -->
+    <div id="form-acopio" style="display:none" class="card" style="margin-top:12px">
+      <div id="form-acopio-titulo" style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)">Nueva Operación de Acopio</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+
+        <!-- Fecha -->
+        <div class="field" style="margin-bottom:0">
+          <label>Fecha operación</label>
+          <div class="input-wrap"><input type="date" id="ac-fecha" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+        </div>
+
+        <!-- Producto -->
+        <div class="field" style="margin-bottom:0">
+          <label>Producto</label>
+          <div class="input-wrap">
+            <select id="ac-producto" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+              <option value="Soja">Soja</option>
+              <option value="Maíz">Maíz</option>
+              <option value="Trigo">Trigo</option>
+              <option value="Girasol">Girasol</option>
+              <option value="Cáscara de Soja">Cáscara de Soja</option>
+              <option value="Expeller de Soja">Expeller de Soja</option>
+              <option value="Aceite de Soja">Aceite de Soja</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Proveedor -->
+        <div class="field" style="margin-bottom:0">
+          <label>Proveedor / Productor</label>
+          <div class="input-wrap"><input type="text" id="ac-proveedor" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+        </div>
+
+        <!-- Toneladas -->
+        <div class="field" style="margin-bottom:0">
+          <label>Toneladas</label>
+          <div class="input-wrap">
+            <input type="number" id="ac-tn" placeholder="0" step="0.01" oninput="calcAcopio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)">
+            <span class="unit right">tn</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PRECIO COMPRA -->
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">📥 Compra</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field" style="margin-bottom:0">
+            <label>Tipo de precio</label>
+            <div class="input-wrap">
+              <select id="ac-tipo-precio" onchange="toggleAcopioPrecio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+                <option value="fijo">Precio fijo $/tn</option>
+                <option value="pizarra">Pizarra menos %</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Condición pago</label>
+            <div class="input-wrap">
+              <select id="ac-condpago" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+                <option value="Contado">Contado</option>
+                <option value="7/10 días">7/10 días</option>
+                <option value="15 días">15 días</option>
+                <option value="30 días">30 días</option>
+                <option value="60 días">60 días</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Precio fijo -->
+        <div id="ac-campo-fijo" style="margin-top:10px">
+          <div class="field" style="margin-bottom:0">
+            <label>Precio compra / tn</label>
+            <div class="input-wrap">
+              <span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="ac-precio-compra" placeholder="0" oninput="fmtInput(this);calcAcopio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;outline:none;color:var(--ink)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Pizarra menos % -->
+        <div id="ac-campo-pizarra" style="display:none;margin-top:10px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="field" style="margin-bottom:0">
+              <label>Pizarra ref. <span style="font-size:8px;color:var(--muted);text-transform:none;letter-spacing:0">(vacío = usa actual)</span></label>
+              <div class="input-wrap">
+                <span class="unit">$</span>
+                <input type="text" inputmode="numeric" id="ac-pizarra-ref" placeholder="0" oninput="fmtInput(this);calcAcopioPizarra()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)">
+              </div>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Descuento</label>
+              <div class="input-wrap">
+                <input type="number" id="ac-descuento" placeholder="0" step="0.1" oninput="calcAcopioPizarra()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)">
+                <span class="unit right">%</span>
+              </div>
+            </div>
+          </div>
+          <div id="ac-precio-calculado" style="font-size:11px;color:var(--verde-medio);margin-top:6px;font-weight:600;padding:0 2px"></div>
+        </div>
+
+        <!-- A retirar del campo toggle -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px">
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--ink)">A retirar del campo</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px">Don Mauricio paga el flete</div>
+          </div>
+          <button id="ac-flete-toggle-btn" onclick="toggleAcopioFlete()"
+            style="width:48px;height:26px;border-radius:13px;border:none;background:var(--border);cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;padding:0">
+            <span id="ac-flete-toggle-dot" style="position:absolute;top:4px;left:4px;width:18px;height:18px;border-radius:50%;background:white;transition:transform 0.2s;display:block"></span>
+          </button>
+        </div>
+
+        <!-- Campos flete (aparecen cuando toggle ON) -->
+        <div id="ac-flete-fields" style="display:none;margin-top:10px;padding:12px;background:var(--verde-light);border:1px solid var(--border);border-radius:8px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="field" style="margin-bottom:0">
+              <label>Distancia al campo</label>
+              <div class="input-wrap">
+                <input type="number" id="ac-km" placeholder="0" min="1" max="1500" oninput="calcAcopio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)">
+                <span class="unit right">km</span>
+              </div>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Quién paga el flete</label>
+              <div class="input-wrap">
+                <select id="ac-flete-quien-paga" onchange="calcAcopio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:12px;outline:none;color:var(--ink)">
+                  <option value="dm">Lo paga Don Mauricio</option>
+                  <option value="productor">Se descuenta al productor</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <!-- Tarifa: FETRA o manual -->
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;margin-bottom:6px">
+            <span style="font-size:9px;color:var(--verde-medio);letter-spacing:1px;text-transform:uppercase;font-weight:600">Tarifa / tn</span>
+            <label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);cursor:pointer">
+              <input type="checkbox" id="ac-flete-manual-check" onchange="toggleFleteManual()" style="cursor:pointer">
+              Tarifa negociada
+            </label>
+          </div>
+          <!-- FETRA automática -->
+          <div id="ac-flete-fetra-wrap" style="display:flex;justify-content:space-between;align-items:center;background:white;border-radius:6px;padding:8px 12px">
+            <span style="font-size:10px;color:var(--muted)">Tarifa FETRA</span>
+            <span id="ac-flete-display" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--verde-oscuro)">—</span>
+          </div>
+          <!-- Tarifa manual (oculta por defecto) -->
+          <div id="ac-flete-manual-wrap" style="display:none;margin-top:6px">
+            <div class="input-wrap" style="background:white">
+              <span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="ac-flete-manual-valor" placeholder="0" oninput="fmtInput(this);calcAcopio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;font-weight:600;outline:none;color:var(--ink)">
+              <span class="unit right">$/tn</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VENTA -->
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">📤 Venta</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field" style="margin-bottom:0">
+            <label>Cliente / Comprador</label>
+            <div class="input-wrap">
+              <input type="text" id="ac-cliente" placeholder="Nombre del cliente" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Destino</label>
+            <div class="input-wrap">
+              <input type="text" id="ac-destino" placeholder="Ej: Rosario, Bahía Blanca..." style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0;grid-column:1/-1">
+            <label>Precio venta / tn</label>
+            <div class="input-wrap">
+              <span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="ac-precio-venta" placeholder="0" oninput="fmtInput(this);calcAcopio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;outline:none;color:var(--ink)">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0;grid-column:1/-1">
+            <label>Condición de pago (venta)</label>
+            <div class="input-wrap">
+              <select id="ac-condpago-venta" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+                <option value="Contado">Contado</option>
+                <option value="7/10 días">7/10 días</option>
+                <option value="15 días">15 días</option>
+                <option value="30 días">30 días</option>
+                <option value="60 días">60 días</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMISIÓN -->
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">💰 Comisión</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field" style="margin-bottom:0">
+            <label>Tipo de comisión</label>
+            <div class="input-wrap">
+              <select id="ac-tipo-comision" onchange="toggleAcopioComision()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+                <option value="fijo">Monto fijo $/tn</option>
+                <option value="pct">Porcentaje sobre venta %</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0" id="ac-comision-wrap">
+            <label id="ac-comision-label">Comisión</label>
+            <div class="input-wrap">
+              <span class="unit" id="ac-comision-unit-left">$</span>
+              <input type="text" inputmode="numeric" id="ac-comision-valor" placeholder="0" oninput="fmtInput(this);calcAcopio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;outline:none;color:var(--ink)">
+              <span class="unit right" id="ac-comision-unit-right">$/tn</span>
+            </div>
+          </div>
+        </div>
+        <div id="ac-comision-hint" style="font-size:10px;color:var(--muted);margin-top:6px;padding:0 2px"></div>
+      </div>
+
+      <!-- RESULTADO PREVIO AL GUARDAR -->
+      <div id="ac-preview" style="display:none;margin-top:14px;background:var(--verde-oscuro);background-image:linear-gradient(135deg,#1e4d2b 0%,#2a6b3a 100%);color:white;border-radius:12px;padding:16px">
+        <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:10px;font-weight:600">Vista previa del negocio</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">Precio compra</div>
+            <div id="ac-prev-compra" style="font-size:16px;font-weight:700;color:#ff9f9f">—</div>
+          </div>
+          <div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">Precio venta</div>
+            <div id="ac-prev-venta" style="font-size:16px;font-weight:700;color:#7ec87e">—</div>
+          </div>
+          <div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">Flete / tn</div>
+            <div id="ac-prev-flete" style="font-size:14px;font-weight:700;color:rgba(255,255,255,0.7)">—</div>
+          </div>
+          <div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">Diferencia / tn</div>
+            <div id="ac-prev-diff" style="font-size:14px;font-weight:700;color:white">—</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.15);display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">Comisión / tn</div>
+            <div id="ac-prev-comision-tn" style="font-size:14px;font-weight:700;color:#c8922a">—</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">Ganancia total operación</div>
+            <div id="ac-prev-comision-total" style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#c8922a">—</div>
+            <div id="ac-prev-ganancia-detalle" style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px">—</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">Toneladas</div>
+            <div id="ac-prev-tn" style="font-size:18px;font-weight:700;color:white">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observaciones -->
+      <div class="field" style="margin-top:12px;margin-bottom:0">
+        <label>Observaciones</label>
+        <div class="input-wrap"><input type="text" id="ac-obs" placeholder="Notas adicionales..." style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+      </div>
+
+      <div id="ac-error-msg" style="display:none;background:#fff0f0;border:1px solid #e74c3c;color:#c0392b;border-radius:7px;padding:10px 14px;font-size:12px;font-weight:600;margin-top:10px"></div>
+
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button onclick="guardarAcopio()" style="flex:1;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Guardar operación</button>
+        <button onclick="cerrarFormAcopio()" style="flex:1;background:var(--border);color:var(--muted);border:none;border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Lista operaciones acopio -->
+    <div id="lista-acopio" style="margin-top:12px"></div>
+    <div id="empty-acopio" style="text-align:center;padding:40px 20px;color:var(--muted);font-size:12px">
+      No hay operaciones de acopio registradas.<br>Tocá "+ Nueva operación" para agregar.
+    </div>
+
+      </div><!-- /columna izquierda -->
+
+      <!-- COLUMNA DERECHA — Pizarra de Compradores -->
+      <div style="position:sticky;top:16px;max-height:calc(100vh - 80px);overflow-y:auto;padding-right:2px" class="acopio-pizarra-col">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--verde-claro);font-weight:600">📋 Pizarra de Compradores</div>
+        <button onclick="abrirFormComprador(null)" style="background:none;border:1px solid var(--verde-medio);border-radius:6px;color:var(--verde-medio);font-size:10px;font-weight:600;cursor:pointer;padding:4px 10px;font-family:'Outfit',sans-serif">+ Comprador</button>
+      </div>
+
+      <!-- Filtro por producto -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="piz-filtros">
+        <button class="piz-fbtn active-piz" onclick="setPizFiltro('Todos')" data-prod="Todos">Todos</button>
+        <button class="piz-fbtn" onclick="setPizFiltro('Soja')" data-prod="Soja">Soja</button>
+        <button class="piz-fbtn" onclick="setPizFiltro('Maíz')" data-prod="Maíz">Maíz</button>
+        <button class="piz-fbtn" onclick="setPizFiltro('Trigo')" data-prod="Trigo">Trigo</button>
+        <button class="piz-fbtn" onclick="setPizFiltro('Girasol')" data-prod="Girasol">Girasol</button>
+        <button class="piz-fbtn" onclick="setPizFiltro('Cáscara de Soja')" data-prod="Cáscara de Soja">Cáscara</button>
+        <button class="piz-fbtn" onclick="setPizFiltro('Expeller de Soja')" data-prod="Expeller de Soja">Expeller</button>
+        <button class="piz-fbtn" onclick="setPizFiltro('Aceite de Soja')" data-prod="Aceite de Soja">Aceite</button>
+      </div>
+
+      <!-- Formulario comprador -->
+      <div id="form-comprador" style="display:none;background:white;border:1.5px solid var(--verde-medio);border-radius:10px;padding:14px;margin-bottom:12px">
+        <div id="form-comprador-titulo" style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">Nuevo Comprador</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field" style="margin-bottom:0;grid-column:1/-1">
+            <label>Nombre del comprador</label>
+            <div class="input-wrap"><input type="text" id="cp-nombre" placeholder="Ej: Molino San Martín" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+          </div>
+          <div class="field" style="margin-bottom:0;grid-column:1/-1">
+            <label>Localidad / Destino</label>
+            <div class="input-wrap"><input type="text" id="cp-destino" placeholder="Ej: Rosario, Junín..." style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Producto</label>
+            <div class="input-wrap">
+              <select id="cp-producto" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+                <option value="Soja">Soja</option>
+                <option value="Maíz">Maíz</option>
+                <option value="Trigo">Trigo</option>
+                <option value="Girasol">Girasol</option>
+                <option value="Cáscara de Soja">Cáscara de Soja</option>
+              <option value="Expeller de Soja">Expeller de Soja</option>
+              <option value="Aceite de Soja">Aceite de Soja</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Precio ofrecido / tn</label>
+            <div class="input-wrap">
+              <span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="cp-precio" placeholder="0" oninput="fmtInput(this)" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;outline:none;color:var(--ink)">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Condición de pago</label>
+            <div class="input-wrap">
+              <select id="cp-condpago" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+                <option value="Contado">Contado</option>
+                <option value="7/10 días">7/10 días</option>
+                <option value="15 días">15 días</option>
+                <option value="30 días">30 días</option>
+                <option value="60 días">60 días</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Observaciones</label>
+            <div class="input-wrap"><input type="text" id="cp-obs" placeholder="Opcional" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+          </div>
+        </div>
+        <div id="cp-error" style="display:none;background:#fff0f0;border:1px solid #e74c3c;color:#c0392b;border-radius:7px;padding:8px 12px;font-size:11px;font-weight:600;margin-top:10px"></div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button onclick="guardarComprador()" style="flex:1;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Guardar</button>
+          <button onclick="cerrarFormComprador()" style="flex:1;background:var(--border);color:var(--muted);border:none;border-radius:8px;padding:10px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Cancelar</button>
+        </div>
+      </div>
+
+      <!-- Lista pizarra -->
+      <div id="pizarra-compradores-lista"></div>
+      <div id="pizarra-compradores-empty" style="text-align:center;padding:24px 16px;color:var(--muted);font-size:12px;background:var(--bg);border-radius:10px;border:1px dashed var(--border)">
+        Sin compradores cargados.<br>Tocá "+ Comprador" para agregar.
+      </div>
+    </div>
+
+      </div><!-- /columna derecha -->
+
+    </div><!-- /grid dos columnas -->
+
+  </div><!-- /tab-acopio -->
+
   <div class="panel" id="tab-admin">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;margin-bottom:16px">
       <div class="section-label" style="margin:0;border:none">Gestión de Usuarios</div>
@@ -1580,7 +2123,10 @@ function cargarConfigDB() {
     data.forEach(function(r){map[r.clave]=r.valor;});
     var keys=['rendimiento','rend_aceite','precio_aceite','tipo_cambio',
       'cf_personal_prod','cf_personal_mant','cf_personal_admin','cf_gastos_admin',
-      'cv_energia1','cv_energia2','cv_gas_camuzzi','cv_gas_alpes','cv_desgaste','produccion_mensual'];
+      'cv_energia1','cv_energia2','cv_gas_camuzzi','cv_gas_alpes','cv_desgaste','produccion_mensual',
+      'cv_energia1_kw','cv_energia1_costo_kw','cv_energia2_kw','cv_energia2_costo_kw',
+      'cv_gas_camuzzi_peaje','cv_alpes_fc_m3','cv_alpes_fc_valor_m3','cv_alpes_sfc_m3',
+      'cv_hs_extra_prod','cv_hs_extra_mant'];
     keys.forEach(function(k){
       var el=document.getElementById(k);
       if(el&&map[k]!==undefined){
@@ -1624,6 +2170,9 @@ function initApp() {
   }).catch(function(){cargarConfig();calcularCostos();calcular();});
   setTimeout(function(){cargarHistorial();},300);
   setTimeout(function(){initHistorialEvents();},400);
+  setTimeout(function(){cargarAcopioDB();},500);
+  setTimeout(function(){cargarCompradoresLocal();},600);
+  setTimeout(function(){initPizarraVisibility();},650);
   // Polling cada 15s para sync entre dispositivos
   if(window._pollInterval) clearInterval(window._pollInterval);
   window._pollInterval = setInterval(function(){cargarHistorial();},15000);
@@ -1634,13 +2183,13 @@ function aplicarPermisosTabs() {
   if(!sesion) return;
   var rol=sesion.rol;
   var tabsVisibles={
-    admin:        ['portal','cotizador','config','flete','compras','ventas','financiero','historial','admin'],
-    comercial:    ['portal','cotizador','config','flete','compras','ventas','financiero','historial'],
-    tesoreria:    ['portal','compras','ventas','financiero','historial'],
+    admin:        ['portal','cotizador','config','flete','compras','ventas','financiero','historial','acopio','admin'],
+    comercial:    ['portal','cotizador','config','flete','compras','ventas','financiero','historial','acopio'],
+    tesoreria:    ['portal','compras','ventas','financiero','historial','acopio'],
     mantenimiento:['portal','config'],
   };
   var visibles=tabsVisibles[rol]||tabsVisibles.tesoreria;
-  var allTabs=['portal','cotizador','config','flete','compras','ventas','financiero','historial','admin'];
+  var allTabs=['portal','cotizador','config','flete','compras','ventas','financiero','historial','acopio','admin'];
   document.querySelectorAll('.tab').forEach(function(btn,i){
     var tabId=allTabs[i]; if(!tabId) return;
     btn.style.display=visibles.includes(tabId)?'':'none';
@@ -2078,7 +2627,10 @@ function guardarConfig() {
   const keys = ['rendimiento','rend_aceite','precio_aceite',
     'cf_personal_prod','cf_personal_mant','cf_personal_admin','cf_gastos_admin',
     'cv_energia1','cv_energia2','cv_gas_camuzzi','cv_gas_alpes','cv_desgaste',
-    'produccion_mensual'];
+    'produccion_mensual',
+    'cv_energia1_kw','cv_energia1_costo_kw','cv_energia2_kw','cv_energia2_costo_kw',
+    'cv_gas_camuzzi_peaje','cv_alpes_fc_m3','cv_alpes_fc_valor_m3','cv_alpes_sfc_m3',
+    'cv_hs_extra_prod','cv_hs_extra_mant'];
   const cfg = {};
   keys.forEach(k => { const el = document.getElementById(k); cfg[k] = el ? el.value : ''; if(checkEscritura('config')) guardarConfigDB(k,cfg[k]); });
   try { localStorage.setItem('expeller_cfg', JSON.stringify(cfg)); } catch(e){}
@@ -2197,7 +2749,7 @@ async function fetchPizarra() {
 
 function calcularCostos() {
   const cf = ['cf_personal_prod','cf_personal_mant','cf_personal_admin','cf_gastos_admin'];
-  const cv = ['cv_energia1','cv_energia2','cv_gas_camuzzi','cv_gas_alpes','cv_desgaste'];
+  const cv = ['cv_energia1','cv_energia2','cv_gas_camuzzi','cv_gas_alpes','cv_desgaste','cv_hs_extra_prod','cv_hs_extra_mant'];
 
   const totalCF = cf.reduce((s, k) => s + (v(k) || 0), 0);
   const totalCV = cv.reduce((s, k) => s + (v(k) || 0), 0);
@@ -2376,7 +2928,7 @@ function calcularCanje() {
 
   // Costo producción por tn soja
   const cf = ['cf_personal_prod','cf_personal_mant','cf_personal_admin','cf_gastos_admin'];
-  const cv = ['cv_energia1','cv_energia2','cv_gas_camuzzi','cv_gas_alpes','cv_desgaste'];
+  const cv = ['cv_energia1','cv_energia2','cv_gas_camuzzi','cv_gas_alpes','cv_desgaste','cv_hs_extra_prod','cv_hs_extra_mant'];
   const totalCostos = [...cf, ...cv].reduce((s, k) => s + (v(k) || 0), 0);
   const prod = v('produccion_mensual');
   const costo_prod = prod > 0 && totalCostos > 0 ? totalCostos / prod : '';
@@ -2954,6 +3506,7 @@ function switchTab(tab) {
   if (tab === 'historial') { initHistorialEvents(); renderHistorial(); }
   if (tab === 'admin') renderUsuarios();
   if (tab === 'portal') renderPortal();
+  if (tab === 'acopio') { renderAcopioLista(); renderAcopioResumen(); renderPizarraCompradores(); }
 }
 
 // Init — auth gated. initApp() se llama desde doLogin()
@@ -3108,6 +3661,166 @@ function accionVenta(id,n){
   cambiarEstadoVenta(id,nuevoEstado);
 }
 function cambiarEstadoVenta(id,e,tnReales){var i=ventasData.findIndex(function(x){return x.id==id;});if(i===-1)return;ventasData[i].estado=e;if(tnReales!==undefined)ventasData[i].tnReales=tnReales;guardarVentaDB(ventasData[i]);renderVentasLista();}
+
+// ============================================================
+// EXPORTAR DATOS PLANTA A EXCEL
+// ============================================================
+function exportarDatosPlantaPDF() {
+  var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFLib) { alert('Librería PDF no cargada. Verificá conexión.'); return; }
+
+  function gn(id) {
+    var el = document.getElementById(id);
+    if (!el || !el.value) return '—';
+    var raw = el.type==='number' ? el.value : el.value.replace(/\./g,'').replace(',','.');
+    var n = parseFloat(raw);
+    return isNaN(n) ? '—' : Math.round(n).toLocaleString('es-AR');
+  }
+  function gnd(id) {
+    var el = document.getElementById(id);
+    if (!el || !el.value) return '—';
+    var n = parseFloat(el.value);
+    return isNaN(n) ? '—' : n.toLocaleString('es-AR',{minimumFractionDigits:1,maximumFractionDigits:2});
+  }
+
+  var doc = new jsPDFLib({ orientation:'portrait', unit:'mm', format:'a4' });
+  var PW=210, ML=14, MR=14, CW=PW-ML-MR, PH=297;
+  var y=0;
+  var VERDE=[30,100,50], GRIS=[100,100,100], NEGRO=[30,30,30], BGGRIS=[245,245,245], BGVERDE=[235,248,240];
+
+  function checkPage(n){ if(y+n>PH-14){ doc.addPage(); y=14; } }
+  function drawRect(x,yw,w,h,fill){ doc.setFillColor(fill[0],fill[1],fill[2]); doc.rect(x,yw,w,h,'F'); }
+
+  function secHeader(titulo) {
+    checkPage(10);
+    drawRect(ML,y,CW,7,VERDE);
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text(titulo, ML+3, y+5); y+=9;
+  }
+  function subsecLabel(txt) {
+    checkPage(7);
+    drawRect(ML,y,CW,5.5,BGVERDE);
+    doc.setTextColor(30,100,50); doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+    doc.text(txt, ML+3, y+3.8); y+=6.5;
+  }
+  function dataRow(label, valor, unidad, shade) {
+    checkPage(7);
+    if(shade) drawRect(ML,y,CW,6,BGGRIS);
+    doc.setTextColor(...NEGRO); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    doc.text(label, ML+3, y+4);
+    doc.setFont('helvetica','bold'); doc.text(String(valor), ML+120, y+4);
+    doc.setFont('helvetica','normal'); doc.setTextColor(...GRIS);
+    if(unidad) doc.text(unidad, ML+155, y+4);
+    doc.setTextColor(...NEGRO); y+=6;
+  }
+  function refRow(label, valor, unidad) {
+    checkPage(6);
+    doc.setTextColor(...GRIS); doc.setFont('helvetica','italic'); doc.setFontSize(7.5);
+    doc.text('  '+label, ML+3, y+3.5);
+    doc.setFont('helvetica','normal'); doc.text(String(valor), ML+120, y+3.5);
+    if(unidad) doc.text(unidad, ML+155, y+3.5);
+    doc.setTextColor(...NEGRO); y+=5.5;
+  }
+
+  var fecha   = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  var mes     = new Date().toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+  var usuario = sesion ? sesion.nombre.toUpperCase() : '';
+
+  // Header
+  drawRect(0,0,PW,36,[255,255,255]);
+  doc.setDrawColor(30,100,50); doc.setLineWidth(0.5); doc.line(0,36,PW,36);
+  try{ doc.addImage(DM_LOGO_B64,'JPEG',ML,3,28,28); }catch(e){}
+  doc.setTextColor(30,100,50); doc.setFont('helvetica','bold'); doc.setFontSize(14);
+  doc.text('Don Mauricio Agroganadera SRL', ML+32, 13);
+  doc.setTextColor(100,100,100); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Informe de Datos de Planta — '+mes, ML+32, 20);
+  doc.text('Generado por: '+usuario+'   |   Fecha: '+fecha, ML+32, 26);
+  y=42;
+
+  secHeader('RENDIMIENTOS');
+  dataRow('Rendimiento Expeller', gnd('rendimiento')+'%', '', false);
+  dataRow('Rendimiento Aceite', gnd('rend_aceite')+'%', '', true);
+  dataRow('Precio Aceite', 'USD '+gn('precio_aceite'), '/tn', false);
+  dataRow('Tipo de Cambio', '$ '+gn('tipo_cambio'), '/USD', true);
+  y+=3;
+
+  secHeader('COSTOS FIJOS (mensual)');
+  dataRow('Personal Producción', '$ '+gn('cf_personal_prod'), '', false);
+  dataRow('Personal Mantenimiento', '$ '+gn('cf_personal_mant'), '', true);
+  dataRow('Personal Administrativo', '$ '+gn('cf_personal_admin'), '', false);
+  dataRow('Gastos Administrativos', '$ '+gn('cf_gastos_admin'), '', true);
+  y+=3;
+
+  // Total CF
+  checkPage(12);
+  drawRect(ML,y,CW,9,BGVERDE);
+  doc.setTextColor(...VERDE); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text('Total Costos Fijos', ML+3, y+6);
+  var tcf = document.getElementById('total_cf');
+  doc.text(tcf?tcf.textContent:'—', ML+CW-3, y+6, {align:'right'});
+  y+=12;
+
+  secHeader('COSTOS VARIABLES (mensual)');
+  subsecLabel('Energía Eléctrica 1');
+  dataRow('Costo total factura', '$ '+gn('cv_energia1'), '', false);
+  refRow('Kw consumidos (ref.)', gn('cv_energia1_kw'), 'Kw');
+  refRow('Costo por Kw (ref.)', '$ '+gn('cv_energia1_costo_kw'), '$/Kw');
+
+  subsecLabel('Energía Eléctrica 2');
+  dataRow('Costo total factura', '$ '+gn('cv_energia2'), '', false);
+  refRow('Kw consumidos (ref.)', gn('cv_energia2_kw'), 'Kw');
+  refRow('Costo por Kw (ref.)', '$ '+gn('cv_energia2_costo_kw'), '$/Kw');
+
+  subsecLabel('Gas Camuzzi');
+  dataRow('Costo total factura', '$ '+gn('cv_gas_camuzzi'), '', false);
+  refRow('Peaje (ref.)', '$ '+gn('cv_gas_camuzzi_peaje'), '');
+
+  subsecLabel('Gas Alpes');
+  dataRow('Costo total (ambas facturas)', '$ '+gn('cv_gas_alpes'), '', false);
+  refRow('Alpes con FC — M³ consumidos', gn('cv_alpes_fc_m3'), 'm³');
+  refRow('Alpes con FC — Valor por m³', '$ '+gn('cv_alpes_fc_valor_m3'), '$/m³');
+  refRow('Alpes sin FC — M³ consumidos', gn('cv_alpes_sfc_m3'), 'm³');
+
+  subsecLabel('Horas Extras');
+  dataRow('Personal Producción', '$ '+gn('cv_hs_extra_prod'), '', false);
+  dataRow('Personal Mantenimiento', '$ '+gn('cv_hs_extra_mant'), '', true);
+
+  subsecLabel('Desgaste de Planta');
+  dataRow('Costo Desgaste', '$ '+gn('cv_desgaste'), '', false);
+  y+=3;
+
+  // Total CV
+  checkPage(12);
+  drawRect(ML,y,CW,9,BGVERDE);
+  doc.setTextColor(...VERDE); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text('Total Costos Variables', ML+3, y+6);
+  var tcv = document.getElementById('total_cv');
+  doc.text(tcv?tcv.textContent:'—', ML+CW-3, y+6, {align:'right'});
+  y+=12;
+
+  secHeader('MOLIENDA MENSUAL');
+  dataRow('Producción mensual', gn('produccion_mensual'), 'tn', false);
+  y+=3;
+
+  // Costo por Tn — destacado
+  checkPage(14);
+  drawRect(ML,y,CW,12,[255,248,225]);
+  doc.setDrawColor(180,130,0); doc.setLineWidth(0.5); doc.rect(ML,y,CW,12);
+  doc.setTextColor(100,70,0); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Costo de producción por tonelada de soja procesada', ML+3, y+5);
+  var cxtn = document.getElementById('costo_x_tn');
+  doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(130,80,0);
+  doc.text(cxtn?cxtn.textContent:'—', ML+CW-3, y+9, {align:'right'});
+  doc.setLineWidth(0.2); doc.setDrawColor(200,200,200);
+  y+=15;
+
+  // Footer
+  doc.setTextColor(...GRIS); doc.setFont('helvetica','italic'); doc.setFontSize(7);
+  doc.text('Don Mauricio Agroganadera S.R.L. — Informe generado el '+fecha, ML, PH-8);
+
+  var mesFile = new Date().toLocaleDateString('es-AR',{month:'2-digit',year:'numeric'}).replace('/','_');
+  doc.save('DatosPlanta_DonMauricio_'+mesFile+'.pdf');
+}
 
 // ============================================================
 // CANJE DE VENTAS
@@ -3682,8 +4395,719 @@ function exportarHistorialPDF() {
 
 
 // ============================================================
-// PORTAL DE INICIO
+// ACOPIO — Compra-Venta con el acopio
 // ============================================================
+let acopioData = [];
+let editandoAcopioId = null;
+let acFleteActivo = false;
+
+async function cargarAcopioDB() {
+  try {
+    const data = await supaFetch('acopio_operaciones', 'select=*&order=id.desc');
+    if (data && !data.error && Array.isArray(data)) {
+      acopioData = data;
+      // Sincronizar localStorage
+      try { localStorage.setItem('dm_acopio', JSON.stringify(acopioData)); } catch(e){}
+    } else {
+      throw new Error('Supabase no disponible');
+    }
+  } catch(e) {
+    try { acopioData = JSON.parse(localStorage.getItem('dm_acopio') || '[]'); } catch(ex) { acopioData = []; }
+  }
+  renderAcopioLista();
+  renderAcopioResumen();
+}
+
+async function guardarAcopioDB(op) {
+  // Siempre guardar en localStorage primero (funciona sin Supabase)
+  try { localStorage.setItem('dm_acopio', JSON.stringify(acopioData)); } catch(e){}
+  // Intentar Supabase silenciosamente (solo si la tabla existe)
+  try {
+    const body = {
+      fecha: op.fecha,
+      producto: op.producto,
+      proveedor: op.proveedor,
+      tn: op.tn,
+      tipo_precio: op.tipoPrecio,
+      precio_compra: op.precioCompra,
+      pizarra_ref: op.pizarraRef || null,
+      descuento_ref: op.descuentoRef || null,
+      condpago: op.condpago,
+      condpago_venta: op.condpagoVenta || null,
+      a_retirar: op.aRetirar,
+      km: op.km || null,
+      flete_quien_paga: op.fleteQuienPaga || null,
+      flete_tn: op.fleteTn || null,
+      flete_manual: op.fleteManual || false,
+      destino: op.destino,
+      cliente: op.cliente || null,
+      precio_venta: op.precioVenta,
+      tipo_comision: op.tipoComision || 'fijo',
+      comision_valor: op.comisionValor || 0,
+      comision_tn: op.comisionTn,
+      comision_total: op.comisionTotal,
+      ganancia_total: op.gananciaTotal || null,
+      obs: op.obs || '',
+      operador: op.operador || '',
+      estado: op.estado || 'Pactado'
+    };
+    if (op.id && typeof op.id === 'number' && op.id > 1700000000000) {
+      const res = await supaPost('acopio_operaciones', body, 'return=representation');
+      if (res.ok) {
+        const rows = await res.json();
+        if (rows && rows[0] && rows[0].id) {
+          op.id = rows[0].id;
+          try { localStorage.setItem('dm_acopio', JSON.stringify(acopioData)); } catch(e){}
+        }
+      }
+    } else if (op.id) {
+      await supaPatch('acopio_operaciones', op.id, body);
+    }
+  } catch(e) { /* Supabase no disponible, datos guardados localmente */ }
+}
+
+async function eliminarAcopioDB(id) {
+  await supaDelete('acopio_operaciones', id);
+  try { localStorage.setItem('dm_acopio', JSON.stringify(acopioData)); } catch(e){}
+}
+
+function toggleFleteManual() {
+  var manual = document.getElementById('ac-flete-manual-check').checked;
+  document.getElementById('ac-flete-fetra-wrap').style.display = manual ? 'none' : 'flex';
+  document.getElementById('ac-flete-manual-wrap').style.display = manual ? 'block' : 'none';
+  if (!manual) document.getElementById('ac-flete-manual-valor').value = '';
+  calcAcopio();
+}
+
+function toggleAcopioComision() {
+  var tipo = document.getElementById('ac-tipo-comision').value;
+  var labelEl = document.getElementById('ac-comision-label');
+  var unitL   = document.getElementById('ac-comision-unit-left');
+  var unitR   = document.getElementById('ac-comision-unit-right');
+  if (tipo === 'fijo') {
+    labelEl.textContent = 'Comisión';
+    unitL.textContent   = '$';
+    unitL.style.display = '';
+    unitR.textContent   = '$/tn';
+  } else {
+    labelEl.textContent = 'Comisión';
+    unitL.style.display = 'none';
+    unitR.textContent   = '% sobre venta';
+  }
+  calcAcopio();
+}
+
+function abrirFormAcopio() {
+  editandoAcopioId = null;
+  acFleteActivo = false;
+  document.getElementById('form-acopio-titulo').textContent = 'Nueva Operación de Acopio';
+  document.getElementById('ac-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('ac-producto').value = 'Soja';
+  document.getElementById('ac-proveedor').value = '';
+  document.getElementById('ac-tn').value = '';
+  document.getElementById('ac-tipo-precio').value = 'fijo';
+  document.getElementById('ac-precio-compra').value = '';
+  document.getElementById('ac-pizarra-ref').value = '';
+  document.getElementById('ac-descuento').value = '';
+  document.getElementById('ac-precio-calculado').textContent = '';
+  document.getElementById('ac-condpago').value = 'Contado';
+  document.getElementById('ac-km').value = '';
+  document.getElementById('ac-flete-quien-paga').value = 'dm';
+  document.getElementById('ac-flete-manual-check').checked = false;
+  document.getElementById('ac-flete-manual-valor').value = '';
+  document.getElementById('ac-flete-fetra-wrap').style.display = 'flex';
+  document.getElementById('ac-flete-manual-wrap').style.display = 'none';
+  document.getElementById('ac-destino').value = '';
+  document.getElementById('ac-cliente').value = '';
+  document.getElementById('ac-condpago-venta').value = 'Contado';
+  document.getElementById('ac-precio-venta').value = '';
+  document.getElementById('ac-tipo-comision').value = 'fijo';
+  document.getElementById('ac-comision-valor').value = '';
+  document.getElementById('ac-comision-hint').textContent = '';
+  document.getElementById('ac-obs').value = '';
+  document.getElementById('ac-error-msg').style.display = 'none';
+  document.getElementById('ac-preview').style.display = 'none';
+  // Reset flete toggle
+  var btn = document.getElementById('ac-flete-toggle-btn');
+  var dot = document.getElementById('ac-flete-toggle-dot');
+  btn.style.background = 'var(--border)';
+  dot.style.transform = 'translateX(0)';
+  document.getElementById('ac-flete-fields').style.display = 'none';
+  document.getElementById('ac-flete-display').textContent = '—';
+  toggleAcopioPrecio();
+  toggleAcopioComision();
+  document.getElementById('form-acopio').style.display = 'block';
+  document.getElementById('form-acopio').scrollIntoView({behavior:'smooth'});
+}
+
+function cerrarFormAcopio() {
+  document.getElementById('form-acopio').style.display = 'none';
+  editandoAcopioId = null;
+}
+
+function toggleAcopioPrecio() {
+  var tipo = document.getElementById('ac-tipo-precio').value;
+  document.getElementById('ac-campo-fijo').style.display    = tipo === 'fijo'    ? 'block' : 'none';
+  document.getElementById('ac-campo-pizarra').style.display = tipo === 'pizarra' ? 'block' : 'none';
+  calcAcopio();
+}
+
+function toggleAcopioFlete() {
+  acFleteActivo = !acFleteActivo;
+  var btn = document.getElementById('ac-flete-toggle-btn');
+  var dot = document.getElementById('ac-flete-toggle-dot');
+  var fields = document.getElementById('ac-flete-fields');
+  btn.style.background = acFleteActivo ? 'var(--verde-medio)' : 'var(--border)';
+  dot.style.transform  = acFleteActivo ? 'translateX(22px)' : 'translateX(0)';
+  fields.style.display = acFleteActivo ? 'block' : 'none';
+  calcAcopio();
+}
+
+function calcAcopioPizarra() {
+  var pizRef = document.getElementById('ac-pizarra-ref').value;
+  var desc   = parseFloat(document.getElementById('ac-descuento').value) || 0;
+  var base   = pizRef ? parseFloat(pizRef.replace(/\./g,'').replace(',','.')) : parseFloat((document.getElementById('precio_pizarra').value||'').replace(/\./g,'').replace(',','.'));
+  if (!base || isNaN(base)) { document.getElementById('ac-precio-calculado').textContent = ''; calcAcopio(); return; }
+  var resultado = base * (1 - desc / 100);
+  document.getElementById('ac-precio-calculado').textContent = '→ Precio: $ ' + Math.round(resultado).toLocaleString('es-AR') + '/tn';
+  calcAcopio();
+}
+
+function getAcopioPrecioCompra() {
+  var tipo = document.getElementById('ac-tipo-precio').value;
+  if (tipo === 'fijo') {
+    var raw = (document.getElementById('ac-precio-compra').value || '').replace(/\./g,'').replace(',','.');
+    return parseFloat(raw) || null;
+  } else {
+    var pizRef = document.getElementById('ac-pizarra-ref').value;
+    var desc   = parseFloat(document.getElementById('ac-descuento').value) || 0;
+    var base   = pizRef ? parseFloat(pizRef.replace(/\./g,'').replace(',','.')) : parseFloat((document.getElementById('precio_pizarra').value||'').replace(/\./g,'').replace(',','.'));
+    if (!base || isNaN(base)) return null;
+    return base * (1 - desc / 100);
+  }
+}
+
+function calcAcopio() {
+  var tn          = parseFloat(document.getElementById('ac-tn').value) || 0;
+  var precioComp  = getAcopioPrecioCompra();
+  var precioVenta = parseFloat((document.getElementById('ac-precio-venta').value||'').replace(/\./g,'').replace(',','.')) || 0;
+  var tipoComision = document.getElementById('ac-tipo-comision').value;
+  var comisionValor = parseFloat((document.getElementById('ac-comision-valor').value||'').replace(/\./g,'').replace(',','.')) || 0;
+
+  // Flete
+  var fleteTn = 0;
+  if (acFleteActivo) {
+    var esManual = document.getElementById('ac-flete-manual-check').checked;
+    if (esManual) {
+      var manualVal = parseFloat((document.getElementById('ac-flete-manual-valor').value||'').replace(/\./g,'').replace(',','.')) || 0;
+      fleteTn = manualVal;
+      document.getElementById('ac-flete-display').textContent = '—';
+    } else {
+      var km = parseInt(document.getElementById('ac-km').value) || 0;
+      if (km >= 1 && km <= 1500 && FETRA[km]) {
+        fleteTn = FETRA[km];
+        document.getElementById('ac-flete-display').textContent = '$ ' + Math.round(fleteTn).toLocaleString('es-AR') + '/tn';
+      } else {
+        document.getElementById('ac-flete-display').textContent = km > 1500 ? 'Fuera de rango' : '—';
+      }
+    }
+  }
+
+  // Calcular comisión en $/tn según tipo
+  var comisionTn = 0;
+  if (tipoComision === 'fijo') {
+    comisionTn = comisionValor;
+  } else {
+    // porcentaje sobre precio venta
+    comisionTn = precioVenta > 0 ? precioVenta * (comisionValor / 100) : 0;
+  }
+
+  // Hint comisión
+  var hintEl = document.getElementById('ac-comision-hint');
+  if (tipoComision === 'pct' && comisionValor > 0 && precioVenta > 0) {
+    hintEl.textContent = '→ $ ' + Math.round(comisionTn).toLocaleString('es-AR') + '/tn sobre precio venta';
+  } else {
+    hintEl.textContent = '';
+  }
+
+  // Preview — requiere compra + venta + tn como mínimo
+  var preview = document.getElementById('ac-preview');
+  if (!precioComp || !precioVenta || !tn) { preview.style.display = 'none'; return; }
+  preview.style.display = 'block';
+
+  // Quién paga el flete afecta la diferencia real
+  var fleteQuienPaga = document.getElementById('ac-flete-quien-paga').value;
+  var costeFleteDM   = (acFleteActivo && fleteQuienPaga === 'dm') ? fleteTn : 0;
+  var precioCompEfectivo = precioComp - (acFleteActivo && fleteQuienPaga === 'productor' ? fleteTn : 0);
+
+  // Diferencial puro (precio) + comisión = ganancia total por tn
+  var diferenciaTn  = precioVenta - precioCompEfectivo - costeFleteDM;
+  var gananciaTn    = diferenciaTn + comisionTn;
+  var gananciaTotal = gananciaTn * tn;
+  var comisionTotal = comisionTn * tn;
+
+  document.getElementById('ac-prev-compra').textContent = '$ ' + Math.round(precioComp).toLocaleString('es-AR') + '/tn';
+  document.getElementById('ac-prev-venta').textContent  = '$ ' + Math.round(precioVenta).toLocaleString('es-AR') + '/tn';
+  document.getElementById('ac-prev-flete').textContent  = acFleteActivo && fleteTn > 0
+    ? '$ ' + Math.round(fleteTn).toLocaleString('es-AR') + '/tn (' + (fleteQuienPaga === 'dm' ? 'nuestro' : 'desc. productor') + ')'
+    : 'Sin flete';
+  var diffEl = document.getElementById('ac-prev-diff');
+  diffEl.textContent = (diferenciaTn >= 0 ? '+' : '−') + ' $ ' + Math.round(Math.abs(diferenciaTn)).toLocaleString('es-AR') + '/tn';
+  diffEl.style.color = diferenciaTn >= 0 ? '#7ec87e' : '#ff9f9f';
+  document.getElementById('ac-prev-tn').textContent = tn.toLocaleString('es-AR') + ' tn';
+
+  // Comisión / tn
+  var comTnEl = document.getElementById('ac-prev-comision-tn');
+  comTnEl.textContent = comisionTn > 0 ? '+ $ ' + Math.round(comisionTn).toLocaleString('es-AR') + '/tn' : '$ 0/tn';
+
+  // Ganancia total
+  var ganEl = document.getElementById('ac-prev-comision-total');
+  ganEl.textContent = '$ ' + Math.round(gananciaTotal).toLocaleString('es-AR');
+  ganEl.style.color = gananciaTotal >= 0 ? '#c8922a' : '#ff9f9f';
+
+  // Detalle breakdown
+  var partes = [];
+  if (diferenciaTn !== 0) partes.push('diferencial $ ' + Math.round(diferenciaTn * tn).toLocaleString('es-AR'));
+  if (comisionTotal > 0)  partes.push('comisión $ ' + Math.round(comisionTotal).toLocaleString('es-AR'));
+  document.getElementById('ac-prev-ganancia-detalle').textContent = partes.length > 1 ? partes.join(' + ') : '';
+}
+
+function guardarAcopio() {
+  var fecha       = document.getElementById('ac-fecha').value;
+  var producto    = document.getElementById('ac-producto').value;
+  var proveedor   = document.getElementById('ac-proveedor').value.trim();
+  var tn          = parseFloat(document.getElementById('ac-tn').value);
+  var tipoPrecio  = document.getElementById('ac-tipo-precio').value;
+  var precioComp  = getAcopioPrecioCompra();
+  var condpago    = document.getElementById('ac-condpago').value;
+  var condpagoVenta = document.getElementById('ac-condpago-venta').value;
+  var km          = acFleteActivo ? (parseInt(document.getElementById('ac-km').value) || 0) : 0;
+  var esFleteManual = acFleteActivo && document.getElementById('ac-flete-manual-check').checked;
+  var fleteManualValor = esFleteManual ? (parseFloat((document.getElementById('ac-flete-manual-valor').value||'').replace(/\./g,'').replace(',','.')) || 0) : 0;
+  var fleteTn     = esFleteManual ? fleteManualValor : ((acFleteActivo && km >= 1 && km <= 1500 && FETRA[km]) ? FETRA[km] : 0);
+  var destino     = document.getElementById('ac-destino').value.trim();
+  var cliente     = document.getElementById('ac-cliente').value.trim();
+  var precioVenta = parseFloat((document.getElementById('ac-precio-venta').value||'').replace(/\./g,'').replace(',','.'));
+  var tipoComision = document.getElementById('ac-tipo-comision').value;
+  var comisionValor = parseFloat((document.getElementById('ac-comision-valor').value||'').replace(/\./g,'').replace(',','.')) || 0;
+  // Calcular comisionTn según tipo
+  var comisionTn = tipoComision === 'pct' ? (precioVenta > 0 ? precioVenta * (comisionValor / 100) : 0) : comisionValor;
+  var obs         = document.getElementById('ac-obs').value.trim();
+  var pizarraRef  = tipoPrecio==='pizarra' ? (parseFloat((document.getElementById('ac-pizarra-ref').value||'').replace(/\./g,'').replace(',','.'))||null) : null;
+  var descuentoRef= tipoPrecio==='pizarra' ? (parseFloat(document.getElementById('ac-descuento').value)||0) : null;
+  var errEl       = document.getElementById('ac-error-msg');
+
+  if (!fecha || !proveedor || isNaN(tn) || tn <= 0) { errEl.textContent = 'Completá fecha, proveedor y toneladas.'; errEl.style.display='block'; return; }
+  if (!precioComp || isNaN(precioComp)) { errEl.textContent = 'Ingresá el precio de compra.'; errEl.style.display='block'; return; }
+  if (!precioVenta || isNaN(precioVenta)) { errEl.textContent = 'Ingresá el precio de venta.'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+
+  var fleteQuienPaga = acFleteActivo && km ? document.getElementById('ac-flete-quien-paga').value : null;
+  var costeFleteDM   = (acFleteActivo && fleteQuienPaga === 'dm') ? fleteTn : 0;
+  var precioCompEfectivo = precioComp - (acFleteActivo && fleteQuienPaga === 'productor' ? fleteTn : 0);
+  var diferenciaTn   = (precioVenta - precioCompEfectivo - costeFleteDM);
+  var gananciaTotal  = (diferenciaTn + comisionTn) * tn;
+  var comisionTotal  = comisionTn * tn;
+  var op = {
+    id: editandoAcopioId || Date.now(),
+    fecha, producto, proveedor, tn, tipoPrecio, precioCompra: precioComp,
+    pizarraRef, descuentoRef, condpago, aRetirar: acFleteActivo,
+    km: km || null, fleteQuienPaga, fleteTn: fleteTn || null, fleteManual: esFleteManual,
+    destino, cliente, condpagoVenta, precioVenta, tipoComision, comisionValor, comisionTn, comisionTotal, gananciaTotal, obs,
+    operador: sesion ? sesion.nombre : '',
+    estado: 'Pactado'
+  };
+
+  if (editandoAcopioId) {
+    var idx = acopioData.findIndex(function(x){ return x.id == editandoAcopioId; });
+    if (idx > -1) acopioData[idx] = op;
+  } else {
+    acopioData.unshift(op);
+  }
+
+  guardarAcopioDB(op);
+  cerrarFormAcopio();
+  renderAcopioLista();
+  renderAcopioResumen();
+}
+
+function editarAcopio(id) {
+  var op = acopioData.find(function(x){ return x.id == id; });
+  if (!op) return;
+  editandoAcopioId = id;
+  acFleteActivo = !!op.aRetirar;
+  document.getElementById('form-acopio-titulo').textContent = 'Editar Operación — ' + op.proveedor;
+  document.getElementById('ac-fecha').value       = op.fecha;
+  document.getElementById('ac-producto').value    = op.producto || 'Soja';
+  document.getElementById('ac-proveedor').value   = op.proveedor;
+  document.getElementById('ac-tn').value          = op.tn;
+  document.getElementById('ac-tipo-precio').value = op.tipoPrecio || 'fijo';
+  document.getElementById('ac-condpago').value    = op.condpago || 'Contado';
+  document.getElementById('ac-condpago-venta').value = op.condpagoVenta || 'Contado';
+  document.getElementById('ac-destino').value     = op.destino || '';
+  document.getElementById('ac-cliente').value     = op.cliente || '';
+  document.getElementById('ac-precio-venta').value = op.precioVenta ? Math.round(op.precioVenta).toLocaleString('es-AR') : '';
+  document.getElementById('ac-tipo-comision').value = op.tipoComision || 'fijo';
+  document.getElementById('ac-comision-valor').value = op.comisionValor ? (op.tipoComision === 'pct' ? op.comisionValor : Math.round(op.comisionValor).toLocaleString('es-AR')) : '';
+  toggleAcopioComision();
+  document.getElementById('ac-obs').value          = op.obs || '';
+  if (op.tipoPrecio === 'fijo') {
+    document.getElementById('ac-precio-compra').value = op.precioCompra ? Math.round(op.precioCompra).toLocaleString('es-AR') : '';
+  } else {
+    document.getElementById('ac-pizarra-ref').value = op.pizarraRef ? Math.round(op.pizarraRef).toLocaleString('es-AR') : '';
+    document.getElementById('ac-descuento').value   = op.descuentoRef || '';
+  }
+  toggleAcopioPrecio();
+  // Flete toggle
+  var btn = document.getElementById('ac-flete-toggle-btn');
+  var dot = document.getElementById('ac-flete-toggle-dot');
+  btn.style.background = acFleteActivo ? 'var(--verde-medio)' : 'var(--border)';
+  dot.style.transform  = acFleteActivo ? 'translateX(22px)' : 'translateX(0)';
+  document.getElementById('ac-flete-fields').style.display = acFleteActivo ? 'block' : 'none';
+  if (acFleteActivo) {
+    document.getElementById('ac-km').value = op.km || '';
+    document.getElementById('ac-flete-quien-paga').value = op.fleteQuienPaga || 'dm';
+    var esManual = !!op.fleteManual;
+    document.getElementById('ac-flete-manual-check').checked = esManual;
+    document.getElementById('ac-flete-fetra-wrap').style.display = esManual ? 'none' : 'flex';
+    document.getElementById('ac-flete-manual-wrap').style.display = esManual ? 'block' : 'none';
+    if (esManual && op.fleteTn) {
+      document.getElementById('ac-flete-manual-valor').value = Math.round(op.fleteTn).toLocaleString('es-AR');
+    }
+  }
+  document.getElementById('ac-error-msg').style.display = 'none';
+  calcAcopio();
+  document.getElementById('form-acopio').style.display = 'block';
+  document.getElementById('form-acopio').scrollIntoView({behavior:'smooth'});
+}
+
+function eliminarAcopio(id) {
+  if (!confirm('¿Eliminar esta operación de acopio?')) return;
+  var idx = acopioData.findIndex(function(x){ return x.id == id; });
+  if (idx > -1) acopioData.splice(idx, 1);
+  eliminarAcopioDB(id);
+  renderAcopioLista();
+  renderAcopioResumen();
+}
+
+function renderAcopioResumen() {
+  var ops = acopioData.length;
+  var totalTn = acopioData.reduce(function(s, op){ return s + (parseFloat(op.tn) || 0); }, 0);
+  var totalCom = acopioData.reduce(function(s, op){
+    var gan = op.gananciaTotal !== undefined ? op.gananciaTotal : ((op.comisionTotal||0));
+    return s + gan;
+  }, 0);
+  document.getElementById('ac-res-ops').textContent = ops > 0 ? ops : '—';
+  document.getElementById('ac-res-tn').textContent  = totalTn > 0 ? totalTn.toLocaleString('es-AR') + ' tn' : '—';
+  document.getElementById('ac-res-comision').textContent = totalCom > 0 ? '$ ' + Math.round(totalCom).toLocaleString('es-AR') : '—';
+}
+
+function renderAcopioLista() {
+  var lista  = document.getElementById('lista-acopio');
+  var empty  = document.getElementById('empty-acopio');
+  if (!acopioData.length) {
+    lista.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  var estadoColors = { Pactado:'#5566aa', Entregado:'var(--verde-medio)', Liquidado:'var(--dorado)' };
+  lista.innerHTML = acopioData.map(function(op) {
+    var compraLabel = '$ ' + Math.round(op.precioCompra).toLocaleString('es-AR') + '/tn';
+    if (op.tipoPrecio === 'pizarra') compraLabel += ' <span style="font-size:9px;background:#e8f4fd;color:#1d4ed8;border-radius:4px;padding:1px 5px">PIZ −' + (op.descuentoRef||0) + '%</span>';
+    var ventaLabel  = '$ ' + Math.round(op.precioVenta).toLocaleString('es-AR') + '/tn';
+    var diff = op.precioVenta - op.precioCompra - (op.aRetirar && op.fleteQuienPaga === 'dm' ? (op.fleteTn||0) : 0);
+    var diffColor = diff >= 0 ? 'var(--verde-medio)' : 'var(--red)';
+    var fleteInfo = op.aRetirar
+      ? '<span style="font-size:10px;background:var(--verde-light);color:var(--verde-medio);border-radius:4px;padding:2px 6px;font-weight:600">🚛 ' + (op.km ? op.km + ' km · ' : '') + (op.fleteManual ? 'tarifa neg.' : 'FETRA') + ' $ ' + Math.round(op.fleteTn||0).toLocaleString('es-AR') + '/tn · ' + (op.fleteQuienPaga==='dm'?'DM paga':'desc. productor') + '</span>'
+      : '<span style="font-size:10px;color:var(--muted)">Puesto en planta</span>';
+    var estColor = estadoColors[op.estado] || 'var(--muted)';
+    var canEdit = sesion && (sesion.rol === 'admin' || sesion.rol === 'comercial');
+    // Ganancia total = diferencial + comisión
+    var gananciaTotal = op.gananciaTotal !== undefined ? op.gananciaTotal : ((diff + (op.comisionTn||0)) * op.tn);
+    var ganColor = gananciaTotal >= 0 ? 'var(--dorado)' : 'var(--red)';
+    // Comisión label
+    var comLabel = op.tipoComision === 'pct'
+      ? (op.comisionValor||0) + '% sobre venta'
+      : '$ ' + Math.round(op.comisionTn||0).toLocaleString('es-AR') + '/tn';
+    // Destino + cliente
+    var ventaSubtitulo = [op.destino, op.cliente].filter(Boolean).map(escHtml).join(' → ');
+
+    return '<div style="background:white;border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(30,77,43,0.06)">'
+      // Header
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">'
+        + '<div>'
+          + '<div style="font-size:13px;font-weight:700;color:var(--ink)">' + escHtml(op.proveedor) + '</div>'
+          + '<div style="font-size:10px;color:var(--muted);margin-top:2px">' + formatFecha(op.fecha) + ' · ' + escHtml(op.producto) + ' · ' + (op.tn||0).toLocaleString('es-AR') + ' tn</div>'
+        + '</div>'
+        + '<div style="display:flex;align-items:center;gap:6px">'
+          + '<span style="background:' + estColor + ';color:white;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px">' + escHtml(op.estado||'Pactado') + '</span>'
+          + (canEdit ? '<button onclick="editarAcopio(' + op.id + ')" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:10px;cursor:pointer;padding:3px 8px">edit</button>' : '')
+          + (sesion && sesion.rol==='admin' ? '<button onclick="eliminarAcopio(' + op.id + ')" style="background:none;border:none;color:#c0392b;font-size:16px;cursor:pointer;padding:0">×</button>' : '')
+        + '</div>'
+      + '</div>'
+      // Precios grid
+      + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px">'
+        + '<div style="background:var(--bg);border-radius:7px;padding:8px 10px">'
+          + '<div style="font-size:8px;color:var(--muted);text-transform:uppercase;margin-bottom:3px">Precio compra</div>'
+          + '<div style="font-size:13px;font-weight:700;color:var(--red)">' + compraLabel + '</div>'
+          + '<div style="font-size:9px;color:var(--muted);margin-top:2px">' + escHtml(op.condpago) + '</div>'
+        + '</div>'
+        + '<div style="background:var(--bg);border-radius:7px;padding:8px 10px">'
+          + '<div style="font-size:8px;color:var(--muted);text-transform:uppercase;margin-bottom:3px">Venta' + (ventaSubtitulo ? ' · ' + ventaSubtitulo : '') + '</div>'
+          + '<div style="font-size:13px;font-weight:700;color:var(--verde-medio)">' + ventaLabel + '</div>'
+          + (op.condpagoVenta ? '<div style="font-size:9px;color:var(--muted);margin-top:2px">' + escHtml(op.condpagoVenta) + '</div>' : '')
+        + '</div>'
+        + '<div style="background:var(--bg);border-radius:7px;padding:8px 10px">'
+          + '<div style="font-size:8px;color:var(--muted);text-transform:uppercase;margin-bottom:3px">Ganancia operación</div>'
+          + '<div style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:700;color:' + ganColor + '">$ ' + Math.round(Math.abs(gananciaTotal)).toLocaleString('es-AR') + '</div>'
+          + '<div style="font-size:9px;color:var(--muted);margin-top:2px">Com: ' + comLabel + '</div>'
+        + '</div>'
+      + '</div>'
+      // Flete + diff row
+      + '<div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--border)">'
+        + fleteInfo
+        + '<div style="font-size:11px;font-weight:600;color:' + diffColor + '">Dif: ' + (diff >= 0 ? '+' : '−') + ' $ ' + Math.round(Math.abs(diff)).toLocaleString('es-AR') + '/tn</div>'
+      + '</div>'
+      + (op.obs ? '<div style="font-size:10px;color:var(--muted);margin-top:8px;padding-top:6px;border-top:1px dashed var(--border)">📝 ' + escHtml(op.obs) + '</div>' : '')
+      + '</div>';
+  }).join('');
+}
+
+
+
+
+// ============================================================
+// PIZARRA DE COMPRADORES
+// ============================================================
+var compradoresData = [];
+var editandoCompradorId = null;
+var pizFiltroActivo = 'Todos';
+
+
+function togglePizarra() {
+  var col   = document.querySelector('.acopio-pizarra-col');
+  var grid  = document.getElementById('acopio-grid');
+  var btn   = document.getElementById('btn-toggle-pizarra');
+  var hidden = col.style.display === 'none';
+  if (hidden) {
+    col.style.display = '';
+    grid.style.gridTemplateColumns = '60% 40%';
+    btn.textContent = '📋 Ocultar pizarra';
+    btn.style.color = 'var(--muted)';
+    try { localStorage.setItem('dm_pizarra_visible','1'); } catch(e){}
+  } else {
+    col.style.display = 'none';
+    grid.style.gridTemplateColumns = '1fr';
+    btn.textContent = '📋 Mostrar pizarra';
+    btn.style.color = 'var(--verde-medio)';
+    btn.style.borderColor = 'var(--verde-medio)';
+    try { localStorage.setItem('dm_pizarra_visible','0'); } catch(e){}
+  }
+}
+
+function initPizarraVisibility() {
+  try {
+    var v = localStorage.getItem('dm_pizarra_visible');
+    if (v === '0') {
+      var col  = document.querySelector('.acopio-pizarra-col');
+      var grid = document.getElementById('acopio-grid');
+      var btn  = document.getElementById('btn-toggle-pizarra');
+      if (col)  col.style.display = 'none';
+      if (grid) grid.style.gridTemplateColumns = '1fr';
+      if (btn)  { btn.textContent = '📋 Mostrar pizarra'; btn.style.color='var(--verde-medio)'; btn.style.borderColor='var(--verde-medio)'; }
+    }
+  } catch(e){}
+}
+
+function cargarCompradoresLocal() {
+  try { compradoresData = JSON.parse(localStorage.getItem('dm_compradores') || '[]'); } catch(e) { compradoresData = []; }
+  renderPizarraCompradores();
+}
+
+function guardarCompradoresLocal() {
+  try { localStorage.setItem('dm_compradores', JSON.stringify(compradoresData)); } catch(e) {}
+}
+
+function setPizFiltro(prod) {
+  pizFiltroActivo = prod;
+  document.querySelectorAll('.piz-fbtn').forEach(function(b) {
+    b.classList.toggle('active-piz', b.getAttribute('data-prod') === prod);
+  });
+  renderPizarraCompradores();
+}
+
+function abrirFormComprador(id) {
+  editandoCompradorId = id;
+  var tituloEl = document.getElementById('form-comprador-titulo');
+  if (id) {
+    var cp = compradoresData.find(function(x){ return x.id == id; });
+    if (!cp) return;
+    tituloEl.textContent = 'Editar — ' + cp.nombre;
+    document.getElementById('cp-nombre').value   = cp.nombre;
+    document.getElementById('cp-destino').value  = cp.destino || '';
+    document.getElementById('cp-producto').value = cp.producto;
+    document.getElementById('cp-precio').value   = cp.precio ? Math.round(cp.precio).toLocaleString('es-AR') : '';
+    document.getElementById('cp-condpago').value = cp.condpago || 'Contado';
+    document.getElementById('cp-obs').value      = cp.obs || '';
+  } else {
+    tituloEl.textContent = 'Nuevo Comprador';
+    document.getElementById('cp-nombre').value   = '';
+    document.getElementById('cp-destino').value  = '';
+    document.getElementById('cp-producto').value = pizFiltroActivo !== 'Todos' ? pizFiltroActivo : 'Soja';
+    document.getElementById('cp-precio').value   = '';
+    document.getElementById('cp-condpago').value = 'Contado';
+    document.getElementById('cp-obs').value      = '';
+  }
+  document.getElementById('cp-error').style.display = 'none';
+  document.getElementById('form-comprador').style.display = 'block';
+  document.getElementById('form-comprador').scrollIntoView({behavior:'smooth'});
+}
+
+function cerrarFormComprador() {
+  document.getElementById('form-comprador').style.display = 'none';
+  editandoCompradorId = null;
+}
+
+function guardarComprador() {
+  var nombre   = document.getElementById('cp-nombre').value.trim();
+  var destino  = document.getElementById('cp-destino').value.trim();
+  var producto = document.getElementById('cp-producto').value;
+  var precioRaw= (document.getElementById('cp-precio').value||'').replace(/\./g,'').replace(',','.');
+  var precio   = parseFloat(precioRaw) || 0;
+  var condpago = document.getElementById('cp-condpago').value;
+  var obs      = document.getElementById('cp-obs').value.trim();
+  var errEl    = document.getElementById('cp-error');
+
+  if (!nombre) { errEl.textContent = 'Ingresá el nombre del comprador.'; errEl.style.display='block'; return; }
+  if (!precio) { errEl.textContent = 'Ingresá el precio ofrecido.'; errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+
+  var ahora = Date.now();
+  if (editandoCompradorId) {
+    var idx = compradoresData.findIndex(function(x){ return x.id == editandoCompradorId; });
+    if (idx > -1) compradoresData[idx] = { id: editandoCompradorId, nombre, destino, producto, precio, condpago, obs, updatedAt: ahora };
+  } else {
+    compradoresData.unshift({ id: ahora, nombre, destino, producto, precio, condpago, obs, updatedAt: ahora });
+  }
+  guardarCompradoresLocal();
+  cerrarFormComprador();
+  renderPizarraCompradores();
+}
+
+function eliminarComprador(id) {
+  if (!confirm('¿Eliminar este comprador de la pizarra?')) return;
+  compradoresData = compradoresData.filter(function(x){ return x.id != id; });
+  guardarCompradoresLocal();
+  renderPizarraCompradores();
+}
+
+function usarComprador(id) {
+  var cp = compradoresData.find(function(x){ return x.id == id; });
+  if (!cp) return;
+
+  var form = document.getElementById('form-acopio');
+  var isOpen = form.style.display !== 'none';
+
+  function aplicarDatos() {
+    document.getElementById('ac-cliente').value        = cp.nombre;
+    document.getElementById('ac-destino').value        = cp.destino || '';
+    document.getElementById('ac-condpago-venta').value = cp.condpago || 'Contado';
+    if (cp.precio) document.getElementById('ac-precio-venta').value = Math.round(cp.precio).toLocaleString('es-AR');
+    if (cp.producto) document.getElementById('ac-producto').value = cp.producto;
+    calcAcopio();
+  }
+
+  if (!isOpen) {
+    abrirFormAcopio();
+    setTimeout(aplicarDatos, 50);
+  } else {
+    aplicarDatos();
+    form.scrollIntoView({behavior:'smooth'});
+  }
+
+  // Feedback visual en el botón
+  var btn = document.querySelector('[data-usar-id="'+id+'"]');
+  if (btn) {
+    var orig = btn.textContent;
+    var origBg = btn.style.background;
+    var origColor = btn.style.color;
+    btn.textContent = '✓ Cargado';
+    btn.style.background = 'var(--verde-medio)';
+    btn.style.color = 'white';
+    setTimeout(function(){
+      btn.textContent = orig;
+      btn.style.background = origBg;
+      btn.style.color = origColor;
+    }, 1800);
+  }
+}
+
+function renderPizarraCompradores() {
+  var lista = document.getElementById('pizarra-compradores-lista');
+  var empty = document.getElementById('pizarra-compradores-empty');
+  if (!lista) return;
+
+  var filtrados = pizFiltroActivo === 'Todos'
+    ? compradoresData
+    : compradoresData.filter(function(cp){ return cp.producto === pizFiltroActivo; });
+
+  if (!filtrados.length) {
+    lista.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  // Agrupar por nombre
+  var porNombre = {};
+  filtrados.forEach(function(cp) {
+    if (!porNombre[cp.nombre]) porNombre[cp.nombre] = { destino: cp.destino, items: [] };
+    porNombre[cp.nombre].items.push(cp);
+  });
+
+  var PROD_COLORS = {
+    'Soja':            { border:'var(--verde-medio)',  badge:'#1e4d2b' },
+    'Maíz':            { border:'var(--dorado)',        badge:'#92400e' },
+    'Trigo':           { border:'#f97316',              badge:'#9a3412' },
+    'Girasol':         { border:'#ca8a04',              badge:'#713f12' },
+    'Cáscara de Soja': { border:'#7c3aed',              badge:'#4c1d95' },
+    'Expeller de Soja':{ border:'#0891b2',              badge:'#164e63' },
+    'Aceite de Soja':  { border:'#d97706',              badge:'#78350f' },
+  };
+
+  lista.innerHTML = Object.keys(porNombre).map(function(nombre) {
+    var grupo = porNombre[nombre];
+    var canEdit = sesion && (sesion.rol === 'admin' || sesion.rol === 'comercial');
+
+    var itemsHTML = grupo.items.map(function(cp) {
+      var col = PROD_COLORS[cp.producto] || { border:'var(--border)', badge:'var(--muted)' };
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;border-radius:7px;border:1px solid '+col.border+';background:white;margin-bottom:6px">'
+        + '<div style="flex:1;min-width:0">'
+          + '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'
+            + '<span style="font-size:9px;font-weight:700;color:white;background:'+col.badge+';padding:2px 7px;border-radius:3px;white-space:nowrap">'+escHtml(cp.producto)+'</span>'
+            + '<span style="font-family:\'Playfair Display\',serif;font-size:17px;font-weight:700;color:var(--ink)">$ '+Math.round(cp.precio).toLocaleString('es-AR')+'/tn</span>'
+          + '</div>'
+          + '<div style="font-size:10px;color:var(--muted);margin-top:3px">'+escHtml(cp.condpago)+(cp.obs?' · <i>'+escHtml(cp.obs)+'</i>':'')+'</div>'
+        + '</div>'
+        + '<div style="display:flex;gap:4px;align-items:center;margin-left:8px;flex-shrink:0">'
+          + '<button data-usar-id="'+cp.id+'" onclick="usarComprador('+cp.id+')" style="background:var(--verde-light);color:var(--verde-medio);border:1.5px solid var(--verde-medio);border-radius:6px;padding:6px 10px;font-family:\'Outfit\',sans-serif;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">Usar →</button>'
+          + (canEdit ? '<button onclick="abrirFormComprador('+cp.id+')" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:10px;cursor:pointer;padding:5px 7px">✏</button>' : '')
+          + (sesion && sesion.rol==='admin' ? '<button onclick="eliminarComprador('+cp.id+')" style="background:none;border:none;color:#c0392b;font-size:15px;cursor:pointer;padding:0 3px">×</button>' : '')
+        + '</div>'
+      + '</div>';
+    }).join('');
+
+    return '<div style="background:white;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 4px rgba(30,77,43,0.05)">'
+      + '<div style="margin-bottom:8px">'
+        + '<div style="font-size:13px;font-weight:700;color:var(--ink)">'+escHtml(nombre)+'</div>'
+        + (grupo.destino ? '<div style="font-size:10px;color:var(--muted);margin-top:2px">📍 '+escHtml(grupo.destino)+'</div>' : '')
+      + '</div>'
+      + itemsHTML
+    + '</div>';
+  }).join('');
+}
+
 var portalPosts = [];
 var editandoPostId = null;
 
