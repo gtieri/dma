@@ -483,6 +483,13 @@
     border-color: var(--verde-medio);
     font-weight: 600;
   }
+
+  .sub-panel { display: none; }
+  .sub-panel.active { display: block; }
+  .sub-panel-v { display: none !important; }
+  .sub-panel-v.active { display: block !important; }
+
+
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -494,7 +501,7 @@
   <div style="background:white;border-radius:20px;padding:32px 28px;max-width:340px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,0.4)">
     <div style="text-align:center;margin-bottom:24px">
       <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Don Mauricio Agroganadera</div>
-      <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--verde-oscuro)">Acceso al sistema</div>
+      <div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--verde-oscuro)">Acceso al sistema</div>
     </div>
     <div style="margin-bottom:14px">
       <label style="display:block;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:600">Usuario</label>
@@ -540,9 +547,8 @@
   <button class="tab active" onclick="switchTab('cotizador')">Cotizador</button>
   <button class="tab" onclick="switchTab('config')">Datos Planta</button>
   <button class="tab" onclick="switchTab('flete')">Flete</button>
-  <button class="tab" onclick="switchTab('compras')">Compras</button>
-  <button class="tab" onclick="switchTab('ventas')">Ventas</button>
-  <button class="tab" onclick="switchTab('financiero')">Financiero</button>
+  <button class="tab" id="tab-btn-comercial" onclick="switchTab('comercial')">Comercial</button>
+  <button class="tab" onclick="switchTab('vencimientos')">Vencimientos</button>
   <button class="tab" onclick="switchTab('historial')">Historial</button>
   <button class="tab" onclick="switchTab('acopio')">🌾 Acopio</button>
   <button class="tab" id="tab-btn-admin" onclick="switchTab('admin')" style="display:none">&#9881; Admin</button>
@@ -556,7 +562,7 @@
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
       <div>
-        <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--verde-oscuro)">Portal Don Mauricio</div>
+        <div style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:var(--verde-oscuro)">Portal Don Mauricio</div>
         <div style="font-size:10px;color:var(--muted);margin-top:2px" id="portal-fecha"></div>
       </div>
       <button onclick="abrirFormPost(null)"
@@ -652,7 +658,7 @@
             <div style="font-size:9px;color:var(--verde-medio);letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:2px">Costo soja efectivo</div>
             <div style="font-size:10px;color:var(--muted)">Pizarra menos descuento</div>
           </div>
-          <div id="precio_efectivo_display" style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--verde-oscuro)">—</div>
+          <div id="precio_efectivo_display" style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--verde-oscuro)">—</div>
         </div>
       </div>
 
@@ -687,7 +693,7 @@
           </div>
           <div style="background:var(--verde-light);border:1px solid var(--border);border-radius:7px;padding:7px 10px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:600">$/tn</span>
-            <span id="precio_aceite_pesos" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--verde-oscuro)">—</span>
+            <span id="precio_aceite_pesos" style="font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--verde-oscuro)">—</span>
           </div>
         </div>
       </div>
@@ -714,7 +720,7 @@
           </div>
           <div style="background:var(--verde-light);border:1px solid var(--border);border-radius:7px;padding:8px 12px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:600">Costo flete / tn expeller</span>
-            <span id="cotiz-flete-display" style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--verde-oscuro)">—</span>
+            <span id="cotiz-flete-display" style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:var(--verde-oscuro)">—</span>
           </div>
         </div>
       </div>
@@ -791,7 +797,7 @@
             <div style="font-size:9px;color:var(--verde-medio);letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:2px">Expeller a entregar</div>
             <div style="font-size:10px;color:var(--muted)">por tn de soja recibida</div>
           </div>
-          <div id="canje-exp-entregar" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--verde-oscuro)">—</div>
+          <div id="canje-exp-entregar" style="font-family:Georgia,serif;font-size:20px;font-weight:700;color:var(--verde-oscuro)">—</div>
         </div>
       </div>
 
@@ -823,7 +829,7 @@
         </div>
         <div style="background:var(--verde-light);border:1px solid var(--border);border-radius:7px;padding:7px 10px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;">
           <span style="font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:600">Precio aceite $/tn</span>
-          <span id="precio_aceite_pesos_canje" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--verde-oscuro)">—</span>
+          <span id="precio_aceite_pesos_canje" style="font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--verde-oscuro)">—</span>
         </div>
       </div>
 
@@ -1148,7 +1154,16 @@
   </div>
 
   <!-- COMPRAS -->
-  <div class="panel" id="tab-compras">
+  <div class="panel" id="tab-comercial">
+
+  <!-- Sub-tabs Comercial -->
+  <div id="comercial-subtabs" style="display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:10px">
+    <button class="sub-tab active" onclick="switchSubTab('compras')" id="subtab-btn-compras" style="background:var(--verde-medio);color:white;border:none;border-radius:6px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s">Compras</button>
+    <button class="sub-tab" onclick="switchSubTab('ventas')" id="subtab-btn-ventas" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s">Ventas</button>
+    <button class="sub-tab" onclick="switchSubTab('financiero')" id="subtab-btn-financiero" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s">Financiero</button>
+  </div>
+
+<div class="sub-panel active" id="tab-compras">
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
       <div class="section-label" style="margin:0;border:none">Registro de Compras</div>
@@ -1282,7 +1297,7 @@
   </div>
 
   <!-- VENTAS -->
-  <div class="panel" id="tab-ventas">
+  <div class="sub-panel" id="tab-ventas">
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
       <div class="section-label" style="margin:0;border:none">Registro de Ventas</div>
@@ -1459,7 +1474,7 @@
   </div>
 
   <!-- FINANCIERO -->
-  <div class="panel" id="tab-financiero">
+  <div class="sub-panel" id="tab-financiero">
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;margin-bottom:16px">
       <div class="section-label" style="margin:0;border:none">Proyección 8 Semanas</div>
@@ -1469,17 +1484,17 @@
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
       <div class="card" style="margin-bottom:0;text-align:center;padding:14px 10px">
         <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Total cobros</div>
-        <div id="fin-total-cobros" style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--verde-oscuro)">—</div>
+        <div id="fin-total-cobros" style="font-family:Georgia,serif;font-size:17px;font-weight:700;color:var(--verde-oscuro)">—</div>
         <div style="font-size:9px;color:var(--muted);margin-top:2px">8 semanas</div>
       </div>
       <div class="card" style="margin-bottom:0;text-align:center;padding:14px 10px">
         <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Total pagos</div>
-        <div id="fin-total-pagos" style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--red)">—</div>
+        <div id="fin-total-pagos" style="font-family:Georgia,serif;font-size:17px;font-weight:700;color:var(--red)">—</div>
         <div style="font-size:9px;color:var(--muted);margin-top:2px">8 semanas</div>
       </div>
       <div class="card" style="margin-bottom:0;text-align:center;padding:14px 10px">
         <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Posición neta</div>
-        <div id="fin-posicion-neta" style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700">—</div>
+        <div id="fin-posicion-neta" style="font-family:Georgia,serif;font-size:17px;font-weight:700">—</div>
         <div style="font-size:9px;color:var(--muted);margin-top:2px">8 semanas</div>
       </div>
     </div>
@@ -1492,6 +1507,79 @@
   
 
 </div>
+
+</div>
+
+  <!-- VENCIMIENTOS -->
+  <div class="panel" id="tab-vencimientos">
+
+    <!-- Sub-tabs -->
+    <div style="display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:10px">
+      <button class="sub-tab-v active" onclick="switchSubTabV('liquidaciones')" id="subtabv-btn-liquidaciones"
+        style="background:var(--verde-medio);color:white;border:none;border-radius:6px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s">
+        Liquidaciones
+      </button>
+      <button class="sub-tab-v" onclick="switchSubTabV('venc-financiero')" id="subtabv-btn-venc-financiero"
+        style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s">
+        Financiero
+      </button>
+    </div>
+
+    <!-- ── SUB-PANEL: LIQUIDACIONES ── -->
+    <div class="sub-panel-v active" id="tab-liquidaciones">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:var(--verde-oscuro)">Liquidaciones a Productores</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="exportarLiqPDF()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">⬇ PDF</button>
+          <button onclick="abrirFormLiquidacion()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+ Nueva</button>
+        </div>
+      </div>
+
+      <!-- Resumen -->
+      <div id="liq-resumen" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap"></div>
+
+      <!-- Filtro estado -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button onclick="filtrarLiq('todos')" id="liq-f-todos" style="background:var(--verde-medio);color:white;border:none;border-radius:20px;padding:4px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;cursor:pointer">Todos</button>
+        <button onclick="filtrarLiq('pendiente')" id="liq-f-pendiente" style="background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;color:var(--muted);cursor:pointer">Pendientes</button>
+        <button onclick="filtrarLiq('parcial')" id="liq-f-parcial" style="background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;color:var(--muted);cursor:pointer">Pago Parcial</button>
+        <button onclick="filtrarLiq('pagado')" id="liq-f-pagado" style="background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;color:var(--muted);cursor:pointer">Pagados</button>
+      </div>
+
+      <!-- Barra flotante selección -->
+      <div id="liq-barra-sel" style="display:none;position:sticky;top:0;z-index:50;background:var(--verde-oscuro);color:white;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:none;align-items:center;justify-content:space-between;gap:10px">
+        <div style="font-size:12px;font-weight:700" id="liq-sel-count">0 seleccionadas</div>
+        <div style="display:flex;gap:8px">
+          <button onclick="imprimirSeleccion()" style="background:white;color:var(--verde-oscuro);border:none;border-radius:6px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer">🖨 Imprimir resumen</button>
+          <button onclick="limpiarSeleccion()" style="background:none;border:1px solid rgba(255,255,255,.4);color:white;border-radius:6px;padding:6px 10px;font-family:'Outfit',sans-serif;font-size:11px;cursor:pointer">✕ Limpiar</button>
+        </div>
+      </div>
+
+      <!-- Lista -->
+      <div id="liq-lista" style="display:flex;flex-direction:column;gap:10px">
+        <div style="text-align:center;color:var(--muted);font-size:12px;padding:30px 0">Cargando...</div>
+      </div>
+    </div>
+
+    <!-- ── SUB-PANEL: FINANCIERO VENCIMIENTOS ── -->
+    <div class="sub-panel-v" id="tab-venc-financiero">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:var(--verde-oscuro)">Calendario de Vencimientos</div>
+        <button onclick="exportarFinancieroPDF()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">⬇ PDF</button>
+      </div>
+
+      <!-- Resumen alertas -->
+      <div id="vencf-alertas" style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap"></div>
+
+      <!-- Lista cronológica -->
+      <div id="vencf-lista" style="display:flex;flex-direction:column;gap:8px">
+        <div style="text-align:center;color:var(--muted);font-size:12px;padding:30px 0">Cargando...</div>
+      </div>
+    </div>
+
+  </div>
 
   <!-- HISTORIAL -->
   <div class="panel" id="tab-historial">
@@ -1548,15 +1636,15 @@
         <div id="acopio-resumen" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:4px">
           <div class="card" style="margin-bottom:0;text-align:center;padding:12px 8px">
             <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Operaciones</div>
-            <div id="ac-res-ops" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--verde-oscuro)">—</div>
+            <div id="ac-res-ops" style="font-family:Georgia,serif;font-size:20px;font-weight:700;color:var(--verde-oscuro)">—</div>
           </div>
           <div class="card" style="margin-bottom:0;text-align:center;padding:12px 8px">
             <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Total toneladas</div>
-            <div id="ac-res-tn" style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--verde-oscuro)">—</div>
+            <div id="ac-res-tn" style="font-family:Georgia,serif;font-size:20px;font-weight:700;color:var(--verde-oscuro)">—</div>
           </div>
           <div class="card" style="margin-bottom:0;text-align:center;padding:12px 8px">
             <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Ganancia total</div>
-            <div id="ac-res-comision" style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--dorado)">—</div>
+            <div id="ac-res-comision" style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:var(--dorado)">—</div>
           </div>
         </div>
 
@@ -1708,7 +1796,7 @@
           <!-- FETRA automática -->
           <div id="ac-flete-fetra-wrap" style="display:flex;justify-content:space-between;align-items:center;background:white;border-radius:6px;padding:8px 12px">
             <span style="font-size:10px;color:var(--muted)">Tarifa FETRA</span>
-            <span id="ac-flete-display" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--verde-oscuro)">—</span>
+            <span id="ac-flete-display" style="font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--verde-oscuro)">—</span>
           </div>
           <!-- Tarifa manual (oculta por defecto) -->
           <div id="ac-flete-manual-wrap" style="display:none;margin-top:6px">
@@ -1813,7 +1901,7 @@
           </div>
           <div style="text-align:center">
             <div style="font-size:9px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px">Ganancia total operación</div>
-            <div id="ac-prev-comision-total" style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#c8922a">—</div>
+            <div id="ac-prev-comision-total" style="font-family:Georgia,serif;font-size:26px;font-weight:700;color:#c8922a">—</div>
             <div id="ac-prev-ganancia-detalle" style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px">—</div>
           </div>
           <div style="text-align:right">
@@ -1975,6 +2063,8 @@
 // AUTH + SUPABASE REST v3.0 — sin SDK, fetch directo
 // ============================================================
 const SUPA_URL = 'https://pznjdgutvzfjhkoflopk.supabase.co';
+const LOGO_DM_B64 = "data:image/jpeg;base64,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Q3JlYXRvclRvb2w+QWRvYmUgSWxsdXN0cmF0b3IgQ0MgMjIuMSAoTWFjaW50b3NoKTwveG1wOkNyZWF0b3JUb29sPjwvcmRmOkRlc2NyaXB0aW9uPjxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSJ1dWlkOmZhZjViZGQ1LWJhM2QtMTFkYS1hZDMxLWQzM2Q3NTE4MmYxYiIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIj48ZGM6dGl0bGU+PHJkZjpBbHQgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj48cmRmOmxpIHhtbDpsYW5nPSJ4LWRlZmF1bHQiPmxvZ28gRE0gdHJhZGljaW9uYWw8L3JkZjpsaT48L3JkZjpBbHQ+DQoJCQk8L2RjOnRpdGxlPjwvcmRmOkRlc2NyaXB0aW9uPjxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSJ1dWlkOmZhZjViZGQ1LWJhM2QtMTFkYS1hZDMxLWQzM2Q3NTE4MmYxYiIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIj48ZGM6ZGVzY3JpcHRpb24+PHJkZjpBbHQgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj48cmRmOmxpIHhtbDpsYW5nPSJ4LWRlZmF1bHQiPmxvZ28gRE0gdHJhZGljaW9uYWw8L3JkZjpsaT48L3JkZjpBbHQ+DQoJCQk8L2RjOmRlc2NyaXB0aW9uPjwvcmRmOkRlc2NyaXB0aW9uPjxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSJ1dWlkOmZhZjViZGQ1LWJhM2QtMTFkYS1hZDMxLWQzM2Q3NTE4MmYxYiIgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iPjxleGlmOkRhdGVUaW1lT3JpZ2luYWw+MjAyMi0xMC0yNFQxMzo1ODozODwvZXhpZjpEYXRlVGltZU9yaWdpbmFsPjwvcmRmOkRlc2NyaXB0aW9uPjwvcmRmOlJERj48L3g6eG1wbWV0YT4NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8P3hwYWNrZXQgZW5kPSd3Jz8+/9sAQwACAQECAQECAgICAgICAgMFAwMDAwMGBAQDBQcGBwcHBgcHCAkLCQgICggHBwoNCgoLDAwMDAcJDg8NDA4LDAwM/9sAQwECAgIDAwMGAwMGDAgHCAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM/8AAEQgBAAEAAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8A/fyiiigAooooAKKKKACiiigAorG8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";
+
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bmpkZ3V0dnpmamhrb2Zsb3BrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODI5NjUsImV4cCI6MjA5NTA1ODk2NX0.mkXaPZPZHJN-BEDvqqoxDrfp5YmAqPwwwt_LCvu0HGA';
 const SUPA_HDRS = { 'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bmpkZ3V0dnpmamhrb2Zsb3BrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODI5NjUsImV4cCI6MjA5NTA1ODk2NX0.mkXaPZPZHJN-BEDvqqoxDrfp5YmAqPwwwt_LCvu0HGA','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bmpkZ3V0dnpmamhrb2Zsb3BrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODI5NjUsImV4cCI6MjA5NTA1ODk2NX0.mkXaPZPZHJN-BEDvqqoxDrfp5YmAqPwwwt_LCvu0HGA','Content-Type':'application/json' };
 
@@ -2172,6 +2262,7 @@ function initApp() {
   setTimeout(function(){initHistorialEvents();},400);
   setTimeout(function(){cargarAcopioDB();},500);
   setTimeout(function(){cargarCompradoresLocal();},600);
+  setTimeout(function(){cargarProductores();},700);
   setTimeout(function(){initPizarraVisibility();},650);
   // Polling cada 15s para sync entre dispositivos
   if(window._pollInterval) clearInterval(window._pollInterval);
@@ -2183,15 +2274,17 @@ function aplicarPermisosTabs() {
   if(!sesion) return;
   var rol=sesion.rol;
   var tabsVisibles={
-    admin:        ['portal','cotizador','config','flete','compras','ventas','financiero','historial','acopio','admin'],
-    comercial:    ['portal','cotizador','config','flete','compras','ventas','financiero','historial','acopio'],
-    tesoreria:    ['portal','compras','ventas','financiero','historial','acopio'],
+    admin:        ['portal','cotizador','config','flete','comercial','vencimientos','historial','acopio','admin'],
+    comercial:    ['portal','cotizador','config','flete','comercial','vencimientos','historial','acopio'],
+    tesoreria:    ['portal','comercial','vencimientos','historial','acopio'],
     mantenimiento:['portal','config'],
   };
   var visibles=tabsVisibles[rol]||tabsVisibles.tesoreria;
-  var allTabs=['portal','cotizador','config','flete','compras','ventas','financiero','historial','acopio','admin'];
-  document.querySelectorAll('.tab').forEach(function(btn,i){
-    var tabId=allTabs[i]; if(!tabId) return;
+  document.querySelectorAll('.tab').forEach(function(btn){
+    var onclick=btn.getAttribute('onclick')||'';
+    var m=onclick.match(/switchTab\('([^']+)'\)/);
+    var tabId=m?m[1]:null;
+    if(!tabId) return;
     btn.style.display=visibles.includes(tabId)?'':'none';
   });
   var pW=PERMISOS[rol]||PERMISOS.tesoreria;
@@ -3299,7 +3392,7 @@ function renderFinanciero() {
         </div>
         <div style="text-align:right">
           <div style="font-size:9px;color:${esSemanaActual ? 'rgba(255,255,255,0.6)' : 'var(--muted)'};letter-spacing:1px;text-transform:uppercase">Posición acum.</div>
-          <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:${esSemanaActual ? (acum>=0?'#7ec87e':'#ff9f9f') : acumColor}">${fmtFin(acum)}</div>
+          <div style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:${esSemanaActual ? (acum>=0?'#7ec87e':'#ff9f9f') : acumColor}">${fmtFin(acum)}</div>
         </div>
       </div>
 
@@ -3311,7 +3404,7 @@ function renderFinanciero() {
           <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--verde-medio);margin-bottom:6px;font-weight:600">
             ↑ Cobros
           </div>
-          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--verde-oscuro);margin-bottom:6px">
+          <div style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:var(--verde-oscuro);margin-bottom:6px">
             ${s.totalCobros > 0 ? fmtFin(s.totalCobros) : '<span style="color:var(--border);font-size:14px">—</span>'}
           </div>
           ${detallesCobros || '<div style="font-size:10px;color:var(--border)">Sin cobros</div>'}
@@ -3322,7 +3415,7 @@ function renderFinanciero() {
           <div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--red);margin-bottom:6px;font-weight:600">
             ↓ Pagos
           </div>
-          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--red);margin-bottom:6px">
+          <div style="font-family:Georgia,serif;font-size:18px;font-weight:700;color:var(--red);margin-bottom:6px">
             ${s.totalPagos > 0 ? fmtFin(s.totalPagos) : '<span style="color:var(--border);font-size:14px">—</span>'}
           </div>
           ${detallesPagos || '<div style="font-size:10px;color:var(--border)">Sin pagos</div>'}
@@ -3332,7 +3425,7 @@ function renderFinanciero() {
       <!-- Neta semana -->
       <div style="background:var(--bg);padding:8px 14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
         <span style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Neta semana</span>
-        <span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:${netaColor}">${fmtFin(neta)}</span>
+        <span style="font-family:Georgia,serif;font-size:15px;font-weight:700;color:${netaColor}">${fmtFin(neta)}</span>
       </div>
     </div>`;
   }).join('');
@@ -3488,6 +3581,13 @@ function toggleDetalle() {
 }
 
 function switchTab(tab) {
+  // If tab is a sub-tab, redirect to comercial and activate sub-tab
+  var subTabs = ['compras','ventas','financiero'];
+  if (subTabs.includes(tab)) {
+    switchTab('comercial');
+    switchSubTab(tab);
+    return;
+  }
   // Match tabs by their onclick content instead of index
   document.querySelectorAll('.tab').forEach(function(t) {
     var onclick = t.getAttribute('onclick') || '';
@@ -3502,11 +3602,1551 @@ function switchTab(tab) {
       document.getElementById('panel-canje').style.display === 'block' ? 'canje' : 'venta';
     setModo(modoActivo);
   }
-  if (tab === 'financiero') renderFinanciero();
   if (tab === 'historial') { initHistorialEvents(); renderHistorial(); }
   if (tab === 'admin') renderUsuarios();
   if (tab === 'portal') renderPortal();
   if (tab === 'acopio') { renderAcopioLista(); renderAcopioResumen(); renderPizarraCompradores(); }
+  if (tab === 'vencimientos') { switchSubTabV('liquidaciones'); }
+}
+
+function switchSubTab(subTab) {
+  // Activate sub-tab button
+  document.querySelectorAll('.sub-tab').forEach(function(btn) {
+    var isActive = btn.id === 'subtab-btn-' + subTab;
+    btn.classList.toggle('active', isActive);
+    btn.style.background = isActive ? 'var(--verde-medio)' : 'none';
+    btn.style.color = isActive ? 'white' : 'var(--muted)';
+    btn.style.border = isActive ? 'none' : '1px solid var(--border)';
+    btn.style.fontWeight = isActive ? '700' : '600';
+  });
+  // Show/hide sub-panels
+  document.querySelectorAll('.sub-panel').forEach(function(p) { p.classList.remove('active'); });
+  var subPanelEl = document.getElementById('tab-' + subTab);
+  if (subPanelEl) subPanelEl.classList.add('active');
+  // Render hooks
+  if (subTab === 'financiero') renderFinanciero();
+}
+
+
+
+
+// ═══════════════════════════════════════════
+// SELECCIÓN MÚLTIPLE LIQUIDACIONES
+// ═══════════════════════════════════════════
+var liqSeleccion = []; // array de ids seleccionados
+var productoresData = [];
+
+function toggleLiqSeleccion(id) {
+  id = String(id);
+  var idx = liqSeleccion.indexOf(id);
+  if (idx === -1) liqSeleccion.push(id);
+  else liqSeleccion.splice(idx, 1);
+  // Actualizar borde del card
+  var card = document.getElementById('liq-card-'+id);
+  if (card) card.style.border = liqSeleccion.indexOf(id) !== -1
+    ? '2px solid var(--verde-medio)' : '1px solid var(--border)';
+  actualizarBarraSeleccion();
+}
+
+function actualizarBarraSeleccion() {
+  var barra = document.getElementById('liq-barra-sel');
+  var count = document.getElementById('liq-sel-count');
+  if (!barra) return;
+  if (liqSeleccion.length >= 2) {
+    barra.style.display = 'flex';
+    count.textContent = liqSeleccion.length + ' liquidaciones seleccionadas';
+  } else {
+    barra.style.display = 'none';
+  }
+}
+
+function limpiarSeleccion() {
+  liqSeleccion = [];
+  renderLiqLista();
+  actualizarBarraSeleccion();
+}
+
+// ── PDF consolidado ──
+function imprimirSeleccion() {
+  if (liqSeleccion.length < 2) { alert('Seleccioná al menos 2 liquidaciones.'); return; }
+  var seleccionadas = liqSeleccion.map(function(id) {
+    return liqData.find(function(r){ return String(r.id) === id; });
+  }).filter(Boolean);
+  if (!seleccionadas.length) return;
+
+  var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFLib) { alert('Librería PDF no cargada.'); return; }
+
+  var doc = new jsPDFLib({ orientation:'portrait', unit:'mm', format:'a4' });
+  var pw = 210, ph = 297, ml = 14, mr = 14, mt = 18;
+  var cw = pw - ml - mr;
+  var y = mt;
+  var hoy = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  function checkY(n) { if (y+n > ph-14) { doc.addPage(); y = mt; } }
+
+  // ── Header — mismo estilo que comprobante individual ──
+  doc.setFillColor('#ffffff'); doc.rect(0, 0, pw, 38, 'F');
+  doc.setFillColor('#1e4d2b'); doc.rect(0, 36, pw, 2, 'F');
+
+  // Logo
+  try { doc.addImage(LOGO_DM_B64, 'JPEG', ml, 4, 28, 28); } catch(e) {}
+
+  // Nombre
+  doc.setTextColor('#1e4d2b');
+  doc.setFont('times','bold'); doc.setFontSize(24);
+  doc.text('Don Mauricio', ml+33, 17);
+
+  // Subtítulo espaciado
+  doc.setTextColor('#5a7262');
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+  doc.setCharSpace(2.5);
+  doc.text('AGROGANADERA  S.R.L.', ml+33, 24);
+  doc.setCharSpace(0);
+
+
+
+  // Datos derecha
+  doc.setTextColor('#1a2e1f');
+  doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  doc.text('RESUMEN DE LIQUIDACIONES', pw-mr, 14, {align:'right'});
+  doc.setTextColor('#5a7262');
+  doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Fecha: '+hoy, pw-mr, 21, {align:'right'});
+  doc.text(seleccionadas.length+' liquidaciones seleccionadas', pw-mr, 27, {align:'right'});
+  y = 46;
+
+  // Agrupar por productor
+  var porProductor = {};
+  seleccionadas.forEach(function(r) {
+    var p = r.productor || 'Sin nombre';
+    if (!porProductor[p]) porProductor[p] = [];
+    porProductor[p].push(r);
+  });
+
+  Object.keys(porProductor).forEach(function(productor) {
+    var liqP = porProductor[productor];
+    checkY(16);
+
+    // ── Encabezado productor ──
+    doc.setFillColor('#e8f0eb'); doc.rect(ml, y, cw, 9, 'F');
+    doc.setTextColor('#1e4d2b'); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+    doc.text(productor, ml+3, y+6.5);
+    y += 12;
+
+    // ── Header tabla ──
+    checkY(8);
+    doc.setFillColor('#1e4d2b'); doc.rect(ml, y, cw, 7, 'F');
+    doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+    // Columnas ajustadas al ancho exacto (cw=182mm)
+    // Cereal:18 Tn:11 F.Ent:22 F.Venc:22 Precio:32 Total:30 Pagado:24 Saldo:23 = 182
+    var cols = [
+      {label:'Cereal',    x:ml,      w:18},
+      {label:'Tn',        x:ml+18,   w:11},
+      {label:'F.Entrega', x:ml+29,   w:22},
+      {label:'F.Venc.',   x:ml+51,   w:22},
+      {label:'Precio/tn', x:ml+73,   w:32},
+      {label:'Total',     x:ml+105,  w:30},
+      {label:'Pagado',    x:ml+135,  w:24},
+      {label:'Saldo',     x:ml+159,  w:23},
+    ];
+    cols.forEach(function(c){ doc.text(c.label, c.x+1, y+5); });
+    y += 7;
+
+    // ── Filas ──
+    var totUSD=0, totARS=0, saldUSD=0, saldARS=0;
+    liqP.forEach(function(r, i) {
+      checkY(9);
+      var mon = r.moneda_importe||'USD';
+      var saldo = (parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+      if (mon==='ARS') { totARS+=(parseFloat(r.importe_total)||0); saldARS+=saldo; }
+      else             { totUSD+=(parseFloat(r.importe_total)||0); saldUSD+=saldo; }
+
+      doc.setFillColor(i%2===0?'#f4f8f5':'#ffffff'); doc.rect(ml,y,cw,8,'F');
+      doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+      // Recortar textos largos al ancho de columna
+      function cell(txt, col, bold) {
+        var lines = doc.splitTextToSize(String(txt), col.w-2);
+        if (bold) doc.setFont('helvetica','bold'); else doc.setFont('helvetica','normal');
+        doc.text(lines[0], col.x+1, y+5.5);
+      }
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+      doc.setTextColor('#1a2e1f');
+      cell(r.cereal||'-',                                       cols[0]);
+      cell(String(r.toneladas||0),                              cols[1]);
+      cell(r.fecha_compra?fmtFecha(r.fecha_compra):'-',         cols[2]);
+      cell(fmtFecha(r.fecha_vencimiento),                       cols[3]);
+      var precioStr = r.tipo_precio==='pizarra'
+        ? fmtLiqMonto(r.precio_usd||0,'ARS')+' (P.)'
+        : fmtLiqMonto(r.precio_usd||0, r.moneda||'USD');
+      cell(precioStr,                                           cols[4]);
+      cell(fmtLiqMonto(r.importe_total||0,mon),                 cols[5]);
+      cell(fmtLiqMonto(r.monto_pagado||0,mon),                  cols[6]);
+      doc.setTextColor(saldo>0?'#842029':'#0a3622');
+      cell(fmtLiqMonto(saldo,mon),                              cols[7], true);
+      y += 8;
+    });
+
+    // ── Fila total productor ──
+    checkY(10);
+    doc.setFillColor('#1e4d2b'); doc.rect(ml,y,cw,9,'F');
+    doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text('TOTAL '+productor.toUpperCase(), ml+2, y+6);
+    var totStr = (totUSD?fmtLiqMonto(totUSD,'USD'):'') + (totUSD&&totARS?' + ':'') + (totARS?fmtLiqMonto(totARS,'ARS'):'');
+    var saldStr= (saldUSD?fmtLiqMonto(saldUSD,'USD'):'') + (saldUSD&&saldARS?' + ':'') + (saldARS?fmtLiqMonto(saldARS,'ARS'):'');
+    doc.text('Total: '+totStr+'   Saldo: '+saldStr, pw-mr-2, y+6, {align:'right'});
+    y += 14;
+  });
+
+  // ── Gran total ──
+  checkY(14);
+  doc.setDrawColor('#1e4d2b'); doc.line(ml, y, ml+cw, y); y += 4;
+  var gtUSD=0,gtARS=0,gsUSD=0,gsARS=0;
+  seleccionadas.forEach(function(r){
+    var mon=r.moneda_importe||'USD';
+    var s=(parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+    if(mon==='ARS'){gtARS+=(parseFloat(r.importe_total)||0);gsARS+=s;}
+    else{gtUSD+=(parseFloat(r.importe_total)||0);gsUSD+=s;}
+  });
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor('#1e4d2b');
+  doc.text('TOTAL GENERAL:', ml, y);
+  var gtStr = (gtUSD?fmtLiqMonto(gtUSD,'USD'):'')+(gtUSD&&gtARS?' + ':'')+(gtARS?fmtLiqMonto(gtARS,'ARS'):'');
+  var gsStr = (gsUSD?fmtLiqMonto(gsUSD,'USD'):'')+(gsUSD&&gsARS?' + ':'')+(gsARS?fmtLiqMonto(gsARS,'ARS'):'');
+  doc.text(gtStr, pw-mr, y, {align:'right'}); y += 6;
+  doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Saldo pendiente total: '+gsStr, pw-mr, y, {align:'right'}); y += 10;
+
+  // ── Footer ──
+  var totalPgs = doc.internal.getNumberOfPages();
+  for (var p=1;p<=totalPgs;p++) {
+    doc.setPage(p);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor('#5a7262');
+    doc.text('Don Mauricio Agroganadera SRL  ·  Zona Industrial Planificada, Navarro', ml, ph-6);
+    doc.text('Pág. '+p+'/'+totalPgs, pw-mr, ph-6, {align:'right'});
+  }
+
+  doc.save('Resumen_Liquidaciones_'+hoy.replace(/\//g,'-')+'.pdf');
+}
+
+// ═══════════════════════════════════════════
+// PRODUCTORES — base de nombres
+// ═══════════════════════════════════════════
+async function cargarProductores() {
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/productores?select=id,nombre&order=nombre', {headers:SUPA_HDRS});
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    productoresData = await res.json();
+  } catch(e) {
+    productoresData = [];
+  }
+  actualizarSelectorProductor();
+}
+
+function actualizarSelectorProductor() {
+  var sel = document.getElementById('liq-f-productor-sel');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">-- Elegir productor --</option>' +
+    productoresData.map(function(p){ return '<option value="'+p.nombre+'">'+p.nombre+'</option>'; }).join('') +
+    '<option value="__nuevo__">+ Agregar nuevo...</option>';
+}
+
+function onProductorChange() {
+  var sel = document.getElementById('liq-f-productor-sel');
+  var inp = document.getElementById('liq-f-productor');
+  var nuevoWrap = document.getElementById('liq-productor-nuevo-wrap');
+  if (sel.value === '__nuevo__') {
+    nuevoWrap.style.display = 'block';
+    inp.value = '';
+    inp.focus();
+  } else {
+    nuevoWrap.style.display = 'none';
+    inp.value = sel.value;
+  }
+}
+
+async function guardarNuevoProductor(nombre) {
+  if (!nombre) return;
+  // Verificar si ya existe
+  if (productoresData.find(function(p){ return p.nombre.toLowerCase()===nombre.toLowerCase(); })) return;
+  try {
+    await fetch(SUPA_URL+'/rest/v1/productores', {
+      method:'POST', headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}),
+      body:JSON.stringify({nombre:nombre})
+    });
+    await cargarProductores();
+  } catch(e) { /* silencioso */ }
+}
+
+// ═══════════════════════════════════════════
+// COMPROBANTE PDF — Liquidación individual
+// ═══════════════════════════════════════════
+function imprimirLiquidacion(id) {
+  var r = liqData.find(function(x){ return x.id == id; });
+  if (!r) { alert('No se encontró la liquidación.'); return; }
+
+  var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFLib) { alert('Librería PDF no cargada. Verificá conexión.'); return; }
+
+  var doc = new jsPDFLib({ orientation:'portrait', unit:'mm', format:'a4' });
+  var pw = 210, ph = 297;
+  var ml = 20, mr = 20;
+  var cw = pw - ml - mr;
+
+  var mon = r.moneda_importe || 'USD';
+  var saldo = (parseFloat(r.importe_total)||0) - (parseFloat(r.monto_pagado)||0);
+  var hoy = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  var estadoLabel = { pendiente:'PENDIENTE DE PAGO', parcial:'PAGO PARCIAL', pagado:'PAGADO' };
+  var estadoColor = { pendiente:'#856404', parcial:'#055160', pagado:'#0a3622' };
+  var estadoBg    = { pendiente:'#fff3cd', parcial:'#cff4fc', pagado:'#d1e7dd' };
+
+  // ── Header empresa — fondo blanco ──
+  // Fondo blanco total
+  doc.setFillColor('#ffffff'); doc.rect(0, 0, pw, 38, 'F');
+  // Línea verde inferior del header
+  doc.setFillColor('#1e4d2b'); doc.rect(0, 36, pw, 2, 'F');
+
+  // Logo (círculo se ve limpio sobre blanco)
+  try { doc.addImage(LOGO_DM_B64, 'JPEG', ml, 4, 28, 28); } catch(e) {}
+
+  // Nombre empresa — Times para imitar Playfair Display
+  doc.setTextColor('#1e4d2b');
+  doc.setFont('times','bold'); doc.setFontSize(24);
+  doc.text('Don Mauricio', ml+33, 17);
+  // Subtítulo espaciado en mayúsculas — simula Outfit uppercase letter-spacing
+  doc.setTextColor('#5a7262');
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+  // Espaciar manualmente con charSpace
+  doc.setCharSpace(2.5);
+  doc.text('AGROGANADERA  S.R.L.', ml+33, 24);
+  doc.setCharSpace(0);
+
+
+  // Datos liquidación (derecha, en oscuro)
+  doc.setTextColor('#1a2e1f');
+  doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  doc.text('LIQUIDACIÓN', pw-mr, 14, {align:'right'});
+  doc.setTextColor('#5a7262');
+  doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Emitido: '+hoy, pw-mr, 21, {align:'right'});
+  var idCorto = String(r.id).substring(0,8).toUpperCase();
+  doc.text('Ref: '+idCorto, pw-mr, 27, {align:'right'});
+
+  var y = 46;
+
+  // ── Datos del productor ──
+  doc.setTextColor('#1a2e1f');
+  doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  doc.text('PRODUCTOR / VENDEDOR', ml, y); y += 6;
+  doc.setDrawColor('#c8ddd0'); doc.line(ml, y, ml+cw, y); y += 5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(13);
+  doc.setTextColor('#1e4d2b');
+  doc.text(r.productor || '-', ml, y); y += 14;
+
+  // ── Detalle de la operación ──
+  doc.setTextColor('#1a2e1f');
+  doc.setFont('helvetica','bold'); doc.setFontSize(10);
+  doc.text('DETALLE DE LA OPERACIÓN', ml, y); y += 6;
+  doc.setDrawColor('#c8ddd0'); doc.line(ml, y, ml+cw, y); y += 6;
+
+  // Campos — col label 45mm, col valor el resto
+  var labelW = 45;
+  var valX = ml + labelW + 3;
+  var valW = cw - labelW - 3;
+
+  var campos = [
+    ['Cereal / Producto',    r.cereal || '-'],
+    ['Toneladas brutas',     (r.toneladas||0)+' tn'],
+    ['Fecha de Entrega',     r.fecha_compra ? fmtFecha(r.fecha_compra) : '-'],
+    ['Fecha de Vencimiento', fmtFecha(r.fecha_vencimiento)],
+  ];
+  if (r.humedad) {
+    campos.push(['Humedad real / Estándar', r.humedad+'%  /  '+(r.humedad_std||'-')+'%']);
+    if (r.merma_kg) campos.push(['Merma fisica', '-'+(r.merma_kg||0)+' kg / Tn netas: '+(r.tn_netas||0)+' tn']);
+    if (r.secada_puntos) {
+      var secadaStr = (r.secada_puntos||0)+' pts x USD '+(r.secada_costo_punto||0)+'/tn x '+(r.toneladas||0)+' tn = USD '+(r.secada_total_usd||0);
+      if (r.tipo_cambio) {
+        var secadaARS = Math.round((r.secada_total_usd||0) * r.tipo_cambio);
+        secadaStr += '  x  TC $'+r.tipo_cambio.toLocaleString('es-AR')+' = $'+secadaARS.toLocaleString('es-AR');
+      }
+      campos.push(['Secada', secadaStr]);
+    }
+  }
+
+  // Tipo de precio en 2 líneas si es pizarra
+  if (r.tipo_precio === 'pizarra') {
+    campos.push(['Tipo de Precio', 'Pizarra']);
+    campos.push(['Base / Desc. / Precio',
+      fmtLiqMonto(r.pizarra_base||0,'ARS')+'/tn - '+(r.pizarra_pct||0)+'% = '+fmtLiqMonto(r.precio_usd||0,'ARS')+'/tn'
+    ]);
+  } else {
+    campos.push(['Tipo de Precio', 'Precio Fijo']);
+    campos.push(['Precio/tn', (r.moneda||'USD')+' '+fmtLiqMonto(r.precio_usd||0, r.moneda||'USD')]);
+  }
+
+  campos.forEach(function(c, i) {
+    var bg = i%2===0 ? '#f4f8f5' : '#ffffff';
+    doc.setFillColor(bg); doc.rect(ml, y, cw, 8, 'F');
+    doc.setTextColor('#5a7262'); doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+    doc.text(c[0], ml+3, y+5.5);
+    doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+    // Recortar texto largo al ancho disponible
+    var valLines = doc.splitTextToSize(c[1], valW);
+    doc.text(valLines[0], valX, y+5.5);
+    y += 8;
+  });
+  y += 6;
+
+  var montos = [
+    ['Importe Total',  fmtLiqMonto(r.importe_total||0, mon), '#1a2e1f'],
+    ['Monto Pagado',   fmtLiqMonto(r.monto_pagado||0, mon),  '#0a3622'],
+    ['SALDO PENDIENTE',fmtLiqMonto(saldo, mon),               saldo>0?'#842029':'#0a3622'],
+  ];
+
+  montos.forEach(function(m, i) {
+    var isLast = i === montos.length-1;
+    if (isLast) {
+      doc.setFillColor('#1e4d2b'); doc.rect(ml, y, cw, 12, 'F');
+      doc.setTextColor('#ffffff');
+      doc.setFont('helvetica','bold'); doc.setFontSize(11);
+      doc.text(m[0], ml+4, y+8);
+      doc.text(m[1], pw-mr-4, y+8, {align:'right'});
+      y += 12;
+    } else {
+      doc.setFillColor(i%2===0?'#f4f8f5':'#ffffff'); doc.rect(ml, y, cw, 9, 'F');
+      doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.text(m[0], ml+4, y+6);
+      doc.setTextColor(m[2]); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+      doc.text(m[1], pw-mr-4, y+6, {align:'right'});
+      y += 9;
+    }
+  });
+  y += 10;
+
+  // ── Observaciones ──
+  if (r.observaciones) {
+    doc.setTextColor('#1a2e1f');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text('OBSERVACIONES', ml, y); y += 5;
+    doc.setDrawColor('#c8ddd0'); doc.line(ml, y, ml+cw, y); y += 4;
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor('#5a7262');
+    var obsLines = doc.splitTextToSize(r.observaciones, cw);
+    doc.text(obsLines, ml, y); y += obsLines.length*5 + 8;
+  }
+
+  // ── Firma ──
+  y = Math.max(y, ph - 60);
+  doc.setDrawColor('#c8ddd0');
+  doc.line(ml, y, ml+60, y);
+  doc.line(pw-mr-60, y, pw-mr, y);
+  doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Firma Productor', ml, y+5);
+  doc.text('Firma Don Mauricio', pw-mr-60, y+5);
+
+  // ── Footer ──
+  doc.setFillColor('#f4f8f5'); doc.rect(0, ph-14, pw, 14, 'F');
+  doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+  doc.text('Don Mauricio Agroganadera SRL  ·  Zona Industrial Planificada, Navarro, Buenos Aires', pw/2, ph-7, {align:'center'});
+
+  var nombreArchivo = 'Liquidacion_'+(r.productor||'').replace(/\s+/g,'_')+'_'+hoy.replace(/\//g,'-')+'.pdf';
+  doc.save(nombreArchivo);
+}
+
+// ═══════════════════════════════════════════
+// EXPORT PDF LIQUIDACIONES
+// ═══════════════════════════════════════════
+function exportarLiqPDF() {
+  var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFLib) { alert('Librería PDF no cargada. Verificá conexión.'); return; }
+
+  var doc = new jsPDFLib({ orientation:'portrait', unit:'mm', format:'a4' });
+  var pw = 210, ph = 297;
+  var ml = 14, mr = 14, mt = 18;
+  var cw = pw - ml - mr;
+  var y = mt;
+
+  // ── helpers ──
+  function checkY(needed) {
+    if (y + needed > ph - 14) { doc.addPage(); y = mt; }
+  }
+  function line(x1,y1,x2,y2,color) {
+    doc.setDrawColor(color||'#c8ddd0');
+    doc.line(x1,y1,x2,y2);
+  }
+  function rect(x,ry,w,h,fill) {
+    doc.setFillColor(fill);
+    doc.rect(x,ry,w,h,'F');
+  }
+
+  // ── Header ──
+  rect(0, 0, pw, 24, '#1e4d2b');
+  doc.setTextColor('#ffffff');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(14);
+  doc.text('DON MAURICIO AGROGANADERA', ml, 10);
+  doc.setFontSize(9);
+  doc.setFont('helvetica','normal');
+  doc.text('Liquidaciones a Productores', ml, 16);
+  var hoy = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  doc.text('Fecha: '+hoy, pw-mr, 16, {align:'right'});
+  y = 30;
+
+  // ── Resumen cards ──
+  var pendLiq = liqData.filter(function(r){ return r.estado==='pendiente'; });
+  var parcLiq = liqData.filter(function(r){ return r.estado==='parcial'; });
+  var vencLiq = liqData.filter(function(r){ return r.estado!=='pagado' && liqDiasRestantes(r.fecha_vencimiento)<0; });
+
+  var cardW = (cw-8)/3;
+  var cards = [
+    { label:'PENDIENTES', count:pendLiq.length, bg:'#fff3cd', fc:'#856404' },
+    { label:'PAGO PARCIAL', count:parcLiq.length, bg:'#cff4fc', fc:'#055160' },
+    { label:'VENCIDOS', count:vencLiq.length, bg:'#f8d7da', fc:'#842029' }
+  ];
+  cards.forEach(function(c,i) {
+    var cx = ml + i*(cardW+4);
+    rect(cx, y, cardW, 14, c.bg);
+    doc.setTextColor(c.fc); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+    doc.text(c.label, cx+4, y+5);
+    doc.setFontSize(11);
+    doc.text(String(c.count)+' liq.', cx+4, y+11);
+  });
+  y += 20;
+
+  // ── Filtro actual ──
+  var filtroLabel = {todos:'Todas',pendiente:'Pendientes',parcial:'Pago Parcial',pagado:'Pagadas'};
+  doc.setTextColor('#5a7262'); doc.setFont('helvetica','italic'); doc.setFontSize(8);
+  doc.text('Filtro activo: '+(filtroLabel[liqFiltroActual]||'Todas'), ml, y);
+  y += 6;
+
+  // ── Tabla de liquidaciones ──
+  var datos = liqFiltroActual==='todos' ? liqData : liqData.filter(function(r){ return r.estado===liqFiltroActual; });
+
+  if (!datos.length) {
+    doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+    doc.text('No hay liquidaciones en esta categoría.', ml, y+6);
+  } else {
+    // Header tabla
+    var cols = [
+      {label:'Productor',       x:ml,       w:38},
+      {label:'Cereal',          x:ml+38,    w:18},
+      {label:'Tn',              x:ml+56,    w:14},
+      {label:'F. Entrega',      x:ml+70,    w:22},
+      {label:'F. Vencimiento',  x:ml+92,    w:24},
+      {label:'Total',           x:ml+116,   w:26},
+      {label:'Pagado',          x:ml+142,   w:26},
+      {label:'Saldo',           x:ml+168,   w:24},
+      {label:'Estado',          x:ml+192,   w:22}  // will be clipped to cw
+    ];
+    // Recalc last col width
+    cols[8].w = ml+cw - cols[8].x;
+
+    checkY(10);
+    rect(ml, y, cw, 7, '#1e4d2b');
+    doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+    cols.forEach(function(c){ doc.text(c.label, c.x+1, y+4.8); });
+    y += 7;
+
+    var estadoColors = { pendiente:'#856404', parcial:'#055160', pagado:'#0a3622' };
+    datos.forEach(function(r, idx) {
+      checkY(9);
+      var bg = idx%2===0 ? '#f4f8f5' : '#ffffff';
+      rect(ml, y, cw, 8, bg);
+      var saldo = (parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+      var mon = r.moneda_importe||'USD';
+      var ec = estadoColors[r.estado]||'#5a7262';
+      doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.setTextColor('#1a2e1f');
+      doc.text((r.productor||'').substring(0,20),    cols[0].x+1, y+5.2);
+      doc.text(r.cereal||'',                          cols[1].x+1, y+5.2);
+      doc.text(String(r.toneladas||0),                cols[2].x+1, y+5.2);
+      doc.text(r.fecha_compra ? fmtFecha(r.fecha_compra) : '-', cols[3].x+1, y+5.2);
+      doc.text(fmtFecha(r.fecha_vencimiento),         cols[4].x+1, y+5.2);
+      doc.text(fmtLiqMonto(r.importe_total||0,mon),   cols[5].x+1, y+5.2);
+      doc.text(fmtLiqMonto(r.monto_pagado||0,mon),    cols[6].x+1, y+5.2);
+      doc.setTextColor(saldo>0?'#842029':'#0a3622');
+      doc.text(fmtLiqMonto(saldo,mon),                cols[7].x+1, y+5.2);
+      doc.setTextColor(ec); doc.setFont('helvetica','bold');
+      doc.text((r.estado||'').toUpperCase(),           cols[8].x+1, y+5.2);
+      // Alerta vencimiento
+      var dias = liqDiasRestantes(r.fecha_vencimiento);
+      if (r.estado!=='pagado' && dias<0) {
+        doc.setFont('helvetica','italic'); doc.setFontSize(6); doc.setTextColor('#842029');
+        doc.text('VENCIDO',cols[4].x+1,y+7.5);
+      }
+      y += 8;
+    });
+
+    // Línea final
+    line(ml, y, ml+cw, y);
+    y += 4;
+
+    // Totales por moneda
+    var totUSD=0, totARS=0, saldUSD=0, saldARS=0;
+    datos.forEach(function(r){
+      var s=(parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+      if((r.moneda_importe||'USD')==='ARS'){totARS+=(parseFloat(r.importe_total)||0);saldARS+=s;}
+      else{totUSD+=(parseFloat(r.importe_total)||0);saldUSD+=s;}
+    });
+    checkY(10);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor('#1e4d2b');
+    var totStr = (totUSD?'Total USD: '+fmtLiqMonto(totUSD,'USD')+'  Saldo: '+fmtLiqMonto(saldUSD,'USD'):'');
+    var totAStr= (totARS?'  |  Total ARS: '+fmtLiqMonto(totARS,'ARS')+'  Saldo: '+fmtLiqMonto(saldARS,'ARS'):'');
+    doc.text((totStr+totAStr).trim(), ml, y);
+    y += 8;
+  }
+
+  // ── Observaciones ──
+  var conObs = datos.filter(function(r){ return r.observaciones; });
+  if (conObs.length) {
+    checkY(10);
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor('#1e4d2b');
+    doc.text('Observaciones:', ml, y); y += 5;
+    conObs.forEach(function(r){
+      checkY(6);
+      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor('#5a7262');
+      doc.text('• '+r.productor+': '+r.observaciones, ml+3, y); y += 5;
+    });
+  }
+
+  // ── Footer ──
+  var totalPgs = doc.internal.getNumberOfPages();
+  for (var p=1; p<=totalPgs; p++) {
+    doc.setPage(p);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor('#5a7262');
+    doc.text('Don Mauricio Agroganadera SRL  ·  Zona Industrial Planificada, Navarro', ml, ph-6);
+    doc.text('Pág. '+p+'/'+totalPgs, pw-mr, ph-6, {align:'right'});
+  }
+
+  doc.save('Liquidaciones_DMA_'+hoy.replace(/\//g,'-')+'.pdf');
+}
+
+
+// ═══════════════════════════════════════════
+// PDF — FINANCIERO VENCIMIENTOS
+// ═══════════════════════════════════════════
+function exportarFinancieroPDF() {
+  var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFLib) { alert('Librería PDF no cargada. Verificá conexión.'); return; }
+
+  var activos = liqData.filter(function(r){ return r.estado !== 'pagado'; });
+  activos.sort(function(a,b){ return new Date(a.fecha_vencimiento) - new Date(b.fecha_vencimiento); });
+
+  var doc = new jsPDFLib({ orientation:'portrait', unit:'mm', format:'a4' });
+  var pw = 210, ph = 297, ml = 14, mr = 14;
+  var cw = pw - ml - mr;
+  var y = 0;
+  var hoy = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  function checkY(n) { if (y+n > ph-14) { doc.addPage(); y = 46; } }
+
+  // ── Header (mismo estilo) ──
+  doc.setFillColor('#ffffff'); doc.rect(0, 0, pw, 38, 'F');
+  doc.setFillColor('#1e4d2b'); doc.rect(0, 36, pw, 2, 'F');
+  try { doc.addImage(LOGO_DM_B64, 'JPEG', ml, 4, 28, 28); } catch(e) {}
+  doc.setTextColor('#1e4d2b');
+  doc.setFont('times','bold'); doc.setFontSize(24);
+  doc.text('Don Mauricio', ml+33, 17);
+  doc.setTextColor('#5a7262');
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+  doc.setCharSpace(2.5);
+  doc.text('AGROGANADERA  S.R.L.', ml+33, 24);
+  doc.setCharSpace(0);
+  doc.setTextColor('#1a2e1f');
+  doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  doc.text('FINANCIERO — VENCIMIENTOS', pw-mr, 14, {align:'right'});
+  doc.setTextColor('#5a7262');
+  doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Emitido: '+hoy, pw-mr, 21, {align:'right'});
+  y = 46;
+
+  // ── Cards resumen ──
+  var vencidos = activos.filter(function(r){ return liqDiasRestantes(r.fecha_vencimiento) < 0; });
+  var proximos = activos.filter(function(r){ var d=liqDiasRestantes(r.fecha_vencimiento); return d>=0&&d<=7; });
+  var resto    = activos.filter(function(r){ var d=liqDiasRestantes(r.fecha_vencimiento); return d>7; });
+
+  var cardW = (cw-8)/3;
+  var cards = [
+    { label:'VENCIDOS',     val:vencidos.length+' liq.  |  '+liqSaldoStr(vencidos), bg:'#f8d7da', fc:'#842029' },
+    { label:'PRÓXIMOS 7d',  val:proximos.length+' liq.  |  '+liqSaldoStr(proximos), bg:'#fff3cd', fc:'#856404' },
+    { label:'AL DÍA',       val:resto.length+' liquidaciones',                       bg:'#d1e7dd', fc:'#0a3622' },
+  ];
+  cards.forEach(function(c,i) {
+    var cx = ml + i*(cardW+4);
+    doc.setFillColor(c.bg); doc.rect(cx, y, cardW, 16, 'F');
+    doc.setTextColor(c.fc); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+    doc.text(c.label, cx+3, y+5);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    var valLines = doc.splitTextToSize(c.val, cardW-6);
+    doc.text(valLines[0], cx+3, y+11);
+    if (valLines[1]) doc.text(valLines[1], cx+3, y+15);
+  });
+  y += 22;
+
+  // ── Proyección 8 semanas ──
+  doc.setTextColor('#1e4d2b');
+  doc.setFont('times','bold'); doc.setFontSize(12);
+  doc.text('Proyección 8 Semanas', ml, y); y += 7;
+
+  var hoyD = new Date(); hoyD.setHours(0,0,0,0);
+  var diaSem = hoyD.getDay()===0?6:hoyD.getDay()-1;
+  var inicioS1 = new Date(hoyD); inicioS1.setDate(hoyD.getDate()-diaSem);
+
+  var semanas = Array.from({length:8}, function(_,i){
+    var inicio = new Date(inicioS1); inicio.setDate(inicioS1.getDate()+i*7);
+    var fin = new Date(inicio); fin.setDate(inicio.getDate()+6);
+    return {inicio:inicio, fin:fin, items:[]};
+  });
+  activos.forEach(function(r){
+    if (!r.fecha_vencimiento) return;
+    var venc = new Date(r.fecha_vencimiento+'T12:00:00');
+    semanas.forEach(function(s){ if(venc>=s.inicio&&venc<=s.fin) s.items.push(r); });
+  });
+
+  var acumUSD=0, acumARS=0;
+
+  semanas.forEach(function(s,i){
+    var semUSD=0, semARS=0;
+    s.items.forEach(function(r){
+      var saldo=(parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+      if((r.moneda_importe||'USD')==='ARS') semARS+=saldo; else semUSD+=saldo;
+    });
+    acumUSD+=semUSD; acumARS+=semARS;
+
+    var esCurrent = i===0;
+    var semStr = (semUSD?fmtLiqMonto(semUSD,'USD'):'')+(semUSD&&semARS?' + ':'')+( semARS?fmtLiqMonto(semARS,'ARS'):'—');
+    var acumStr= (acumUSD?fmtLiqMonto(acumUSD,'USD'):'')+(acumUSD&&acumARS?' + ':'')+( acumARS?fmtLiqMonto(acumARS,'ARS'):'');
+    var fechaLabel = s.inicio.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'})+' — '+s.fin.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'});
+
+    // Agrupar por productor
+    var porProd = {};
+    s.items.forEach(function(r){
+      var p=r.productor||'Sin nombre';
+      if(!porProd[p]) porProd[p]={tn:0,saldoUSD:0,saldoARS:0};
+      porProd[p].tn+=parseFloat(r.toneladas)||0;
+      var saldo=(parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+      if((r.moneda_importe||'USD')==='ARS') porProd[p].saldoARS+=saldo; else porProd[p].saldoUSD+=saldo;
+    });
+    var hayItems = Object.keys(porProd).length > 0;
+    var rowH = hayItems ? 8 + Object.keys(porProd).length*6 : 8;
+
+    checkY(rowH + 2);
+
+    // Header semana
+    var headerBg = esCurrent ? '#1e4d2b' : '#e8f0eb';
+    var headerFc = esCurrent ? '#ffffff' : '#1e4d2b';
+    doc.setFillColor(headerBg); doc.rect(ml, y, cw, 8, 'F');
+    doc.setTextColor(headerFc); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text((esCurrent?'▶ ':'')+' Semana '+(i+1)+'  ·  '+fechaLabel, ml+2, y+5.5);
+    doc.text('Pagos: '+semStr, pw-mr-2, y+5.5, {align:'right'});
+    y += 8;
+
+    // Filas productores
+    if (hayItems) {
+      Object.keys(porProd).forEach(function(prod, pi){
+        var g = porProd[prod];
+        var sStr = (g.saldoUSD?fmtLiqMonto(g.saldoUSD,'USD'):'')+(g.saldoUSD&&g.saldoARS?' + ':'')+( g.saldoARS?fmtLiqMonto(g.saldoARS,'ARS'):'');
+        doc.setFillColor(pi%2===0?'#f4f8f5':'#ffffff'); doc.rect(ml, y, cw, 6, 'F');
+        doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+        doc.text(prod+' · '+g.tn+'tn', ml+4, y+4.3);
+        doc.setTextColor('#842029'); doc.setFont('helvetica','bold');
+        doc.text(sStr, pw-mr-2, y+4.3, {align:'right'});
+        y += 6;
+      });
+    } else {
+      doc.setFillColor('#f9fbf9'); doc.rect(ml, y, cw, 6, 'F');
+      doc.setTextColor('#c8ddd0'); doc.setFont('helvetica','italic'); doc.setFontSize(7);
+      doc.text('Sin vencimientos', ml+4, y+4.3);
+      y += 6;
+    }
+
+    // Acumulado al pie de semana
+    doc.setFillColor('#f0f4f1'); doc.rect(ml, y, cw, 6, 'F');
+    doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    doc.text('Acum. pagos al cierre de semana '+(i+1)+':', ml+2, y+4.3);
+    var acumColor = (acumUSD<0||acumARS<0)?'#842029':'#1e4d2b';
+    doc.setTextColor(acumColor); doc.setFont('helvetica','bold');
+    doc.text(acumStr||'—', pw-mr-2, y+4.3, {align:'right'});
+    y += 8;
+  });
+
+  // ── Lista cronológica ──
+  if (activos.length) {
+    checkY(14);
+    doc.setTextColor('#1e4d2b'); doc.setFont('times','bold'); doc.setFontSize(12);
+    doc.text('Todos los Vencimientos Pendientes', ml, y); y += 7;
+
+    // Header tabla
+    doc.setFillColor('#1e4d2b'); doc.rect(ml, y, cw, 7, 'F');
+    doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+    var tCols = [
+      {label:'F. Vencimiento', x:ml,     w:28},
+      {label:'Productor',      x:ml+28,  w:50},
+      {label:'Cereal',         x:ml+78,  w:20},
+      {label:'Tn',             x:ml+98,  w:14},
+      {label:'Estado',         x:ml+112, w:22},
+      {label:'Saldo',          x:ml+134, w:cw-134},
+    ];
+    tCols.forEach(function(c){ doc.text(c.label, c.x+1, y+5); });
+    y += 7;
+
+    activos.forEach(function(r,i){
+      checkY(8);
+      var dias = liqDiasRestantes(r.fecha_vencimiento);
+      var saldo = (parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+      var rowBg = dias<0?'#fff0f0':i%2===0?'#f4f8f5':'#ffffff';
+      doc.setFillColor(rowBg); doc.rect(ml, y, cw, 7, 'F');
+      doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+      doc.text(fmtFecha(r.fecha_vencimiento),        tCols[0].x+1, y+5);
+      doc.text((r.productor||'-').substring(0,24),   tCols[1].x+1, y+5);
+      doc.text(r.cereal||'-',                        tCols[2].x+1, y+5);
+      doc.text(String(r.toneladas||0),               tCols[3].x+1, y+5);
+      doc.setTextColor(dias<0?'#842029':dias<=7?'#856404':'#0a3622');
+      doc.setFont('helvetica','bold'); doc.setFontSize(7);
+      doc.text(dias<0?'VENCIDO':dias<=7?'HOY/PROX':'Al día', tCols[4].x+1, y+5);
+      doc.setTextColor(saldo>0?'#842029':'#0a3622'); doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+      doc.text(fmtLiqMonto(saldo, r.moneda_importe), tCols[5].x+1, y+5);
+      y += 7;
+    });
+  }
+
+  // ── Footer ──
+  var totalPgs = doc.internal.getNumberOfPages();
+  for (var p=1;p<=totalPgs;p++){
+    doc.setPage(p);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor('#5a7262');
+    doc.text('Don Mauricio Agroganadera SRL  ·  Navarro, Buenos Aires', ml, ph-6);
+    doc.text('Pág. '+p+'/'+totalPgs, pw-mr, ph-6, {align:'right'});
+  }
+
+  doc.save('Financiero_Vencimientos_'+hoy.replace(/\//g,'-')+'.pdf');
+}
+
+// ═══════════════════════════════════════════
+// VENCIMIENTOS — Sub-tabs
+// ═══════════════════════════════════════════
+function switchSubTabV(subTab) {
+  document.querySelectorAll('.sub-tab-v').forEach(function(btn) {
+    var isActive = btn.id === 'subtabv-btn-' + subTab;
+    btn.classList.toggle('active', isActive);
+    btn.style.background = isActive ? 'var(--verde-medio)' : 'none';
+    btn.style.color = isActive ? 'white' : 'var(--muted)';
+    btn.style.border = isActive ? 'none' : '1px solid var(--border)';
+    btn.style.fontWeight = isActive ? '700' : '600';
+  });
+  document.querySelectorAll('.sub-panel-v').forEach(function(p) {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
+  var el = document.getElementById('tab-' + subTab);
+  if (el) { el.classList.add('active'); el.style.display = 'block'; }
+  if (subTab === 'liquidaciones') renderLiquidaciones();
+  if (subTab === 'venc-financiero') renderVencFinanciero();
+}
+
+// ── Helpers ──
+var liqFiltroActual = 'todos';
+var liqData = [];
+
+function liqEstadoBadge(estado) {
+  var map = {
+    pendiente: { bg:'#fff3cd', color:'#856404', label:'Pendiente' },
+    parcial:   { bg:'#cff4fc', color:'#055160', label:'Pago Parcial' },
+    pagado:    { bg:'#d1e7dd', color:'#0a3622', label:'Pagado' }
+  };
+  var s = map[estado] || map.pendiente;
+  return '<span style="background:'+s.bg+';color:'+s.color+';border-radius:20px;padding:2px 9px;font-size:9px;font-weight:700">'+s.label+'</span>';
+}
+
+function liqDiasRestantes(fechaVenc) {
+  if (!fechaVenc) return null;
+  var hoy = new Date(); hoy.setHours(0,0,0,0);
+  var venc = new Date(fechaVenc); venc.setHours(0,0,0,0);
+  return Math.round((venc - hoy) / 86400000);
+}
+
+function liqAlertaColor(dias, estado) {
+  if (estado === 'pagado') return { bg:'#d1e7dd', color:'#0a3622', label:'Pagado' };
+  if (dias === null) return { bg:'var(--bg)', color:'var(--muted)', label:'Sin fecha' };
+  if (dias < 0)  return { bg:'#f8d7da', color:'#842029', label:'Vencido hace '+Math.abs(dias)+'d' };
+  if (dias <= 7) return { bg:'#fff3cd', color:'#856404', label:'Vence en '+dias+'d' };
+  return { bg:'#d1e7dd', color:'#0a3622', label:'Vence en '+dias+'d' };
+}
+
+function fmtUSD(n) {
+  if (!n && n !== 0) return '-';
+  return 'USD ' + Number(n).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function fmtLiqMonto(n, moneda) {
+  if (!n && n !== 0) return '-';
+  var m = moneda || 'USD';
+  var num = Number(n).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  return (m === 'ARS' ? '$ ' : 'USD ') + num;
+}
+
+function fmtFecha(f) {
+  if (!f) return '-';
+  var d = new Date(f + 'T00:00:00');
+  return d.toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+// ── Cargar datos desde Supabase ──
+async function cargarLiquidaciones() {
+  try {
+    var res = await fetch(SUPA_URL + '/rest/v1/liquidaciones?select=*&order=fecha_vencimiento.asc', { headers: SUPA_HDRS });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    liqData = await res.json();
+  } catch(e) {
+    liqData = [];
+    console.error('Error cargando liquidaciones:', e);
+  }
+}
+
+// ── Render Liquidaciones ──
+async function renderLiquidaciones() {
+  document.getElementById('liq-lista').innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:30px 0">Cargando...</div>';
+  await cargarLiquidaciones();
+  renderLiqLista();
+  renderLiqResumen();
+}
+
+function filtrarLiq(estado) {
+  liqFiltroActual = estado;
+  ['todos','pendiente','parcial','pagado'].forEach(function(f) {
+    var btn = document.getElementById('liq-f-' + f);
+    if (!btn) return;
+    var activo = f === estado;
+    btn.style.background = activo ? 'var(--verde-medio)' : 'none';
+    btn.style.color = activo ? 'white' : 'var(--muted)';
+    btn.style.border = activo ? 'none' : '1px solid var(--border)';
+    btn.style.fontWeight = activo ? '700' : '600';
+  });
+  renderLiqLista();
+}
+
+function liqSaldoStr(lista) {
+  // Suma separada por moneda y devuelve string legible
+  var usd = 0, ars = 0;
+  lista.forEach(function(r) {
+    var s = (parseFloat(r.importe_total)||0) - (parseFloat(r.monto_pagado)||0);
+    if ((r.moneda_importe||'USD') === 'ARS') ars += s; else usd += s;
+  });
+  var parts = [];
+  if (usd !== 0) parts.push(fmtLiqMonto(usd,'USD'));
+  if (ars !== 0) parts.push(fmtLiqMonto(ars,'ARS'));
+  return parts.length ? parts.join(' + ') : fmtLiqMonto(0,'USD');
+}
+
+function renderLiqResumen() {
+  var pendiente = liqData.filter(function(r){ return r.estado === 'pendiente'; });
+  var parcial   = liqData.filter(function(r){ return r.estado === 'parcial'; });
+  var vencidos  = liqData.filter(function(r){ return r.estado !== 'pagado' && liqDiasRestantes(r.fecha_vencimiento) < 0; });
+
+  var el = document.getElementById('liq-resumen');
+  el.innerHTML =
+    '<div style="flex:1;min-width:120px;background:#fff3cd;border-radius:10px;padding:12px 14px">' +
+      '<div style="font-size:9px;font-weight:700;color:#856404;text-transform:uppercase;letter-spacing:1px">Pendiente</div>' +
+      '<div style="font-size:13px;font-weight:800;color:#856404;margin-top:4px">'+liqSaldoStr(pendiente)+'</div>' +
+      '<div style="font-size:9px;color:#856404;margin-top:2px">'+pendiente.length+' liquidaciones</div>' +
+    '</div>' +
+    '<div style="flex:1;min-width:120px;background:#cff4fc;border-radius:10px;padding:12px 14px">' +
+      '<div style="font-size:9px;font-weight:700;color:#055160;text-transform:uppercase;letter-spacing:1px">Pago Parcial</div>' +
+      '<div style="font-size:13px;font-weight:800;color:#055160;margin-top:4px">'+liqSaldoStr(parcial)+'</div>' +
+      '<div style="font-size:9px;color:#055160;margin-top:2px">'+parcial.length+' liquidaciones</div>' +
+    '</div>' +
+    '<div style="flex:1;min-width:120px;background:#f8d7da;border-radius:10px;padding:12px 14px">' +
+      '<div style="font-size:9px;font-weight:700;color:#842029;text-transform:uppercase;letter-spacing:1px">Vencidos</div>' +
+      '<div style="font-size:15px;font-weight:800;color:#842029;margin-top:4px">'+vencidos.length+'</div>' +
+      '<div style="font-size:9px;color:#842029;margin-top:2px">sin pagar</div>' +
+    '</div>';
+}
+
+function renderLiqLista() {
+  var datos = liqFiltroActual === 'todos' ? liqData : liqData.filter(function(r){ return r.estado === liqFiltroActual; });
+  var el = document.getElementById('liq-lista');
+  if (!datos.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:30px 0">No hay liquidaciones en esta categoría.</div>';
+    actualizarBarraSeleccion();
+    return;
+  }
+  el.innerHTML = datos.map(function(r) {
+    var dias = liqDiasRestantes(r.fecha_vencimiento);
+    var alerta = liqAlertaColor(dias, r.estado);
+    var pendiente = (parseFloat(r.importe_total)||0) - (parseFloat(r.monto_pagado)||0);
+    var seleccionado = liqSeleccion.indexOf(String(r.id)) !== -1;
+    return '<div id="liq-card-'+r.id+'" style="background:white;border:2px solid '+(seleccionado?'var(--verde-medio)':'var(--border)')+';border-left:4px solid '+alerta.color+';border-radius:10px;padding:12px 14px;transition:border .15s">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">' +
+        '<label style="display:flex;align-items:center;gap:8px;cursor:pointer;flex:1">' +
+          '<input type="checkbox" '+(seleccionado?'checked':'')+' onchange="toggleLiqSeleccion(&quot;'+r.id+'&quot;)" style="width:16px;height:16px;accent-color:var(--verde-medio);cursor:pointer;flex-shrink:0">' +
+          '<div style="flex:1">' +
+            '<div style="font-weight:700;font-size:13px;color:var(--ink)">'+r.productor+'</div>' +
+            '<div style="font-size:10px;color:var(--muted);margin-top:2px">'+r.cereal+' · '+(r.toneladas||0)+' tn'+(r.humedad?' · Hum: '+r.humedad+'%':'')+' · Entrega: '+fmtFecha(r.fecha_compra)+'</div>' +
+          (r.humedad && r.humedad > (r.humedad_std||0) ? '<div style="font-size:9px;color:#842029;margin-top:1px;font-weight:600">Merma: −'+(r.merma_kg||0)+' kg → '+(r.tn_netas||0)+' tn netas'+(r.secada_total_usd?' · Secada: USD '+(r.secada_total_usd):'')+'</div>' : '') +
+            (r.tipo_precio==='pizarra' ? '<div style="font-size:9px;color:var(--verde-medio);margin-top:2px;font-weight:600">Pizarra '+fmtLiqMonto(r.pizarra_base||0,'ARS')+'/tn − '+(r.pizarra_pct||0)+'% = '+fmtLiqMonto(r.precio_usd||0,'ARS')+'/tn</div>' : '<div style="font-size:9px;color:var(--muted);margin-top:2px">Precio fijo · '+(r.moneda||'USD')+' '+fmtLiqMonto(r.precio_usd||0,r.moneda||'USD')+'/tn</div>') +
+          '</div>' +
+        '</label>' +
+        liqEstadoBadge(r.estado) +
+      '</div>' +
+      '<div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap">' +
+        '<div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Total</div><div style="font-weight:700;font-size:12px;color:var(--ink)">'+fmtLiqMonto(r.importe_total, r.moneda_importe)+'</div></div>' +
+        '<div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Pagado</div><div style="font-weight:700;font-size:12px;color:var(--ink)">'+fmtLiqMonto(r.monto_pagado||0, r.moneda_importe)+'</div></div>' +
+        '<div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Saldo</div><div style="font-weight:700;font-size:12px;color:'+(pendiente>0?'#842029':'#0a3622')+'">'+fmtLiqMonto(pendiente, r.moneda_importe)+'</div></div>' +
+        '<div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Vencimiento</div><div style="font-weight:700;font-size:12px;color:var(--ink)">'+fmtFecha(r.fecha_vencimiento)+'</div></div>' +
+        '<div style="margin-left:auto;background:'+alerta.bg+';color:'+alerta.color+';border-radius:6px;padding:3px 9px;font-size:9px;font-weight:700;align-self:center">'+alerta.label+'</div>' +
+      '</div>' +
+      (r.observaciones ? '<div style="margin-top:8px;font-size:10px;color:var(--muted);font-style:italic">'+r.observaciones+'</div>' : '') +
+      '<div style="display:flex;gap:8px;margin-top:10px">' +
+        '<button onclick="imprimirLiquidacion(&quot;'+r.id+'&quot;)" style="background:var(--verde-oscuro);color:white;border:none;border-radius:6px;padding:5px 12px;font-family:Arial,sans-serif;font-size:10px;font-weight:700;cursor:pointer">🖨 Imprimir</button>' +
+        '<button onclick="editarLiquidacion(&quot;'+r.id+'&quot;)" style="background:var(--verde-light);color:var(--verde-medio);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-family:Arial,sans-serif;font-size:10px;font-weight:600;cursor:pointer">✏ Editar</button>' +
+        (r.estado !== 'pagado' ? '<button onclick="pagarLiquidacion(&quot;'+r.id+'&quot;,'+pendiente+')" style="background:var(--verde-medio);color:white;border:none;border-radius:6px;padding:5px 12px;font-family:Arial,sans-serif;font-size:10px;font-weight:700;cursor:pointer">💰 Registrar Pago</button>' : '') +
+        '<button onclick="eliminarLiquidacion(&quot;'+r.id+'&quot;)" style="background:none;color:#842029;border:1px solid #f5c6cb;border-radius:6px;padding:5px 12px;font-family:Arial,sans-serif;font-size:10px;font-weight:600;cursor:pointer">🗑</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// ── Render Financiero Vencimientos ──
+async function renderVencFinanciero() {
+  document.getElementById('vencf-lista').innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:30px 0">Cargando...</div>';
+  await cargarLiquidaciones();
+
+  var activos = liqData.filter(function(r){ return r.estado !== 'pagado'; });
+  activos.sort(function(a,b){ return new Date(a.fecha_vencimiento) - new Date(b.fecha_vencimiento); });
+
+  // ── Alertas resumen ──
+  var vencidos = activos.filter(function(r){ return liqDiasRestantes(r.fecha_vencimiento) < 0; });
+  var proximos = activos.filter(function(r){ var d=liqDiasRestantes(r.fecha_vencimiento); return d>=0 && d<=7; });
+  var resto    = activos.filter(function(r){ var d=liqDiasRestantes(r.fecha_vencimiento); return d>7; });
+  var totalVenc = vencidos.reduce(function(s,r){ return s+(parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);},0);
+  var totalProx = proximos.reduce(function(s,r){ return s+(parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);},0);
+
+  document.getElementById('vencf-alertas').innerHTML =
+    '<div style="flex:1;min-width:110px;background:#f8d7da;border-radius:10px;padding:12px 14px">' +
+      '<div style="font-size:9px;font-weight:700;color:#842029;text-transform:uppercase;letter-spacing:1px">⚠ Vencidos</div>' +
+      '<div style="font-size:13px;font-weight:800;color:#842029;margin-top:4px">'+liqSaldoStr(vencidos)+'</div>' +
+      '<div style="font-size:9px;color:#842029;margin-top:2px">'+vencidos.length+' liq.</div>' +
+    '</div>' +
+    '<div style="flex:1;min-width:110px;background:#fff3cd;border-radius:10px;padding:12px 14px">' +
+      '<div style="font-size:9px;font-weight:700;color:#856404;text-transform:uppercase;letter-spacing:1px">⏰ Próx. 7d</div>' +
+      '<div style="font-size:13px;font-weight:800;color:#856404;margin-top:4px">'+liqSaldoStr(proximos)+'</div>' +
+      '<div style="font-size:9px;color:#856404;margin-top:2px">'+proximos.length+' liq.</div>' +
+    '</div>' +
+    '<div style="flex:1;min-width:110px;background:#d1e7dd;border-radius:10px;padding:12px 14px">' +
+      '<div style="font-size:9px;font-weight:700;color:#0a3622;text-transform:uppercase;letter-spacing:1px">✓ Al día</div>' +
+      '<div style="font-size:15px;font-weight:800;color:#0a3622;margin-top:4px">'+resto.length+'</div>' +
+      '<div style="font-size:9px;color:#0a3622;margin-top:2px">liquidaciones</div>' +
+    '</div>';
+
+  // ── Proyección 8 semanas ──
+  var hoy = new Date(); hoy.setHours(0,0,0,0);
+  var diaSem = hoy.getDay() === 0 ? 6 : hoy.getDay() - 1;
+  var inicioS1 = new Date(hoy); inicioS1.setDate(hoy.getDate() - diaSem);
+
+  var semanas = Array.from({length:8}, function(_,i) {
+    var inicio = new Date(inicioS1); inicio.setDate(inicioS1.getDate() + i*7);
+    var fin = new Date(inicio); fin.setDate(inicio.getDate() + 6);
+    return { inicio:inicio, fin:fin, items:[] };
+  });
+
+  activos.forEach(function(r) {
+    if (!r.fecha_vencimiento) return;
+    var venc = new Date(r.fecha_vencimiento + 'T12:00:00');
+    semanas.forEach(function(s) {
+      if (venc >= s.inicio && venc <= s.fin) s.items.push(r);
+    });
+  });
+
+  var hayDatos = semanas.some(function(s){ return s.items.length > 0; });
+
+  var listaEl = document.getElementById('vencf-lista');
+
+  // Encabezado proyección
+  var html = "<div style='font-family:Georgia,serif;font-size:14px;font-weight:700;color:var(--verde-oscuro);margin:18px 0 10px'>Proyección 8 Semanas</div>";
+
+  if (!hayDatos) {
+    html += '<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px 0;background:white;border:1px solid var(--border);border-radius:10px">No hay vencimientos en las próximas 8 semanas.</div>';
+  } else {
+    var acumUSD = 0, acumARS = 0;
+    html += semanas.map(function(s, i) {
+      var semUSD = 0, semARS = 0;
+      s.items.forEach(function(r) {
+        var saldo = (parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+        if ((r.moneda_importe||'USD')==='ARS') semARS += saldo; else semUSD += saldo;
+      });
+      acumUSD += semUSD; acumARS += semARS;
+      var esCurrent = i === 0;
+      var acumStr = (acumUSD!==0?fmtLiqMonto(acumUSD,'USD'):'') + (acumUSD!==0&&acumARS!==0?' + ':'') + (acumARS!==0?fmtLiqMonto(acumARS,'ARS'):'') || fmtLiqMonto(0,'USD');
+      var semStr  = (semUSD!==0?fmtLiqMonto(semUSD,'USD'):'') + (semUSD!==0&&semARS!==0?' + ':'') + (semARS!==0?fmtLiqMonto(semARS,'ARS'):'') || '—';
+      var acumNeg = acumUSD < 0 || acumARS < 0;
+      var acumColor = acumNeg ? '#842029' : 'var(--verde-oscuro)';
+      // Agrupar por productor dentro de la semana
+      var porProd = {};
+      s.items.forEach(function(r) {
+        var p = r.productor || 'Sin nombre';
+        if (!porProd[p]) porProd[p] = { tn:0, saldoUSD:0, saldoARS:0, vencimientos:[], diasMin:null };
+        var g = porProd[p];
+        g.tn += parseFloat(r.toneladas)||0;
+        var saldo = (parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+        if ((r.moneda_importe||'USD')==='ARS') g.saldoARS += saldo; else g.saldoUSD += saldo;
+        var d = liqDiasRestantes(r.fecha_vencimiento);
+        if (g.diasMin === null || d < g.diasMin) g.diasMin = d;
+        g.vencimientos.push(fmtFecha(r.fecha_vencimiento));
+      });
+      var detalles = Object.keys(porProd).map(function(prod) {
+        var g = porProd[prod];
+        var alerta = liqAlertaColor(g.diasMin, 'pendiente');
+        var saldoStr = (g.saldoUSD?fmtLiqMonto(g.saldoUSD,'USD'):'') +
+          (g.saldoUSD&&g.saldoARS?' + ':'') +
+          (g.saldoARS?fmtLiqMonto(g.saldoARS,'ARS'):'');
+        var vencStr = g.vencimientos.length === 1
+          ? g.vencimientos[0]
+          : g.vencimientos.length + ' venc.';
+        return '<div style="font-size:10px;color:var(--muted);padding:4px 0;border-bottom:1px dashed var(--border);display:flex;justify-content:space-between;align-items:center">' +
+          '<div>' +
+            '<span style="font-weight:700;color:var(--ink)">'+prod+'</span>' +
+            '<span style="color:var(--muted)"> · '+g.tn+'tn · '+vencStr+'</span>' +
+          '</div>' +
+          '<span style="font-weight:700;color:'+alerta.color+'">'+saldoStr+'</span>' +
+        '</div>';
+      }).join('');
+      var fechaLabel = s.inicio.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}) + ' — ' + s.fin.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'});
+      return '<div style="background:white;border:1px solid '+(esCurrent?'var(--verde-medio)':'var(--border)')+';border-radius:10px;margin-bottom:10px;overflow:hidden">' +
+        '<div style="background:'+(esCurrent?'var(--verde-oscuro)':'var(--bg)')+';padding:10px 14px;display:flex;justify-content:space-between;align-items:center">' +
+          '<div>' +
+            '<div style="font-size:10px;font-weight:700;color:'+(esCurrent?'white':'var(--ink)')+'">'+( esCurrent?'>> ':'' )+'Semana '+(i+1)+'</div>' +
+            '<div style="font-size:9px;color:'+(esCurrent?'rgba(255,255,255,0.6)':'var(--muted)')+'">'+fechaLabel+'</div>' +
+          '</div>' +
+          '<div style="text-align:right">' +
+            '<div style="font-size:9px;color:'+(esCurrent?'rgba(255,255,255,0.6)':'var(--muted)')+';letter-spacing:1px;text-transform:uppercase">Acum. pagos</div>' +
+            '<div style="font-size:13px;font-weight:700;color:'+(esCurrent?(acumNeg?'#ff9f9f':'#7ec87e'):acumColor)+'">'+acumStr+'</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="padding:10px 14px">' +
+          '<div style="font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#842029;margin-bottom:6px;font-weight:600">↓ Pagos semana: '+semStr+'</div>' +
+          (detalles || '<div style="font-size:10px;color:var(--border)">Sin vencimientos</div>') +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // Lista cronológica al final
+  if (activos.length) {
+    html += '<div style="font-family:Georgia,serif;font-size:14px;font-weight:700;color:var(--verde-oscuro);margin:18px 0 10px">Todos los Vencimientos</div>';
+    html += activos.map(function(r) {
+      var dias = liqDiasRestantes(r.fecha_vencimiento);
+      var alerta = liqAlertaColor(dias, r.estado);
+      var saldo = (parseFloat(r.importe_total)||0) - (parseFloat(r.monto_pagado)||0);
+      return '<div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--border);border-left:4px solid '+alerta.color+';border-radius:10px;padding:12px 14px;margin-bottom:8px">' +
+        '<div style="min-width:60px;text-align:center;background:'+alerta.bg+';border-radius:8px;padding:6px">' +
+          '<div style="font-size:14px;font-weight:900;color:'+alerta.color+'">'+fmtFecha(r.fecha_vencimiento).slice(0,5)+'</div>' +
+          '<div style="font-size:9px;color:'+alerta.color+'">'+fmtFecha(r.fecha_vencimiento).slice(6)+'</div>' +
+        '</div>' +
+        '<div style="flex:1">' +
+          '<div style="font-weight:700;font-size:13px;color:var(--ink)">'+r.productor+'</div>' +
+          '<div style="font-size:10px;color:var(--muted)">'+r.cereal+' · '+(r.toneladas||0)+' tn</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div style="font-weight:800;font-size:14px;color:'+(dias<0?'#842029':'var(--ink)')+'">'+fmtLiqMonto(saldo, r.moneda_importe)+'</div>' +
+          '<div style="font-size:9px;font-weight:700;color:'+alerta.color+';margin-top:2px">'+alerta.label+'</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } else {
+    html += '<div style="text-align:center;color:var(--muted);font-size:12px;padding:30px 0">No hay vencimientos pendientes.</div>';
+  }
+
+  listaEl.innerHTML = html;
+}
+
+// ── Modal Liquidacion ──
+var liqEditId = null;
+
+
+// ═══════════════════════════════════════════
+// HUMEDAD — Merma física + Secada
+// ═══════════════════════════════════════════
+var LIQ_HUMEDAD_STD = { 'Soja': 13.5, 'Maíz': 14.5 };
+
+function liqOnCerealChange() {
+  var cereal = document.getElementById('liq-f-cereal').value;
+  var bloqueH = document.getElementById('liq-bloque-humedad');
+  var std = LIQ_HUMEDAD_STD[cereal];
+  if (std !== undefined) {
+    bloqueH.style.display = 'flex';
+    document.getElementById('liq-f-humedad-std').value = std;
+  } else {
+    bloqueH.style.display = 'none';
+    document.getElementById('liq-f-humedad').value = '';
+  }
+  liqCalcHumedad();
+  liqCalcImporte();
+}
+
+function liqCalcHumedad() {
+  var cereal  = document.getElementById('liq-f-cereal').value;
+  var std     = LIQ_HUMEDAD_STD[cereal];
+  if (std === undefined) return;
+
+  var humReal = parseFloat(document.getElementById('liq-f-humedad').value);
+  var tn      = parseFloat(document.getElementById('liq-f-toneladas').value) || 0;
+  var libres  = parseFloat(document.getElementById('liq-f-secada-libres').value) || 0;
+  var costo   = parseFloat(document.getElementById('liq-f-secada-costo').value) || 0;
+  var tc      = parseFloat(document.getElementById('liq-f-tc').value) || 0;
+
+  var mermaWrap   = document.getElementById('liq-merma-wrap');
+  var secadaWrap  = document.getElementById('liq-secada-wrap');
+  var resumenWrap = document.getElementById('liq-humedad-resumen');
+  var resumenTxt  = document.getElementById('liq-humedad-resumen-txt');
+
+  if (isNaN(humReal) || tn <= 0) {
+    mermaWrap.style.display   = 'none';
+    secadaWrap.style.display  = 'none';
+    resumenWrap.style.display = 'none';
+    document.getElementById('liq-f-merma-kg').value     = '';
+    document.getElementById('liq-f-tn-netas').value     = '';
+    document.getElementById('liq-f-secada-puntos').value = '';
+    document.getElementById('liq-f-secada-total').value  = '';
+    document.getElementById('liq-f-secada-pesos').value  = '';
+    liqCalcImporte();
+    return;
+  }
+
+  var exceso   = humReal - std;
+  var hayMerma = exceso > 0;
+
+  // ── 1. Merma física ──
+  // kg_merma = TN * 1000 * exceso / (100 - std)
+  var kgMerma = 0, tnNetas = tn;
+  if (hayMerma) {
+    kgMerma  = (tn * 1000 * exceso) / (100 - std);
+    tnNetas  = tn - kgMerma / 1000;
+    mermaWrap.style.display = 'block';
+    document.getElementById('liq-f-merma-kg').value = kgMerma.toFixed(1);
+    document.getElementById('liq-f-tn-netas').value = tnNetas.toFixed(3);
+  } else {
+    mermaWrap.style.display = 'none';
+    document.getElementById('liq-f-merma-kg').value = '';
+    document.getElementById('liq-f-tn-netas').value = '';
+    tnNetas = tn;
+  }
+
+  // ── 2. Secada — puntos cobrar = exceso - puntos libres, sobre tn BRUTAS ──
+  var puntosCobrar   = exceso > 0 ? Math.max(0, exceso - libres) : 0;
+  var costoSecadaUSD = (costo > 0 && puntosCobrar > 0) ? puntosCobrar * costo * tn : 0;
+  var costoSecadaARS = (tc > 0) ? costoSecadaUSD * tc : 0;
+
+  if (exceso > 0) {
+    secadaWrap.style.display = 'block';
+    document.getElementById('liq-f-secada-puntos').value = puntosCobrar.toFixed(1);
+    document.getElementById('liq-f-secada-total').value  = costo > 0 ? costoSecadaUSD.toFixed(2) : '';
+    document.getElementById('liq-f-secada-pesos').value  = (costo > 0 && tc > 0)
+      ? '$ ' + costoSecadaARS.toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0})
+      : (tc === 0 && costo > 0 ? 'Ingresá TC' : '');
+  } else {
+    secadaWrap.style.display = 'none';
+    document.getElementById('liq-f-secada-puntos').value = '';
+    document.getElementById('liq-f-secada-total').value  = '';
+    document.getElementById('liq-f-secada-pesos').value  = '';
+  }
+
+  // ── 3. Resumen ──
+  if (hayMerma || (puntosCobrar > 0 && costo > 0)) {
+    resumenWrap.style.display = 'block';
+    var lines = [];
+    if (hayMerma)
+      lines.push('Merma: -' + kgMerma.toFixed(1) + ' kg / Tn netas: ' + tnNetas.toFixed(3));
+    if (puntosCobrar > 0 && costo > 0) {
+      var secStr = puntosCobrar.toFixed(1) + ' pts x USD ' + costo + '/tn (' + tn + ' tn brutas) = USD ' + costoSecadaUSD.toFixed(2);
+      if (tc > 0) {
+        secStr += '  x  TC $' + tc.toLocaleString('es-AR') + '  =  $ ' + costoSecadaARS.toLocaleString('es-AR', {maximumFractionDigits:0});
+      } else {
+        secStr += '  (ingresá TC para ver en $)';
+      }
+      lines.push('Secada: ' + secStr);
+    }
+    resumenTxt.textContent = lines.join('  |  ');
+  } else {
+    resumenWrap.style.display = 'none';
+  }
+
+  liqCalcImporte();
+}
+
+async function liqFetchTC() {
+  var btn = document.querySelector('[onclick="liqFetchTC()"]');
+  if (btn) { btn.textContent = '...'; btn.disabled = true; }
+  // Intentar traer TC BNA via proxies
+  var proxies = [
+    'https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.bna.com.ar/Personas'),
+    'https://corsproxy.io/?' + encodeURIComponent('https://www.bna.com.ar/Personas'),
+  ];
+  var tc = null;
+  for (var i = 0; i < proxies.length; i++) {
+    try {
+      var res = await fetch(proxies[i], { signal: AbortSignal.timeout(6000) });
+      var data = await res.json();
+      var html = data.contents || data;
+      if (typeof html !== 'string') html = JSON.stringify(html);
+      // Buscar dolar vendedor BNA
+      var m = html.match(/D.lar[^<]*<[^>]*>[^<]*<[^>]*>([\d,\.]+)/i) ||
+              html.match(/USD[^<]*<[^>]*>([\d,\.]+)/i) ||
+              html.match(/([\d]{3,4}[,\.]\d{2})/);
+      if (m) {
+        var val = parseFloat(m[1].replace('.','').replace(',','.'));
+        if (val > 100 && val < 10000) { tc = val; break; }
+      }
+    } catch(e) { /* next */ }
+  }
+  if (btn) { btn.textContent = '↻ BNA'; btn.disabled = false; }
+  if (tc) {
+    document.getElementById('liq-f-tc').value = tc.toFixed(2);
+    liqCalcHumedad();
+  } else {
+    alert('No se pudo obtener el TC del BNA. Ingresalo manualmente.');
+  }
+}
+
+function liqCalcImporte() {
+  var tn = parseFloat(document.getElementById('liq-f-toneladas').value) || 0;
+  if (tn <= 0) return;
+
+  var esFijo = document.getElementById('liq-bloque-fijo').style.display !== 'none';
+  var precio = esFijo
+    ? parseFloat(document.getElementById('liq-f-precio').value) || 0
+    : parseFloat(document.getElementById('liq-f-pizarra-result').value) || 0;
+  if (precio <= 0) return;
+
+  var moneda = esFijo ? (document.getElementById('liq-f-moneda').value||'USD') : 'ARS';
+
+  // ── Paso 1: Tn netas por merma ──
+  var tnNetas = tn;
+  var cereal  = document.getElementById('liq-f-cereal').value;
+  var std     = LIQ_HUMEDAD_STD[cereal];
+  var humReal = parseFloat(document.getElementById('liq-f-humedad').value);
+  var exceso  = 0;
+
+  if (std !== undefined && !isNaN(humReal) && humReal > std) {
+    exceso      = humReal - std;
+    var kgMerma = (tn * 1000 * exceso) / (100 - std);
+    tnNetas     = tn - kgMerma / 1000;
+  }
+
+  // ── Paso 2: Importe bruto = tn_netas × precio ──
+  var importe = tnNetas * precio;
+
+  // ── Paso 3: Secada sobre tn BRUTAS ──
+  var libres = parseFloat(document.getElementById('liq-f-secada-libres').value) || 0;
+  var costo  = parseFloat(document.getElementById('liq-f-secada-costo').value) || 0;
+  var tc     = parseFloat(document.getElementById('liq-f-tc').value) || 0;
+
+  if (exceso > 0 && costo > 0) {
+    var puntosCobrar   = Math.max(0, exceso - libres); // exceso menos puntos libres, sobre tn BRUTAS
+    var costoSecadaUSD = puntosCobrar * costo * tn; // ← tn BRUTAS
+    if (moneda === 'ARS') {
+      if (tc > 0) {
+        importe = importe - (costoSecadaUSD * tc);
+      } else {
+        document.getElementById('liq-f-importe').value = importe.toFixed(2);
+        return;
+      }
+    } else {
+      importe = importe - costoSecadaUSD;
+    }
+  }
+
+  document.getElementById('liq-f-importe').value = importe.toFixed(2);
+}
+
+function liqSetTipoPrecio(tipo) {
+  var esFijo = tipo === 'fijo';
+  document.getElementById('liq-tipo-fijo').style.background    = esFijo ? 'var(--verde-medio)' : 'none';
+  document.getElementById('liq-tipo-fijo').style.color         = esFijo ? 'white' : 'var(--muted)';
+  document.getElementById('liq-tipo-fijo').style.border        = esFijo ? 'none' : '1px solid var(--border)';
+  document.getElementById('liq-tipo-pizarra').style.background = !esFijo ? 'var(--verde-medio)' : 'none';
+  document.getElementById('liq-tipo-pizarra').style.color      = !esFijo ? 'white' : 'var(--muted)';
+  document.getElementById('liq-tipo-pizarra').style.border     = !esFijo ? 'none' : '1px solid var(--border)';
+  document.getElementById('liq-bloque-fijo').style.display    = esFijo ? 'flex' : 'none';
+  document.getElementById('liq-bloque-pizarra').style.display = !esFijo ? 'flex' : 'none';
+  // Pizarra siempre en ARS; Fijo puede elegir
+  if (!esFijo) {
+    document.getElementById('liq-f-importe-moneda').value = 'ARS';
+  }
+  document.getElementById('liq-f-err').textContent = '';
+}
+
+function liqCalcPizarra() {
+  var base = parseFloat(document.getElementById('liq-f-pizarra-base').value) || 0;
+  var pct  = parseFloat(document.getElementById('liq-f-pizarra-pct').value)  || 0;
+  var result = base * (1 - pct / 100);
+  document.getElementById('liq-f-pizarra-result').value = result > 0 ? result.toFixed(2) : '';
+  // Recalcular importe completo (merma + secada incluidos)
+  liqCalcImporte();
+}
+
+function abrirFormLiquidacion(id) {
+  liqEditId = id || null;
+  var titulo = document.getElementById('liq-modal-titulo');
+  var r = id ? liqData.find(function(x){ return x.id == id; }) : null;
+  titulo.textContent = r ? 'Editar Liquidación' : 'Nueva Liquidación';
+  // Selector productor
+  var selP = document.getElementById('liq-f-productor-sel');
+  var nuevoW = document.getElementById('liq-productor-nuevo-wrap');
+  if (selP) {
+    var existeEnLista = r && productoresData.find(function(p){ return p.nombre===r.productor; });
+    if (r && !existeEnLista) {
+      // Productor existente pero no en lista — mostrar como nuevo
+      selP.value = '__nuevo__';
+      if (nuevoW) nuevoW.style.display = 'block';
+    } else {
+      selP.value = r ? r.productor : '';
+      if (nuevoW) nuevoW.style.display = 'none';
+    }
+  }
+  document.getElementById('liq-f-productor').value = r ? r.productor : '';
+  document.getElementById('liq-f-cereal').value      = r ? r.cereal : 'Soja';
+  document.getElementById('liq-f-toneladas').value   = r ? r.toneladas : '';
+  document.getElementById('liq-f-fcompra').value     = r ? r.fecha_compra : '';
+  document.getElementById('liq-f-fvenc').value       = r ? r.fecha_vencimiento : '';
+  document.getElementById('liq-f-estado').value      = r ? r.estado : 'pendiente';
+  document.getElementById('liq-f-pagado').value      = r ? (r.monto_pagado||0) : '';
+  document.getElementById('liq-f-obs').value         = r ? (r.observaciones||'') : '';
+  // Humedad
+  var cerealVal = r ? r.cereal : 'Soja';
+  setTimeout(function() {
+    liqOnCerealChange();
+    if (r && r.humedad) {
+      document.getElementById('liq-f-humedad').value = r.humedad;
+      document.getElementById('liq-f-secada-libres').value = r.secada_libres||0;
+      document.getElementById('liq-f-secada-costo').value  = r.secada_costo_punto||'';
+      liqCalcHumedad();
+    }
+  }, 50);
+  document.getElementById('liq-f-importe').value     = r ? r.importe_total : '';
+  document.getElementById('liq-f-importe-moneda').value = r ? (r.moneda_importe||'USD') : 'USD';
+  // Tipo precio
+  var tipoPrecio = r ? (r.tipo_precio||'fijo') : 'fijo';
+  liqSetTipoPrecio(tipoPrecio);
+  if (tipoPrecio === 'fijo') {
+    document.getElementById('liq-f-precio').value   = r ? (r.precio_usd||'') : '';
+    document.getElementById('liq-f-moneda').value   = r ? (r.moneda||'USD') : 'USD';
+  } else {
+    document.getElementById('liq-f-pizarra-base').value   = r ? (r.pizarra_base||'') : '';
+    document.getElementById('liq-f-pizarra-pct').value    = r ? (r.pizarra_pct||'') : '';
+    document.getElementById('liq-f-pizarra-result').value = r ? (r.precio_usd||'') : '';
+  }
+  document.getElementById('liq-f-err').textContent = '';
+  document.getElementById('liq-modal').style.display = 'flex';
+}
+
+function editarLiquidacion(id) { abrirFormLiquidacion(id); }
+
+function cerrarFormLiquidacion() {
+  document.getElementById('liq-modal').style.display = 'none';
+  liqEditId = null;
+}
+
+async function guardarLiquidacion() {
+  var productor   = document.getElementById('liq-f-productor').value.trim();
+  var cereal      = document.getElementById('liq-f-cereal').value;
+  var toneladas   = parseFloat(document.getElementById('liq-f-toneladas').value);
+  var importe     = parseFloat(document.getElementById('liq-f-importe').value);
+  var monedaImp   = document.getElementById('liq-f-importe-moneda').value;
+  var fcompra     = document.getElementById('liq-f-fcompra').value;
+  var fvenc       = document.getElementById('liq-f-fvenc').value;
+  var estado      = document.getElementById('liq-f-estado').value;
+  var pagado      = parseFloat(document.getElementById('liq-f-pagado').value)||0;
+  var obs         = document.getElementById('liq-f-obs').value.trim();
+  var errEl       = document.getElementById('liq-f-err');
+  // Tipo precio
+  var esFijo      = document.getElementById('liq-bloque-fijo').style.display !== 'none';
+  var tipoPrecio  = esFijo ? 'fijo' : 'pizarra';
+  var precio      = esFijo
+    ? parseFloat(document.getElementById('liq-f-precio').value)
+    : parseFloat(document.getElementById('liq-f-pizarra-result').value);
+  var moneda      = esFijo ? document.getElementById('liq-f-moneda').value : 'USD';
+  var pizarraBase = !esFijo ? parseFloat(document.getElementById('liq-f-pizarra-base').value)||null : null;
+  var pizarraPct  = !esFijo ? parseFloat(document.getElementById('liq-f-pizarra-pct').value)||null : null;
+
+  // Si el selector está en "nuevo", tomar el valor del input
+  var selProd = document.getElementById('liq-f-productor-sel');
+  if (selProd && selProd.value !== '__nuevo__' && selProd.value !== '') {
+    productor = selProd.value;
+  }
+  if (!productor) { errEl.textContent = 'Ingresá el nombre del productor.'; return; }
+  // Guardar nuevo productor en la base si es nuevo
+  if (selProd && selProd.value === '__nuevo__' && productor) {
+    await guardarNuevoProductor(productor);
+  }
+  if (!importe || isNaN(importe)) { errEl.textContent = 'Ingresá el importe total.'; return; }
+  if (!fvenc) { errEl.textContent = 'Ingresá la fecha de vencimiento.'; return; }
+
+  // Leer campos humedad
+  var humedad     = parseFloat(document.getElementById('liq-f-humedad').value)||null;
+  var humedadStd  = parseFloat(document.getElementById('liq-f-humedad-std').value)||null;
+  var mermaKg     = parseFloat(document.getElementById('liq-f-merma-kg').value)||null;
+  var tnNetas     = parseFloat(document.getElementById('liq-f-tn-netas').value)||null;
+  var secadaLibres= parseFloat(document.getElementById('liq-f-secada-libres').value)||null;
+  var secadaCosto = parseFloat(document.getElementById('liq-f-secada-costo').value)||null;
+  var secadaPuntos= parseFloat(document.getElementById('liq-f-secada-puntos').value)||null;
+  var secadaTotal = parseFloat(document.getElementById('liq-f-secada-total').value)||null;
+
+  var tc = parseFloat(document.getElementById('liq-f-tc').value)||null;
+
+  var body = { productor, cereal, toneladas: toneladas||null, precio_usd: precio||null,
+    moneda: moneda, tipo_precio: tipoPrecio, pizarra_base: pizarraBase, pizarra_pct: pizarraPct,
+    importe_total: importe, moneda_importe: monedaImp,
+    fecha_compra: fcompra||null, fecha_vencimiento: fvenc,
+    estado, monto_pagado: pagado, observaciones: obs||null,
+    humedad: humedad, humedad_std: humedadStd, merma_kg: mermaKg, tn_netas: tnNetas,
+    secada_libres: secadaLibres, secada_costo_punto: secadaCosto,
+    secada_puntos: secadaPuntos, secada_total_usd: secadaTotal, tipo_cambio: tc };
+
+  try {
+    var res;
+    if (liqEditId) {
+      res = await fetch(SUPA_URL+'/rest/v1/liquidaciones?id=eq.'+liqEditId, {
+        method:'PATCH', headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}), body:JSON.stringify(body) });
+    } else {
+      res = await fetch(SUPA_URL+'/rest/v1/liquidaciones', {
+        method:'POST', headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}), body:JSON.stringify(body) });
+    }
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    cerrarFormLiquidacion();
+    renderLiquidaciones();
+  } catch(e) {
+    errEl.textContent = 'Error al guardar: '+e.message;
+  }
+}
+
+async function pagarLiquidacion(id, saldo) {
+  var monto = prompt('Registrar pago. Saldo pendiente: '+fmtUSD(saldo)+'. Ingresá el monto a pagar (USD):');
+  if (monto === null) return;
+  monto = parseFloat(monto);
+  if (isNaN(monto) || monto <= 0) { alert('Monto inválido.'); return; }
+  var r = liqData.find(function(x){ return x.id == id; });
+  var nuevoPagado = (parseFloat(r.monto_pagado)||0) + monto;
+  var nuevoEstado = nuevoPagado >= (parseFloat(r.importe_total)||0) ? 'pagado' : 'parcial';
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/liquidaciones?id=eq.'+id, {
+      method:'PATCH', headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}),
+      body:JSON.stringify({ monto_pagado: nuevoPagado, estado: nuevoEstado }) });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    renderLiquidaciones();
+  } catch(e) {
+    alert('Error al registrar pago: '+e.message);
+  }
+}
+
+async function eliminarLiquidacion(id) {
+  if (!confirm('¿Eliminar esta liquidación? Esta acción no se puede deshacer.')) return;
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/liquidaciones?id=eq.'+id, {
+      method:'DELETE', headers:SUPA_HDRS });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    renderLiquidaciones();
+  } catch(e) {
+    alert('Error al eliminar: '+e.message);
+  }
 }
 
 // Init — auth gated. initApp() se llama desde doLogin()
@@ -4860,7 +6500,7 @@ function renderAcopioLista() {
         + '</div>'
         + '<div style="background:var(--bg);border-radius:7px;padding:8px 10px">'
           + '<div style="font-size:8px;color:var(--muted);text-transform:uppercase;margin-bottom:3px">Ganancia operación</div>'
-          + '<div style="font-family:\'Playfair Display\',serif;font-size:15px;font-weight:700;color:' + ganColor + '">$ ' + Math.round(Math.abs(gananciaTotal)).toLocaleString('es-AR') + '</div>'
+          + '<div style="font-family:Georgia,serif;font-size:15px;font-weight:700;color:' + ganColor + '">$ ' + Math.round(Math.abs(gananciaTotal)).toLocaleString('es-AR') + '</div>'
           + '<div style="font-size:9px;color:var(--muted);margin-top:2px">Com: ' + comLabel + '</div>'
         + '</div>'
       + '</div>'
@@ -5086,7 +6726,7 @@ function renderPizarraCompradores() {
         + '<div style="flex:1;min-width:0">'
           + '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'
             + '<span style="font-size:9px;font-weight:700;color:white;background:'+col.badge+';padding:2px 7px;border-radius:3px;white-space:nowrap">'+escHtml(cp.producto)+'</span>'
-            + '<span style="font-family:\'Playfair Display\',serif;font-size:17px;font-weight:700;color:var(--ink)">$ '+Math.round(cp.precio).toLocaleString('es-AR')+'/tn</span>'
+            + '<span style="font-family:Georgia,serif;font-size:17px;font-weight:700;color:var(--ink)">$ '+Math.round(cp.precio).toLocaleString('es-AR')+'/tn</span>'
           + '</div>'
           + '<div style="font-size:10px;color:var(--muted);margin-top:3px">'+escHtml(cp.condpago)+(cp.obs?' · <i>'+escHtml(cp.obs)+'</i>':'')+'</div>'
         + '</div>'
@@ -5280,6 +6920,214 @@ function eliminarPost(id) {
     </div>
   </div>
 </div>
+<!-- MODAL LIQUIDACION -->
+<div id="liq-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:16px">
+  <div style="background:white;border-radius:16px;padding:22px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div id="liq-modal-titulo" style="font-family:Georgia,serif;font-size:17px;font-weight:700;color:var(--verde-oscuro)">Nueva Liquidación</div>
+      <button onclick="cerrarFormLiquidacion()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="field">
+        <label>Productor *</label>
+        <div class="input-wrap">
+          <select id="liq-f-productor-sel" onchange="onProductorChange()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="">-- Elegir productor --</option>
+          </select>
+        </div>
+      </div>
+      <div id="liq-productor-nuevo-wrap" style="display:none">
+        <div class="field">
+          <label>Nombre del nuevo productor *</label>
+          <div class="input-wrap"><input id="liq-f-productor" type="text" placeholder="Escribí el nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+        </div>
+      </div>
+      <input type="hidden" id="liq-f-productor-hidden">
+      <div style="display:flex;gap:10px">
+        <div class="field" style="flex:1">
+          <label>Cereal</label>
+          <div class="input-wrap"><select id="liq-f-cereal" onchange="liqOnCerealChange()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="Soja">Soja</option><option value="Girasol">Girasol</option><option value="Maíz">Maíz</option><option value="Trigo">Trigo</option><option value="Otro">Otro</option>
+          </select></div>
+        </div>
+        <div class="field" style="flex:1">
+          <label>Toneladas</label>
+          <div class="input-wrap"><input id="liq-f-toneladas" type="number" placeholder="0" oninput="liqCalcHumedad()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+        </div>
+      </div>
+
+      <!-- Humedad -->
+      <div id="liq-bloque-humedad" style="display:none;flex-direction:column;gap:10px;background:#f4f8f5;border-radius:10px;padding:12px;border:1px solid var(--border)">
+        <div style="font-size:10px;font-weight:700;color:var(--verde-oscuro);text-transform:uppercase;letter-spacing:1px">Humedad y Calidad</div>
+        <div style="display:flex;gap:10px">
+          <div class="field" style="flex:1">
+            <label>Humedad real (%)</label>
+            <div class="input-wrap"><input id="liq-f-humedad" type="number" step="0.1" placeholder="Ej: 14.2" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)" oninput="liqCalcHumedad()"></div>
+          </div>
+          <div class="field" style="flex:1">
+            <label id="liq-humedad-std-label">Estándar (%)</label>
+            <div class="input-wrap"><input id="liq-f-humedad-std" type="number" step="0.1" style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--muted)" readonly></div>
+          </div>
+        </div>
+        <!-- Merma física -->
+        <div id="liq-merma-wrap" style="display:none">
+          <div style="font-size:9px;font-weight:700;color:#856404;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">↓ Merma Física</div>
+          <div style="display:flex;gap:10px">
+            <div class="field" style="flex:1">
+              <label>Kg descontados</label>
+              <div class="input-wrap"><input id="liq-f-merma-kg" type="number" readonly style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:#856404;font-weight:700"></div>
+            </div>
+            <div class="field" style="flex:1">
+              <label>Tn netas</label>
+              <div class="input-wrap"><input id="liq-f-tn-netas" type="number" readonly style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--verde-oscuro);font-weight:700"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Secada -->
+        <div id="liq-secada-wrap" style="display:none">
+          <div style="font-size:9px;font-weight:700;color:#842029;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">↓ Secada</div>
+          <div style="display:flex;gap:10px">
+            <div class="field" style="flex:1">
+              <label>Puntos libres</label>
+              <div class="input-wrap"><input id="liq-f-secada-libres" type="number" step="0.5" placeholder="Ej: 1" value="0" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)" oninput="liqCalcHumedad()"></div>
+            </div>
+            <div class="field" style="flex:1">
+              <label>Costo por punto (USD/tn)</label>
+              <div class="input-wrap"><input id="liq-f-secada-costo" type="number" step="0.01" placeholder="Ej: 0.50" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)" oninput="liqCalcHumedad()"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:8px">
+            <div class="field" style="flex:1">
+              <label>Puntos a cobrar</label>
+              <div class="input-wrap"><input id="liq-f-secada-puntos" type="number" readonly style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:#842029;font-weight:700"></div>
+            </div>
+            <div class="field" style="flex:1">
+              <label>Costo secada (USD)</label>
+              <div class="input-wrap"><input id="liq-f-secada-total" type="number" readonly style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:#842029;font-weight:700"></div>
+            </div>
+          </div>
+          <!-- TC y secada en pesos -->
+          <div style="display:flex;gap:10px;margin-top:8px">
+            <div class="field" style="flex:1">
+              <label>TC Oficial ($/USD) <button type="button" onclick="liqFetchTC()" style="background:var(--verde-light);color:var(--verde-medio);border:1px solid var(--border);border-radius:5px;padding:2px 8px;font-family:'Outfit',sans-serif;font-size:9px;font-weight:600;cursor:pointer">↻ BNA</button></label>
+              <div class="input-wrap"><input id="liq-f-tc" type="number" placeholder="Ej: 1050" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)" oninput="liqCalcHumedad()"></div>
+            </div>
+            <div class="field" style="flex:1">
+              <label>Secada en $ (ARS)</label>
+              <div class="input-wrap"><input id="liq-f-secada-pesos" type="text" readonly style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:#842029;font-weight:700"></div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Resumen descuentos -->
+        <div id="liq-humedad-resumen" style="display:none;background:white;border-radius:8px;padding:10px;border:1px solid #f5c6cb">
+          <div style="font-size:9px;font-weight:700;color:#842029;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Descuentos aplicados</div>
+          <div id="liq-humedad-resumen-txt" style="font-size:11px;color:#842029;font-weight:600"></div>
+        </div>
+      </div>
+
+      <!-- Tipo de precio -->
+      <div class="field">
+        <label>Tipo de Precio</label>
+        <div style="display:flex;gap:8px">
+          <button type="button" id="liq-tipo-fijo" onclick="liqSetTipoPrecio('fijo')"
+            style="flex:1;background:var(--verde-medio);color:white;border:none;border-radius:7px;padding:8px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer">
+            Precio Fijo
+          </button>
+          <button type="button" id="liq-tipo-pizarra" onclick="liqSetTipoPrecio('pizarra')"
+            style="flex:1;background:none;border:1px solid var(--border);border-radius:7px;padding:8px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer">
+            Pizarra (%)
+          </button>
+        </div>
+      </div>
+
+      <!-- Precio Fijo -->
+      <div id="liq-bloque-fijo" style="display:flex;gap:10px">
+        <div class="field" style="flex:1">
+          <label>Moneda</label>
+          <div class="input-wrap"><select id="liq-f-moneda" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="USD">USD</option>
+            <option value="ARS">Pesos (ARS)</option>
+          </select></div>
+        </div>
+        <div class="field" style="flex:1">
+          <label id="liq-precio-label">Precio/tn</label>
+          <div class="input-wrap"><input id="liq-f-precio" type="number" placeholder="0.00" oninput="liqCalcImporte()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+        </div>
+      </div>
+
+      <!-- Precio Pizarra -->
+      <div id="liq-bloque-pizarra" style="display:none;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:10px">
+          <div class="field" style="flex:1">
+            <label>Pizarra base ($/tn)</label>
+            <div class="input-wrap"><input id="liq-f-pizarra-base" type="number" placeholder="Ej: 465000" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)" oninput="liqCalcPizarra()"></div>
+          </div>
+          <div class="field" style="flex:1">
+            <label>Descuento (%)</label>
+            <div class="input-wrap"><input id="liq-f-pizarra-pct" type="number" placeholder="Ej: 2.5" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)" oninput="liqCalcPizarra()"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Precio resultante ($/tn)</label>
+          <div class="input-wrap"><input id="liq-f-pizarra-result" type="number" readonly style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--verde-oscuro);font-weight:700"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <div class="field" style="flex:1">
+          <label>Importe Total *</label>
+          <div class="input-wrap"><input id="liq-f-importe" type="number" placeholder="0.00" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+        </div>
+        <div class="field" style="flex:1">
+          <label id="liq-importe-moneda-label">Moneda importe</label>
+          <div class="input-wrap"><select id="liq-f-importe-moneda" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="USD">USD</option>
+            <option value="ARS">ARS</option>
+          </select></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div class="field" style="flex:1">
+          <label>Fecha de Entrega</label>
+          <div class="input-wrap"><input id="liq-f-fcompra" type="date" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+        </div>
+        <div class="field" style="flex:1">
+          <label>Fecha de Vencimiento *</label>
+          <div class="input-wrap"><input id="liq-f-fvenc" type="date" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div class="field" style="flex:1">
+          <label>Estado</label>
+          <div class="input-wrap"><select id="liq-f-estado" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="pendiente">Pendiente</option>
+            <option value="parcial">Pago Parcial</option>
+            <option value="pagado">Pagado</option>
+          </select></div>
+        </div>
+        <div class="field" style="flex:1">
+          <label>Monto Pagado USD</label>
+          <div class="input-wrap"><input id="liq-f-pagado" type="number" placeholder="0.00" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Observaciones</label>
+        <div class="input-wrap"><input id="liq-f-obs" type="text" placeholder="Notas opcionales" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+      </div>
+    </div>
+
+    <div id="liq-f-err" style="color:#842029;font-size:11px;margin-top:10px;display:block"></div>
+
+    <div style="display:flex;gap:8px;margin-top:18px">
+      <button onclick="guardarLiquidacion()" style="flex:2;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Guardar</button>
+      <button onclick="cerrarFormLiquidacion()" style="flex:1;background:none;border:1px solid var(--border);border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);cursor:pointer">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 </div><!-- /app-wrapper -->
 
 </body>
