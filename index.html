@@ -549,6 +549,7 @@
   <button class="tab" onclick="switchTab('flete')">Flete</button>
   <button class="tab" id="tab-btn-comercial" onclick="switchTab('comercial')">Comercial</button>
   <button class="tab" onclick="switchTab('vencimientos')">Vencimientos</button>
+  <button class="tab" onclick="switchTab('rrhh')">RRHH</button>
   <button class="tab" onclick="switchTab('historial')">Historial</button>
   <button class="tab" onclick="switchTab('acopio')">🌾 Acopio</button>
   <button class="tab" id="tab-btn-admin" onclick="switchTab('admin')" style="display:none">&#9881; Admin</button>
@@ -608,6 +609,7 @@
 
     <!-- Mural general -->
     <div id="portal-general"></div>
+    <div id="portal-banco-diario" style="display:none;margin-top:12px"></div>
 
   </div>
 
@@ -1167,7 +1169,7 @@
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
       <div class="section-label" style="margin:0;border:none">Registro de Compras</div>
-      <div style="display:flex;gap:8px"><button onclick="abrirFormCompra()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Nueva compra</button><button onclick="abrirFormFijacion()" style="background:#1d4ed8;color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Nueva fijacion</button></div>
+      <div style="display:flex;gap:8px"><button onclick="abrirFormCompra()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Nueva compra</button></div>
     </div>
 
     <!-- Formulario nueva compra -->
@@ -1184,14 +1186,22 @@
         </div>
         <div class="field" style="margin-bottom:0">
           <label>Proveedor</label>
-          <div class="input-wrap"><input type="text" id="c-proveedor" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+          <div class="input-wrap">
+            <select id="c-proveedor-sel" onchange="prodSelectorChange('c-proveedor')" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+              <option value="">-- Elegir --</option>
+            </select>
+          </div>
+          <div id="c-proveedor-nuevo-wrap" style="display:none;margin-top:4px">
+            <div class="input-wrap"><input type="text" id="c-proveedor" placeholder="Nombre nuevo" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+          </div>
+          <input type="hidden" id="c-proveedor-val">
         </div>
         <div class="field" style="margin-bottom:0">
           <label>Producto</label>
           <div class="input-wrap">
             <select id="c-producto" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
               <option value="Soja">Soja</option>
-              <option value="Maíz">Maíz</option>
+              <option value="Maiz">Maíz</option>
               <option value="Trigo">Trigo</option>
               <option value="Cáscara de Soja">Cáscara de Soja</option>
               <option value="Expeller de Soja">Expeller de Soja</option>
@@ -1287,7 +1297,6 @@
     </div>
 
 
-    <div id="form-fijacion" style="display:none" class="card"><div style="font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">Nueva Fijacion</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="field" style="margin-bottom:0"><label>Fecha</label><div class="input-wrap"><input type="date" id="fij-fecha" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"></div></div><div class="field" style="margin-bottom:0"><label>Depositante</label><div class="input-wrap"><input type="text" id="fij-proveedor" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"></div></div><div class="field" style="margin-bottom:0"><label>Producto</label><div class="input-wrap"><select id="fij-producto" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)"><option value="Soja">Soja</option><option value="Maiz">Maiz</option><option value="Trigo">Trigo</option><option value="Cascara">Cascara de Soja</option></select></div></div><div class="field" style="margin-bottom:0"><label>Toneladas</label><div class="input-wrap"><input type="number" id="fij-tn" placeholder="0" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"><span class="unit right">tn</span></div></div><div class="field" style="margin-bottom:0"><label>Comprador</label><div class="input-wrap"><input type="text" id="fij-comprador" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)"></div></div><div class="field" style="margin-bottom:0"><label>Obs</label><div class="input-wrap"><input type="text" id="fij-obs" placeholder="Notas..." style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)"></div></div></div><div style="display:flex;gap:8px;margin-top:12px"><button onclick="guardarFijacion()" style="flex:1;background:#1d4ed8;color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:600;cursor:pointer">Guardar en deposito</button><button onclick="cerrarFormFijacion()" style="flex:1;background:var(--border);color:var(--muted);border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:600;cursor:pointer">Cancelar</button></div></div>
     <div id="form-fijar-precio" style="display:none" class="card"><div style="font-size:11px;font-weight:700;color:var(--dorado);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)" id="fijar-titulo">Fijar precio</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="field" style="margin-bottom:0"><label>Fecha fijacion</label><div class="input-wrap"><input type="date" id="fij-precio-fecha" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"></div></div><div class="field" style="margin-bottom:0"><label>Tipo precio</label><div class="input-wrap"><select id="fij-tipo-precio" onchange="toggleFijarPrecio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)"><option value="fijo">Precio fijo</option><option value="pizarra">Pizarra menos %</option></select></div></div><div class="field" style="margin-bottom:0"><label>Condicion pago</label><div class="input-wrap"><select id="fij-condpago" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)"><option value="Contado">Contado</option><option value="7/10 dias">7/10 dias</option><option value="15 dias">15 dias</option><option value="30 dias">30 dias</option><option value="60 dias">60 dias</option></select></div></div><div class="field" style="margin-bottom:0"><label>Fecha entrega</label><div class="input-wrap"><input type="date" id="fij-precio-entrega" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"></div></div></div><div id="fij-campo-fijo" style="margin-top:10px"><div class="field" style="margin-bottom:0"><label>Precio / tn</label><div class="input-wrap"><span class="unit">$</span><input type="text" inputmode="numeric" id="fij-precio-fijo" placeholder="0" oninput="fmtInput(this)" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"></div></div></div><div id="fij-campo-pizarra" style="display:none;margin-top:10px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="field" style="margin-bottom:0"><label>Pizarra ref.</label><div class="input-wrap"><span class="unit">$</span><input type="text" inputmode="numeric" id="fij-pizarra-ref" placeholder="0" oninput="fmtInput(this);calcFijarPrecio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"></div></div><div class="field" style="margin-bottom:0"><label>Descuento</label><div class="input-wrap"><input type="number" id="fij-descuento" placeholder="0" step="0.1" oninput="calcFijarPrecio()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"><span class="unit right">%</span></div></div></div><div id="fij-precio-calculado" style="font-size:11px;color:var(--verde-medio);margin-top:6px;font-weight:600"></div></div><div style="display:flex;gap:8px;margin-top:12px"><button onclick="confirmarFijacion()" style="flex:1;background:var(--dorado);color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:600;cursor:pointer">Confirmar fijacion</button><button onclick="cerrarFormFijarPrecio()" style="flex:1;background:var(--border);color:var(--muted);border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:600;cursor:pointer">Cancelar</button></div></div>
     <!-- Lista de compras -->
     <div id="lista-compras" style="margin-top:12px"></div>
@@ -1321,7 +1330,15 @@
         </div>
         <div class="field" style="margin-bottom:0">
           <label>Cliente</label>
-          <div class="input-wrap"><input type="text" id="v-cliente" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+          <div class="input-wrap">
+            <select id="v-cliente-sel" onchange="prodSelectorChange('v-cliente')" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+              <option value="">-- Elegir --</option>
+            </select>
+          </div>
+          <div id="v-cliente-nuevo-wrap" style="display:none;margin-top:4px">
+            <div class="input-wrap"><input type="text" id="v-cliente" placeholder="Nombre nuevo" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+          </div>
+          <input type="hidden" id="v-cliente-val">
         </div>
         <div class="field" style="margin-bottom:0">
           <label>Producto</label>
@@ -1427,7 +1444,15 @@
         </div>
         <div class="field" style="margin-bottom:0">
           <label>Cliente</label>
-          <div class="input-wrap"><input type="text" id="cv-cliente" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+          <div class="input-wrap">
+            <select id="cv-cliente-sel" onchange="prodSelectorChange('cv-cliente')" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+              <option value="">-- Elegir --</option>
+            </select>
+          </div>
+          <div id="cv-cliente-nuevo-wrap" style="display:none;margin-top:4px">
+            <div class="input-wrap"><input type="text" id="cv-cliente" placeholder="Nombre nuevo" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+          </div>
+          <input type="hidden" id="cv-cliente-val">
         </div>
         <div class="field" style="margin-bottom:0">
           <label>Producto</label>
@@ -1531,8 +1556,9 @@
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
         <div style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:var(--verde-oscuro)">Liquidaciones a Productores</div>
         <div style="display:flex;gap:8px">
-          <button onclick="exportarLiqPDF()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">⬇ PDF</button>
           <button onclick="abrirFormLiquidacion()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+ Nueva</button>
+          <button onclick="abrirFormFijacion()" style="background:#1d4ed8;color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer">+ Nueva Fijación</button>
+          <button onclick="exportarLiqPDF()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">⬇ PDF</button>
         </div>
       </div>
 
@@ -1546,6 +1572,9 @@
         <button onclick="filtrarLiq('parcial')" id="liq-f-parcial" style="background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;color:var(--muted);cursor:pointer">Pago Parcial</button>
         <button onclick="filtrarLiq('pagado')" id="liq-f-pagado" style="background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;color:var(--muted);cursor:pointer">Pagados</button>
       </div>
+
+
+    <div id="form-fijacion" style="display:none" class="card"><div style="font-size:11px;font-weight:700;color:#1d4ed8;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">Nueva Fijacion</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="field" style="margin-bottom:0"><label>Fecha</label><div class="input-wrap"><input type="date" id="fij-fecha" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"></div></div><div class="field" style="margin-bottom:0"><label>Depositante</label><div class="input-wrap"><input type="text" id="fij-proveedor" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"></div></div><div class="field" style="margin-bottom:0"><label>Producto</label><div class="input-wrap"><select id="fij-producto" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)"><option value="Soja">Soja</option><option value="Maiz">Maiz</option><option value="Trigo">Trigo</option><option value="Cascara">Cascara de Soja</option></select></div></div><div class="field" style="margin-bottom:0"><label>Toneladas</label><div class="input-wrap"><input type="number" id="fij-tn" placeholder="0" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;outline:none;color:var(--ink)"><span class="unit right">tn</span></div></div><div class="field" style="margin-bottom:0"><label>Comprador</label><div class="input-wrap"><input type="text" id="fij-comprador" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)"></div></div><div class="field" style="margin-bottom:0"><label>Obs</label><div class="input-wrap"><input type="text" id="fij-obs" placeholder="Notas..." style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)"></div></div></div><div style="display:flex;gap:8px;margin-top:12px"><button onclick="guardarFijacion()" style="flex:1;background:#1d4ed8;color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:600;cursor:pointer">Guardar en deposito</button><button onclick="cerrarFormFijacion()" style="flex:1;background:var(--border);color:var(--muted);border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:600;cursor:pointer">Cancelar</button></div></div>
 
       <!-- Barra flotante selección -->
       <div id="liq-barra-sel" style="display:none;position:sticky;top:0;z-index:50;background:var(--verde-oscuro);color:white;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:none;align-items:center;justify-content:space-between;gap:10px">
@@ -1581,7 +1610,99 @@
 
   </div>
 
+  <!-- RRHH -->
+  <div class="panel" id="tab-rrhh">
+
+    <div style="margin-bottom:16px">
+      <div style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:var(--verde-oscuro);margin-bottom:12px">Nómina — Don Mauricio</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="rrhh-periodo-sel" onchange="renderRRHH()" style="border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--ink);background:white;cursor:pointer"></select>
+        <button onclick="exportarRRHHPDF()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">⬇ PDF</button>
+        <button onclick="abrirModalPeriodo()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">+ Período</button>
+        <button onclick="abrirModalEmpleado()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer">Agregar / Quitar Empleado</button>
+      </div>
+    </div>
+
+    <div id="rrhh-tabla"></div>
+
+    <!-- Proporcionales -->
+    <div style="background:white;border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-top:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">Proporcionales Administración</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+
+        <!-- Proporcional Aceitera -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:600;color:var(--ink)">Proporcional Aceitera</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px">Total Admin × %</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="input-wrap" style="width:80px">
+              <input id="rrhh-prop-pct" type="number" min="0" max="100" step="0.1" placeholder="%" value="50"
+                oninput="calcProporcionales()"
+                style="flex:1;border:none;background:transparent;padding:8px 10px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;outline:none;color:var(--ink);text-align:center">
+            </div>
+            <div style="font-size:10px;color:var(--muted)">%</div>
+            <div id="rrhh-prop-aceitera" style="min-width:140px;text-align:right;font-size:14px;font-weight:800;color:var(--verde-oscuro)">—</div>
+          </div>
+        </div>
+
+        <!-- Separador -->
+        <div style="border-top:1px solid var(--border)"></div>
+
+        <!-- Proporcional Acopio Admin -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:600;color:var(--ink)">Proporcional Acopio</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px">Total Admin − Proporcional Aceitera</div>
+          </div>
+          <div id="rrhh-prop-acopio" style="min-width:140px;text-align:right;font-size:14px;font-weight:800;color:#5566aa">—</div>
+        </div>
+
+        <!-- Separador Mantenimiento -->
+        <div style="border-top:2px solid var(--border);margin-top:4px"></div>
+        <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:4px">Proporcionales Mantenimiento</div>
+
+        <!-- Proporcional Aceitera Mant -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:600;color:var(--ink)">Proporcional Aceitera</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px">Total Mantenimiento × %</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="input-wrap" style="width:80px">
+              <input id="rrhh-prop-mant-pct" type="number" min="0" max="100" step="0.1" placeholder="%" value="50"
+                oninput="calcProporcionales()"
+                style="flex:1;border:none;background:transparent;padding:8px 10px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;outline:none;color:var(--ink);text-align:center">
+            </div>
+            <div style="font-size:10px;color:var(--muted)">%</div>
+            <div id="rrhh-prop-mant-aceitera" style="min-width:140px;text-align:right;font-size:14px;font-weight:800;color:var(--verde-oscuro)">—</div>
+          </div>
+        </div>
+
+        <!-- Separador -->
+        <div style="border-top:1px solid var(--border)"></div>
+
+        <!-- Proporcional Acopio Mant -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:600;color:var(--ink)">Proporcional Acopio</div>
+            <div style="font-size:10px;color:var(--muted);margin-top:1px">Total Mantenimiento − Proporcional Aceitera</div>
+          </div>
+          <div id="rrhh-prop-mant-acopio" style="min-width:140px;text-align:right;font-size:14px;font-weight:800;color:#5566aa">—</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="margin-top:16px;text-align:right">
+      <button id="rrhh-btn-cerrar" onclick="cerrarPeriodo()" style="display:none;background:#856404;color:white;border:none;border-radius:10px;padding:12px 24px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer">💾 Guardar Período</button>
+    </div>
+
+  </div>
+
   <!-- HISTORIAL -->
+
   <div class="panel" id="tab-historial">
     <div style='display:flex;justify-content:space-between;align-items:center;margin-top:4px;margin-bottom:16px'>
       <div class='section-label' style='margin:0;border:none'>Historial de Precios</div>
@@ -1667,7 +1788,7 @@
           <div class="input-wrap">
             <select id="ac-producto" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
               <option value="Soja">Soja</option>
-              <option value="Maíz">Maíz</option>
+              <option value="Maiz">Maíz</option>
               <option value="Trigo">Trigo</option>
               <option value="Girasol">Girasol</option>
               <option value="Cáscara de Soja">Cáscara de Soja</option>
@@ -1970,7 +2091,7 @@
             <div class="input-wrap">
               <select id="cp-producto" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
                 <option value="Soja">Soja</option>
-                <option value="Maíz">Maíz</option>
+                <option value="Maiz">Maíz</option>
                 <option value="Trigo">Trigo</option>
                 <option value="Girasol">Girasol</option>
                 <option value="Cáscara de Soja">Cáscara de Soja</option>
@@ -2274,10 +2395,11 @@ function aplicarPermisosTabs() {
   if(!sesion) return;
   var rol=sesion.rol;
   var tabsVisibles={
-    admin:        ['portal','cotizador','config','flete','comercial','vencimientos','historial','acopio','admin'],
+    admin:        ['portal','cotizador','config','flete','comercial','vencimientos','rrhh','historial','acopio','admin'],
     comercial:    ['portal','cotizador','config','flete','comercial','vencimientos','historial','acopio'],
     tesoreria:    ['portal','comercial','vencimientos','historial','acopio'],
     mantenimiento:['portal','config'],
+    rrhh:         ['portal','rrhh'],
   };
   var visibles=tabsVisibles[rol]||tabsVisibles.tesoreria;
   document.querySelectorAll('.tab').forEach(function(btn){
@@ -3084,7 +3206,7 @@ function abrirFormCompra() {
   document.getElementById('form-compra').style.display = 'block';
   document.getElementById('c-fecha').value = new Date().toISOString().split('T')[0];
   document.getElementById('c-fecha-entrega').value = '';
-  document.getElementById('c-proveedor').value = '';
+  getProdValue('c-proveedor') = '';
   document.getElementById('c-tn').value = '';
   document.getElementById('c-precio').value = '';
   document.getElementById('c-obs').value = '';
@@ -3109,7 +3231,7 @@ function guardarCompra() {
   try {
     var fecha        = document.getElementById('c-fecha').value;
     var fechaEntrega = document.getElementById('c-fecha-entrega').value || fecha;
-    var prov         = document.getElementById('c-proveedor').value.trim();
+    var prov         = getProdValue('c-proveedor').trim();
     var tnRaw        = document.getElementById('c-tn').value.replace(/\.*/g,'').replace(/\./g,'').replace(',','.');
     var tn           = parseFloat(tnRaw);
     var tipoPrecio   = document.getElementById('c-tipo-precio').value;
@@ -3193,7 +3315,7 @@ function abrirFormVenta() {
   document.getElementById('form-venta').style.display = 'block';
   document.getElementById('v-fecha').value = new Date().toISOString().split('T')[0];
   document.getElementById('v-fecha-entrega').value = '';
-  document.getElementById('v-cliente').value = '';
+  getProdValue('v-cliente') = '';
   document.getElementById('v-tn').value = '';
   document.getElementById('v-precio').value = '';
   document.getElementById('v-destino').value = '';
@@ -3209,7 +3331,7 @@ function cerrarFormVenta() { document.getElementById('form-venta').style.display
 function guardarVenta() {
   const fecha        = document.getElementById('v-fecha').value;
   const fechaEntrega = document.getElementById('v-fecha-entrega').value || fecha;
-  const cliente      = document.getElementById('v-cliente').value.trim();
+  const cliente      = getProdValue('v-cliente').trim();
   const producto = document.getElementById('v-producto').value;
   const tn       = parseFloat(document.getElementById('v-tn').value);
   const precio   = getVentaPrice();
@@ -3445,7 +3567,7 @@ function editarCompra(id) {
   document.getElementById('form-compra').style.display = 'block';
   document.getElementById('c-fecha').value          = c.fecha;
   document.getElementById('c-fecha-entrega').value  = c.fechaEntrega || '';
-  document.getElementById('c-proveedor').value       = c.proveedor;
+  getProdValue('c-proveedor')       = c.proveedor;
   document.getElementById('c-producto').value        = c.producto || 'Soja';
   document.getElementById('c-tn').value              = c.tn;
   document.getElementById('c-precio').value          = Math.round(c.precio).toLocaleString('es-AR');
@@ -3470,7 +3592,7 @@ function actualizarCompra(id) {
   if (idx === -1) return;
   const fecha        = document.getElementById('c-fecha').value;
   const fechaEntrega = document.getElementById('c-fecha-entrega').value || fecha;
-  const prov         = document.getElementById('c-proveedor').value.trim();
+  const prov         = getProdValue('c-proveedor').trim();
   const producto     = document.getElementById('c-producto').value;
   const tnRaw2       = document.getElementById('c-tn').value.replace(/\./g,'').replace(',','.');
   const tn           = parseFloat(tnRaw2);
@@ -3498,7 +3620,7 @@ function editarVenta(id) {
   document.getElementById('form-venta').style.display = 'block';
   document.getElementById('v-fecha').value          = v.fecha;
   document.getElementById('v-fecha-entrega').value  = v.fechaEntrega || '';
-  document.getElementById('v-cliente').value         = v.cliente;
+  getProdValue('v-cliente')         = v.cliente;
   document.getElementById('v-producto').value        = v.producto;
   document.getElementById('v-tn').value              = v.tn;
   document.getElementById('v-precio').value          = Math.round(v.precio).toLocaleString('es-AR');
@@ -3530,7 +3652,7 @@ function actualizarVenta(id) {
   if (idx === -1) return;
   const fecha        = document.getElementById('v-fecha').value;
   const fechaEntrega = document.getElementById('v-fecha-entrega').value || fecha;
-  const cliente      = document.getElementById('v-cliente').value.trim();
+  const cliente      = getProdValue('v-cliente').trim();
   const producto     = document.getElementById('v-producto').value;
   const tn           = parseFloat(document.getElementById('v-tn').value);
   const precio       = getVentaPrice();
@@ -3607,6 +3729,7 @@ function switchTab(tab) {
   if (tab === 'portal') renderPortal();
   if (tab === 'acopio') { renderAcopioLista(); renderAcopioResumen(); renderPizarraCompradores(); }
   if (tab === 'vencimientos') { switchSubTabV('liquidaciones'); }
+  if (tab === 'rrhh') { initRRHH(); }
 }
 
 function switchSubTab(subTab) {
@@ -3629,6 +3752,728 @@ function switchSubTab(subTab) {
 
 
 
+
+
+// ═══════════════════════════════════════════
+// RRHH — Nómina y Liquidaciones de Sueldos
+// ═══════════════════════════════════════════
+// PDF RRHH
+// ═══════════════════════════════════════════
+function exportarRRHHPDF() {
+  var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFLib) { alert('Libreria PDF no cargada.'); return; }
+  var periodo = document.getElementById('rrhh-periodo-sel').value || 'Sin periodo';
+  var doc = new jsPDFLib({ orientation:'portrait', unit:'mm', format:'a4' });
+  var pw=210, ph=297, ml=14, mr=14, cw=182;
+  var hoy = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  var y=0;
+  function checkY(n){ if(y+n>ph-14){doc.addPage();y=46;} }
+
+  // Header
+  doc.setFillColor('#ffffff'); doc.rect(0,0,pw,38,'F');
+  doc.setFillColor('#1e4d2b'); doc.rect(0,36,pw,2,'F');
+  try { doc.addImage(LOGO_DM_B64,'JPEG',ml,4,28,28); } catch(e){}
+  doc.setTextColor('#1e4d2b'); doc.setFont('times','bold'); doc.setFontSize(24);
+  doc.text('Don Mauricio', ml+33, 17);
+  doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+  doc.setCharSpace(2.5); doc.text('AGROGANADERA  S.R.L.', ml+33, 24); doc.setCharSpace(0);
+  doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  doc.text('NOMINA — '+periodo.toUpperCase(), pw-mr, 14, {align:'right'});
+  doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Emitido: '+hoy, pw-mr, 21, {align:'right'});
+  y=46;
+
+  var activos = rrhhEmpleados.filter(function(e){ return e.activo; });
+  var tQ1=0, tQ2=0, tHE=0;
+  var cNom=ml, wNom=60, cQ1=ml+60, wQ1=32, cQ2=ml+92, wQ2=32, cHE=ml+124, wHE=26, cTot=ml+150, wTot=32;
+
+  RRHH_SECTORES.forEach(function(sector){
+    var emps=activos.filter(function(e){return e.sector===sector;});
+    if(!emps.length) return;
+    var col=RRHH_COLORES[sector]||{label:sector};
+    var sQ1=0,sQ2=0,sHE=0;
+    checkY(14);
+    // Header sector
+    doc.setFillColor('#1e4d2b'); doc.rect(ml,y,cw,7,'F');
+    doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text(col.label.toUpperCase(), cNom+2, y+5);
+    doc.setFontSize(6.5);
+    doc.text('SUELDO',  cQ1+wQ1/2,  y+5, {align:'center'});
+    doc.text('BONO',    cQ2+wQ2/2,  y+5, {align:'center'});
+    doc.text('HS.EXT',  cHE+wHE/2,  y+5, {align:'center'});
+    doc.text('TOTAL',   cTot+wTot-1,y+5, {align:'right'});
+    y+=7;
+    emps.forEach(function(emp,i){
+      checkY(7);
+      var liq=rrhhLiqData[emp.id]||{};
+      var q1=parseFloat(liq.quincena_1)||0;
+      var q2=parseFloat(liq.quincena_2)||0;
+      var he=parseFloat(liq.horas_extras)||0;
+      var tot=q1+q2+he;
+      sQ1+=q1; sQ2+=q2; sHE+=he;
+      doc.setFillColor(i%2===0?'#f4f8f5':'#ffffff'); doc.rect(ml,y,cw,7,'F');
+      doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.text(emp.nombre.substring(0,34), cNom+2, y+5);
+      doc.text(q1?fmtSueldo(q1):'—', cQ1+wQ1-1, y+5, {align:'right'});
+      doc.text(q2?fmtSueldo(q2):'—', cQ2+wQ2-1, y+5, {align:'right'});
+      doc.text(he?fmtSueldo(he):'—', cHE+wHE-1, y+5, {align:'right'});
+      doc.setTextColor(tot>0?'#1e4d2b':'#aaa'); doc.setFont('helvetica','bold');
+      doc.text(tot>0?fmtSueldo(tot):'—', cTot+wTot-1, y+5, {align:'right'});
+      y+=7;
+    });
+    // Subtotal
+    checkY(8);
+    tQ1+=sQ1; tQ2+=sQ2; tHE+=sHE;
+    doc.setFillColor('#e8f0eb'); doc.rect(ml,y,cw,7,'F');
+    doc.setTextColor('#1e4d2b'); doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+    doc.text('Total '+col.label, cNom+2, y+5);
+    doc.text(fmtSueldo(sQ1), cQ1+wQ1-1, y+5, {align:'right'});
+    doc.text(fmtSueldo(sQ2), cQ2+wQ2-1, y+5, {align:'right'});
+    doc.text(fmtSueldo(sHE), cHE+wHE-1, y+5, {align:'right'});
+    doc.text(fmtSueldo(sQ1+sQ2+sHE), cTot+wTot-1, y+5, {align:'right'});
+    y+=10;
+  });
+
+  // Gran total
+  checkY(10);
+  doc.setFillColor('#1e4d2b'); doc.rect(ml,y,cw,10,'F');
+  doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text('TOTAL GENERAL', cNom+2, y+7);
+  doc.text(fmtSueldo(tQ1), cQ1+wQ1-1, y+7, {align:'right'});
+  doc.text(fmtSueldo(tQ2), cQ2+wQ2-1, y+7, {align:'right'});
+  doc.text(fmtSueldo(tHE), cHE+wHE-1, y+7, {align:'right'});
+  doc.setFontSize(10);
+  doc.text(fmtSueldo(tQ1+tQ2+tHE), cTot+wTot-1, y+7, {align:'right'});
+
+  // Footer
+  var pgs=doc.internal.getNumberOfPages();
+  for(var p=1;p<=pgs;p++){
+    doc.setPage(p);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor('#5a7262');
+    doc.text('Don Mauricio Agroganadera SRL — Nomina '+periodo, ml, ph-6);
+    doc.text('Pag. '+p+'/'+pgs, pw-mr, ph-6, {align:'right'});
+  }
+  doc.save('Nomina_DM_'+periodo.replace(/ /g,'-')+'.pdf');
+}
+
+
+// ═══════════════════════════════════════════
+var rrhhEmpleados    = [];
+var rrhhPeriodos     = [];
+var rrhhPeriodosData = []; // objetos completos con cerrado
+var rrhhLiqData      = {};
+var rrhhEmpEditId    = null;
+
+var RRHH_SECTORES = ['Administracion','Produccion','Mantenimiento','Acopio','Balanza','Chofer'];
+var RRHH_COLORES  = {
+  Administracion: { bg:'#fff9e6', border:'#c8a84b', label:'Administración' },
+  Produccion:     { bg:'#e8f0eb', border:'var(--verde-medio)', label:'Producción' },
+  Mantenimiento:  { bg:'#f0f4ff', border:'#5566aa', label:'Mantenimiento' },
+  Acopio:         { bg:'#fff3cd', border:'#856404', label:'Acopio' },
+  Balanza:        { bg:'#f4f8f5', border:'var(--border)', label:'Balanza' },
+  Chofer:         { bg:'#fdf0f0', border:'#e08080', label:'Chofer' },
+};
+
+async function initRRHH() {
+  await cargarNominaInicial(); // carga nómina si la tabla está vacía
+  await Promise.all([cargarEmpleados(), cargarPeriodos()]);
+  poblarSelectorPeriodo();
+  await cargarLiquidacionesSueldo();
+  renderRRHH();
+}
+
+async function cargarEmpleados() {
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/empleados?select=*&order=sector,nombre', {headers:SUPA_HDRS});
+    rrhhEmpleados = res.ok ? await res.json() : [];
+  } catch(e) { rrhhEmpleados = []; }
+}
+
+async function cargarPeriodos() {
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/periodos_rrhh?select=*&order=created_at.desc', {headers:SUPA_HDRS});
+    rrhhPeriodosData = res.ok ? await res.json() : [];
+    rrhhPeriodos = rrhhPeriodosData.map(function(p){ return p.nombre; });
+  } catch(e) { rrhhPeriodos = []; rrhhPeriodosData = []; }
+}
+
+async function cargarLiquidacionesSueldo() {
+  var periodo = document.getElementById('rrhh-periodo-sel') ? document.getElementById('rrhh-periodo-sel').value : '';
+  if (!periodo) return;
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/liquidaciones_sueldo?periodo=eq.'+encodeURIComponent(periodo)+'&select=*', {headers:SUPA_HDRS});
+    var data = res.ok ? await res.json() : [];
+    rrhhLiqData = {};
+    data.forEach(function(r){ rrhhLiqData[r.empleado_id] = r; });
+  } catch(e) { rrhhLiqData = {}; }
+}
+
+function poblarSelectorPeriodo() {
+  var sel = document.getElementById('rrhh-periodo-sel');
+  if (!sel) return;
+  sel.innerHTML = rrhhPeriodos.length
+    ? rrhhPeriodos.map(function(p){ return '<option value="'+p+'">'+p+'</option>'; }).join('')
+    : '<option value="">Sin períodos</option>';
+}
+
+function fmtSueldo(n) {
+  if (!n && n !== 0) return '—';
+  return '$ '+Number(n).toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0});
+}
+
+function renderRRHH() {
+  cargarLiquidacionesSueldo().then(function(){
+    _renderRRHHTabla();
+    _actualizarBtnGuardar();
+  });
+}
+
+function _actualizarBtnGuardar() {
+  var periodo = document.getElementById('rrhh-periodo-sel') ? document.getElementById('rrhh-periodo-sel').value : '';
+  var btnCerrar = document.getElementById('rrhh-btn-cerrar');
+  if (!btnCerrar || !sesion) return;
+  var esAdmin = sesion.rol === 'admin';
+  var puedeGuardar = sesion.rol === 'admin' || sesion.rol === 'rrhh';
+  if (!puedeGuardar) { btnCerrar.style.display = 'none'; return; }
+  var periodoObj = rrhhPeriodosData.find(function(p){ return p.nombre === periodo; });
+  var cerrado = periodoObj ? periodoObj.cerrado : false;
+  btnCerrar.style.display = (!cerrado) ? 'block' : 'none';
+  btnCerrar.textContent = cerrado ? '✓ Período cerrado' : '💾 Guardar Período';
+}
+
+async function cerrarPeriodo() {
+  var periodo = document.getElementById('rrhh-periodo-sel').value;
+  if (!periodo) return;
+  var periodoObj = rrhhPeriodosData.find(function(p){ return p.nombre === periodo; });
+  if (!periodoObj) return;
+  if (!confirm('¿Cerrar el período "'+periodo+'"? Solo admin podrá editar los datos.')) return;
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/periodos_rrhh?id=eq.'+periodoObj.id, {
+      method:'PATCH',
+      headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}),
+      body:JSON.stringify({ cerrado: true })
+    });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    await cargarPeriodos();
+    _actualizarBtnGuardar();
+    _renderRRHHTabla();
+    alert('Período "'+periodo+'" guardado correctamente.');
+  } catch(e) {
+    alert('Error al guardar: '+e.message);
+  }
+}
+
+function _renderRRHHTabla() {
+  var el = document.getElementById('rrhh-tabla');
+  if (!el) return;
+  var periodo = document.getElementById('rrhh-periodo-sel') ? document.getElementById('rrhh-periodo-sel').value : '';
+  var activos = rrhhEmpleados.filter(function(e){ return e.activo; });
+
+  if (!activos.length) {
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:30px">Sin empleados cargados.</div>';
+    return;
+  }
+
+  var html = '';
+  var totalQ1 = 0, totalQ2 = 0, totalHE = 0;
+
+  RRHH_SECTORES.forEach(function(sector) {
+    var emps = activos.filter(function(e){ return e.sector === sector; });
+    if (!emps.length) return;
+    var col = RRHH_COLORES[sector] || {bg:'#f9f9f9', border:'var(--border)', label:sector};
+    var secQ1 = 0, secQ2 = 0, secHE = 0;
+
+    html += '<div style="background:'+col.bg+';border:1.5px solid '+col.border+';border-radius:12px;margin-bottom:16px;overflow:hidden">';
+
+    // Header sector
+    var periodoObj2 = rrhhPeriodosData.find(function(p){ return p.nombre === periodo; });
+    var periodoCerrado = periodoObj2 ? periodoObj2.cerrado : false;
+    html += '<div style="background:'+col.border+';padding:10px 16px;display:flex;justify-content:space-between;align-items:center">';
+    html += '<div style="font-size:12px;font-weight:700;color:white;letter-spacing:0.5px">'+col.label.toUpperCase()+'</div>';
+    html += '<div style="display:flex;align-items:center;gap:8px">';
+    if (periodoCerrado) html += '<span style="background:rgba(255,255,255,.25);border-radius:20px;padding:2px 8px;font-size:9px;font-weight:700;color:white">CERRADO</span>';
+    html += '</div>';
+    html += '<div style="display:grid;grid-template-columns:90px 90px 90px 90px 60px;gap:4px;align-items:center">';
+    html += '<div style="font-size:9px;color:rgba(255,255,255,.7);letter-spacing:1px;text-align:center">SUELDO</div>';
+    html += '<div style="font-size:9px;color:rgba(255,255,255,.7);letter-spacing:1px;text-align:center">BONO</div>';
+    html += '<div style="font-size:9px;color:rgba(255,255,255,.7);letter-spacing:1px;text-align:center">HS.EXT</div>';
+    html += '<div style="font-size:9px;color:rgba(255,255,255,.7);letter-spacing:1px;text-align:right">TOTAL</div>';
+    html += '<div></div>';
+    html += '</div></div>';
+
+    // Filas empleados
+    emps.forEach(function(emp, i) {
+      var liq = rrhhLiqData[emp.id] || {};
+      var q1 = parseFloat(liq.quincena_1)||0;
+      var q2 = parseFloat(liq.quincena_2)||0;
+      var he = parseFloat(liq.horas_extras)||0;
+      secQ1 += q1; secQ2 += q2; secHE += he;
+
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 16px;background:'+(i%2===0?'rgba(255,255,255,.6)':'transparent')+';border-top:1px solid rgba(0,0,0,.05)">';
+      html += '<div style="flex:1;min-width:0;padding-right:8px">';
+      html += '<div style="font-size:11px;font-weight:600;color:var(--ink)">'+emp.nombre+'</div>';
+      html += '</div>';
+      html += '<div style="display:grid;grid-template-columns:90px 90px 90px 90px 60px;gap:4px;align-items:center">';
+
+      // Sueldo
+      var he = parseFloat(liq.horas_extras)||0;
+      var tot = q1 + q2 + he;
+
+      var periodoObj = rrhhPeriodosData.find(function(p){ return p.nombre === periodo; });
+      var cerrado = periodoObj ? periodoObj.cerrado : false;
+      var esAdmin = sesion && sesion.rol === 'admin';
+      var soloLectura = cerrado && !esAdmin;
+
+      function rrhhField(empId, q, val, color) {
+        var roAttr = soloLectura ? 'readonly style="width:60px;border:none;background:transparent;padding:5px 4px;font-family:Arial,sans-serif;font-size:11px;font-weight:600;outline:none;text-align:center;color:'+color+';cursor:default"'
+          : 'onfocus="rrhhFocus(this)" onblur="rrhhBlur(this)" oninput="rrhhInput(this)" style="width:60px;border:none;background:transparent;padding:5px 4px;font-family:Arial,sans-serif;font-size:11px;font-weight:600;outline:none;text-align:center;color:'+color+'"';
+        return '<div class="input-wrap" style="background:'+(soloLectura?'transparent':'rgba(255,255,255,.9)')+';padding:0">' +
+          '<span style="padding-left:6px;font-size:11px;font-weight:700;color:'+color+'">$</span>' +
+          '<input type="text" inputmode="numeric" placeholder="0" value="'+(val?Number(val).toLocaleString("es-AR",{minimumFractionDigits:0,maximumFractionDigits:0}):"")+'" ' +
+          'data-empid="'+empId+'" data-q="'+q+'" '+roAttr+'>' +
+          '</div>';
+      }
+
+      html += rrhhField(emp.id, "1", q1, "var(--ink)");
+      html += rrhhField(emp.id, "2", q2, "var(--ink)");
+      html += rrhhField(emp.id, "he", he, "#5566aa");
+
+      // Total
+      html += '<div data-total-emp="'+emp.id+'" style="text-align:right;font-size:12px;font-weight:700;color:'+(tot>0?'var(--verde-oscuro)':'var(--muted)')+'">'+( tot>0?('$'+Number(tot).toLocaleString("es-AR",{minimumFractionDigits:0,maximumFractionDigits:0})):'—')+'</div>';
+
+      // Botón editar empleado
+      // Botón editar solo para admin
+      html += '</div></div>';
+    });
+
+    // Subtotal sector
+    totalQ1 += secQ1; totalQ2 += secQ2; totalHE += secHE;
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 16px;border-top:2px solid '+col.border+';background:'+col.border+'">';
+    html += '<div style="font-size:11px;font-weight:700;color:white;flex:1">Total '+col.label+'</div>';
+    html += '<div style="display:grid;grid-template-columns:90px 90px 90px 90px 60px;gap:4px">';
+    html += '<div data-sector-q1="'+sector+'" style="text-align:right;font-size:11px;font-weight:700;color:white">'+fmtSueldo(secQ1)+'</div>';
+    html += '<div data-sector-q2="'+sector+'" style="text-align:right;font-size:11px;font-weight:700;color:white">'+fmtSueldo(secQ2)+'</div>';
+    html += '<div data-sector-he="'+sector+'" style="text-align:right;font-size:11px;font-weight:700;color:white">'+fmtSueldo(secHE)+'</div>';
+    html += '<div data-sector-tot="'+sector+'" style="text-align:right;font-size:12px;font-weight:900;color:white">'+fmtSueldo(secQ1+secQ2+secHE)+'</div>';
+    html += '<div></div>';
+    html += '</div></div>';
+    html += '</div>';
+  });
+
+  // Gran total
+  html += '<div style="background:var(--verde-oscuro);border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:8px">';
+  html += '<div style="font-size:12px;font-weight:700;color:white;letter-spacing:0.5px;flex:1">TOTAL GENERAL</div>';
+  html += '<div style="display:grid;grid-template-columns:90px 90px 90px 90px 60px;gap:4px">';
+  html += '<div id="rrhh-gran-q1" style="text-align:right;font-size:11px;font-weight:700;color:rgba(255,255,255,.8)">'+fmtSueldo(totalQ1)+'</div>';
+  html += '<div id="rrhh-gran-q2" style="text-align:right;font-size:11px;font-weight:700;color:rgba(255,255,255,.8)">'+fmtSueldo(totalQ2)+'</div>';
+  html += '<div id="rrhh-gran-he" style="text-align:right;font-size:11px;font-weight:700;color:rgba(255,255,255,.8)">'+fmtSueldo(totalHE)+'</div>';
+  html += '<div id="rrhh-gran-tot" style="text-align:right;font-size:14px;font-weight:900;color:white">'+fmtSueldo(totalQ1+totalQ2+totalHE)+'</div>';
+  html += '<div></div>';
+  html += '</div></div>';
+
+  el.innerHTML = html;
+}
+
+// ── Edición inline de sueldos ──
+function rrhhFocus(inp) {
+  var raw = inp.value.replace(/\./g,'').replace(',','.');
+  inp.value = raw ? String(parseInt(raw)||'') : '';
+}
+
+function rrhhBlur(inp) {
+  var val = parseInt(inp.value.replace(/\./g,'')) || 0;
+  inp.value = val > 0 ? Number(val).toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0}) : '';
+  guardarLiqSueldo(inp);
+}
+
+function rrhhInput(inp) {
+  // Formatear mientras escribe
+  var digits = inp.value.replace(/[^0-9]/g,'');
+  if (!digits) { inp.value = ''; } else {
+    inp.value = parseInt(digits,10).toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0});
+  }
+  // Recalcular toda la tabla desde el DOM
+  recalcularTodaTablaRRHH();
+}
+
+function leerCampo(empId, q) {
+  var inp = document.querySelector('[data-empid="'+empId+'"][data-q="'+q+'"]');
+  if (!inp) return 0;
+  return parseInt(inp.value.replace(/\./g,''))||0;
+}
+
+function recalcularTodaTablaRRHH() {
+  var totalGenQ1=0, totalGenQ2=0, totalGenHE=0;
+
+  RRHH_SECTORES.forEach(function(sector) {
+    var secQ1=0, secQ2=0, secHE=0;
+    var activos = rrhhEmpleados.filter(function(e){ return e.activo && e.sector===sector; });
+
+    activos.forEach(function(emp) {
+      var q1 = leerCampo(emp.id,'1');
+      var q2 = leerCampo(emp.id,'2');
+      var he = leerCampo(emp.id,'he');
+      var tot = q1+q2+he;
+      secQ1+=q1; secQ2+=q2; secHE+=he;
+
+      // Total fila empleado
+      var totEl = document.querySelector('[data-total-emp="'+emp.id+'"]');
+      if (totEl) {
+        totEl.textContent = tot>0 ? '$'+Number(tot).toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0}) : '—';
+        totEl.style.color = tot>0 ? 'var(--verde-oscuro)' : 'var(--muted)';
+      }
+    });
+
+    totalGenQ1+=secQ1; totalGenQ2+=secQ2; totalGenHE+=secHE;
+
+    // Subtotal sector
+    var el = document.querySelector('[data-sector-q1="'+sector+'"]'); if(el) el.textContent=fmtSueldo(secQ1);
+    el = document.querySelector('[data-sector-q2="'+sector+'"]'); if(el) el.textContent=fmtSueldo(secQ2);
+    el = document.querySelector('[data-sector-he="'+sector+'"]'); if(el) el.textContent=fmtSueldo(secHE);
+    el = document.querySelector('[data-sector-tot="'+sector+'"]'); if(el) el.textContent=fmtSueldo(secQ1+secQ2+secHE);
+  });
+
+  // Gran total
+  var el = document.getElementById('rrhh-gran-q1'); if(el) el.textContent=fmtSueldo(totalGenQ1);
+  el = document.getElementById('rrhh-gran-q2'); if(el) el.textContent=fmtSueldo(totalGenQ2);
+  el = document.getElementById('rrhh-gran-he'); if(el) el.textContent=fmtSueldo(totalGenHE);
+  el = document.getElementById('rrhh-gran-tot'); if(el) el.textContent=fmtSueldo(totalGenQ1+totalGenQ2+totalGenHE);
+
+  // Proporcionales
+  calcProporcionales();
+}
+
+function calcProporcionales() {
+  // ── Administración ──
+  var elAdminTot = document.querySelector('[data-sector-tot="Administracion"]');
+  var totalAdmin = elAdminTot ? (parseInt(elAdminTot.textContent.replace(/[^0-9]/g,''))||0) : 0;
+  var pctAdmin = parseFloat(document.getElementById('rrhh-prop-pct') ? document.getElementById('rrhh-prop-pct').value : 50) || 0;
+  var aceiteraAdmin = Math.round(totalAdmin * pctAdmin / 100);
+  var acopioAdmin   = totalAdmin - aceiteraAdmin;
+  var elAceitera = document.getElementById('rrhh-prop-aceitera');
+  var elAcopio   = document.getElementById('rrhh-prop-acopio');
+  if (elAceitera) elAceitera.textContent = totalAdmin > 0 ? fmtSueldo(aceiteraAdmin) : '—';
+  if (elAcopio)   elAcopio.textContent   = totalAdmin > 0 ? fmtSueldo(acopioAdmin)   : '—';
+
+  // ── Mantenimiento ──
+  var elMantTot = document.querySelector('[data-sector-tot="Mantenimiento"]');
+  var totalMant = elMantTot ? (parseInt(elMantTot.textContent.replace(/[^0-9]/g,''))||0) : 0;
+  var pctMant = parseFloat(document.getElementById('rrhh-prop-mant-pct') ? document.getElementById('rrhh-prop-mant-pct').value : 50) || 0;
+  var aceitaraMant = Math.round(totalMant * pctMant / 100);
+  var acopioMant   = totalMant - aceitaraMant;
+  var elMantAceitera = document.getElementById('rrhh-prop-mant-aceitera');
+  var elMantAcopio   = document.getElementById('rrhh-prop-mant-acopio');
+  if (elMantAceitera) elMantAceitera.textContent = totalMant > 0 ? fmtSueldo(aceitaraMant) : '—';
+  if (elMantAcopio)   elMantAcopio.textContent   = totalMant > 0 ? fmtSueldo(acopioMant)   : '—';
+}
+
+function actualizarTotalesRRHH() {
+  // Recalcular todos los totales en tiempo real leyendo los campos del DOM
+  var totalGenQ1=0, totalGenQ2=0, totalGenHE=0;
+
+  RRHH_SECTORES.forEach(function(sector) {
+    var secQ1=0, secQ2=0, secHE=0;
+    var activos = rrhhEmpleados.filter(function(e){ return e.activo && e.sector===sector; });
+
+    activos.forEach(function(emp) {
+      var inputs = document.querySelectorAll('[data-empid="'+emp.id+'"]');
+      var q1=0, q2=0, he=0;
+      inputs.forEach(function(i){
+        var v = parseInt(i.value.replace(/\./g,''))||0;
+        if(i.dataset.q==='1') q1=v;
+        else if(i.dataset.q==='2') q2=v;
+        else if(i.dataset.q==='he') he=v;
+      });
+      var tot = q1+q2+he;
+      secQ1+=q1; secQ2+=q2; secHE+=he;
+
+      // Actualizar total del empleado
+      var rowEl = inputs.length ? inputs[0].closest('div[style*="display:flex;justify-content:space-between"]') : null;
+      if (rowEl) {
+        var totEl = rowEl.querySelector('[data-total-emp]');
+        if (totEl) { totEl.textContent = tot>0?('$'+Number(tot).toLocaleString('es-AR',{minimumFractionDigits:0,maximumFractionDigits:0})):'—'; totEl.style.color=tot>0?'var(--verde-oscuro)':'var(--muted)'; }
+      }
+    });
+
+    totalGenQ1+=secQ1; totalGenQ2+=secQ2; totalGenHE+=secHE;
+
+    // Actualizar subtotales sector
+    var secEl = document.querySelector('[data-sector-total="'+sector+'"]');
+    if (secEl) {
+      var cells = secEl.querySelectorAll('[data-col]');
+      cells.forEach(function(c){
+        if(c.dataset.col==='q1') c.textContent=fmtSueldo(secQ1);
+        else if(c.dataset.col==='q2') c.textContent=fmtSueldo(secQ2);
+        else if(c.dataset.col==='he') c.textContent=fmtSueldo(secHE);
+        else if(c.dataset.col==='tot') c.textContent=fmtSueldo(secQ1+secQ2+secHE);
+      });
+    }
+  });
+
+  // Gran total
+  var gtEl = document.getElementById('rrhh-gran-total');
+  if (gtEl) {
+    var cells = gtEl.querySelectorAll('[data-col]');
+    cells.forEach(function(c){
+      if(c.dataset.col==='q1') c.textContent=fmtSueldo(totalGenQ1);
+      else if(c.dataset.col==='q2') c.textContent=fmtSueldo(totalGenQ2);
+      else if(c.dataset.col==='he') c.textContent=fmtSueldo(totalGenHE);
+      else if(c.dataset.col==='tot') c.textContent=fmtSueldo(totalGenQ1+totalGenQ2+totalGenHE);
+    });
+  }
+}
+
+function actualizarTotalEmpleado(inp) {
+  var empId = inp.dataset.empid;
+  var liq = rrhhLiqData[empId] || {};
+  // Leer ambos inputs del mismo empleado
+  var inputs = document.querySelectorAll('[data-empid="'+empId+'"]');
+  var q1=0, q2=0;
+  inputs.forEach(function(i){ if(i.dataset.q==='1') q1=parseInt(i.value.replace(/\./g,'')||0); else q2=parseInt(i.value.replace(/\./g,'')||0); });
+}
+
+async function guardarLiqSueldo(inp) {
+  var empId  = inp.dataset.empid;
+  var q      = inp.dataset.q;
+  var val    = parseInt(inp.value.replace(/\./g,'')) || 0;
+  var periodo = document.getElementById('rrhh-periodo-sel').value;
+  if (!periodo) return;
+
+  // Actualizar en memoria
+  if (!rrhhLiqData[empId]) rrhhLiqData[empId] = { empleado_id: empId, periodo: periodo, quincena_1: 0, quincena_2: 0 };
+  if (q === 'he') rrhhLiqData[empId]['horas_extras'] = val;
+  else rrhhLiqData[empId]['quincena_'+q] = val;
+
+  var liq = rrhhLiqData[empId];
+  var body = { empleado_id: empId, periodo: periodo, quincena_1: liq.quincena_1||0, quincena_2: liq.quincena_2||0, horas_extras: liq.horas_extras||0 };
+
+  try {
+    // Intentar PATCH primero (actualizar si existe)
+    var liqId = rrhhLiqData[empId] ? rrhhLiqData[empId].id : null;
+    if (liqId) {
+      await fetch(SUPA_URL+'/rest/v1/liquidaciones_sueldo?id=eq.'+liqId, {
+        method:'PATCH',
+        headers: Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}),
+        body: JSON.stringify({ quincena_1: liq.quincena_1||0, quincena_2: liq.quincena_2||0, horas_extras: liq.horas_extras||0 })
+      });
+    } else {
+      // Insertar si no existe
+      var res = await fetch(SUPA_URL+'/rest/v1/liquidaciones_sueldo', {
+        method:'POST',
+        headers: Object.assign({},SUPA_HDRS,{'Prefer':'return=representation'}),
+        body: JSON.stringify(body)
+      });
+      if (res.ok) {
+        var data = await res.json();
+        if (data[0]) rrhhLiqData[empId].id = data[0].id;
+      }
+    }
+  } catch(e) { console.error('Error guardando sueldo:', e); }
+}
+
+// ── Modal Empleado ──
+function abrirModalEmpleado() {
+  rrhhEmpEditId = null;
+  document.getElementById('rrhh-emp-titulo').textContent = 'Gestion de Empleados';
+  document.getElementById('rrhh-emp-nombre').value = '';
+  document.getElementById('rrhh-emp-sector').value = 'Administracion';
+  document.getElementById('rrhh-emp-activo').value = 'true';
+  document.getElementById('rrhh-emp-err').textContent = '';
+  _renderListaEmpleadosModal();
+  document.getElementById('rrhh-modal-emp').style.display = 'flex';
+}
+
+function _renderListaEmpleadosModal() {
+  var el = document.getElementById('rrhh-emp-lista');
+  if (!el) return;
+  var todos = rrhhEmpleados.slice().sort(function(a,b){ return a.sector.localeCompare(b.sector)||a.nombre.localeCompare(b.nombre); });
+  if (!todos.length) { el.innerHTML = ''; return; }
+  var html = '<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Nomina actual</div>';
+  var sectorActual = '';
+  todos.forEach(function(emp) {
+    if (emp.sector !== sectorActual) {
+      sectorActual = emp.sector;
+      var col = RRHH_COLORES[emp.sector] || {label:emp.sector, border:'var(--border)'};
+      html += '<div style="font-size:9px;font-weight:700;color:'+col.border+';text-transform:uppercase;letter-spacing:1px;margin:8px 0 4px">'+col.label+'</div>';
+    }
+    var activo = emp.activo;
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:6px;margin-bottom:3px;background:'+(activo?'white':'#f8f8f8')+'">' +
+      '<div><span style="font-size:11px;font-weight:600;color:'+(activo?'var(--ink)':'var(--muted)')+'">'+emp.nombre+'</span>' +
+      (!activo ? '<span style="font-size:9px;color:#842029;margin-left:6px;font-weight:600">(Baja)</span>' : '') +
+      '</div>' +
+      '<button onclick="toggleBajaEmpleado(&quot;'+emp.id+'&quot;,'+activo+')" ' +
+        'style="background:'+(activo?'#f8d7da':'#d1e7dd')+';color:'+(activo?'#842029':'#0a3622')+';border:none;border-radius:5px;padding:3px 8px;font-size:9px;font-weight:700;cursor:pointer">' +
+        (activo ? 'Dar de baja' : 'Reincorporar') +
+      '</button></div>';
+  });
+  el.innerHTML = html;
+}
+
+async function toggleBajaEmpleado(id, estaActivo) {
+  var emp = rrhhEmpleados.find(function(e){ return e.id == id; });
+  if (!emp || !confirm((estaActivo?'Dar de baja':'Reincorporar')+' a '+emp.nombre+'?')) return;
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/empleados?id=eq.'+id, {
+      method:'PATCH',
+      headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}),
+      body:JSON.stringify({ activo: !estaActivo })
+    });
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    await cargarEmpleados();
+    _renderListaEmpleadosModal();
+    _renderRRHHTabla();
+  } catch(e) { alert('Error: '+e.message); }
+}
+
+
+function editarEmpleado(id) {
+  var emp = rrhhEmpleados.find(function(e){ return e.id == id; });
+  if (!emp) return;
+  rrhhEmpEditId = id;
+  document.getElementById('rrhh-emp-titulo').textContent = 'Editar Empleado';
+  document.getElementById('rrhh-emp-nombre').value  = emp.nombre;
+  document.getElementById('rrhh-emp-sector').value  = emp.sector;
+  document.getElementById('rrhh-emp-activo').value  = String(emp.activo);
+  document.getElementById('rrhh-emp-err').textContent = '';
+  document.getElementById('rrhh-modal-emp').style.display = 'flex';
+}
+
+function cerrarModalEmpleado() {
+  document.getElementById('rrhh-modal-emp').style.display = 'none';
+  rrhhEmpEditId = null;
+}
+
+async function guardarEmpleado() {
+  var nombre = document.getElementById('rrhh-emp-nombre').value.trim();
+  var sector = document.getElementById('rrhh-emp-sector').value;
+  var activo = document.getElementById('rrhh-emp-activo').value === 'true';
+  var errEl  = document.getElementById('rrhh-emp-err');
+  if (!nombre) { errEl.textContent = 'Ingresá el nombre.'; return; }
+
+  var body = { nombre: nombre, sector: sector, activo: activo };
+  try {
+    if (rrhhEmpEditId) {
+      var res = await fetch(SUPA_URL+'/rest/v1/empleados?id=eq.'+rrhhEmpEditId, {
+        method:'PATCH', headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}), body:JSON.stringify(body)
+      });
+    } else {
+      var res = await fetch(SUPA_URL+'/rest/v1/empleados', {
+        method:'POST', headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}), body:JSON.stringify(body)
+      });
+    }
+    cerrarModalEmpleado();
+    await cargarEmpleados();
+    _renderRRHHTabla();
+  } catch(e) { errEl.textContent = 'Error: '+e.message; }
+}
+
+// ── Modal Período ──
+function abrirModalPeriodo() {
+  var hoy = new Date();
+  var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  // Poblar selector mes
+  var selMes = document.getElementById('rrhh-periodo-mes');
+  if (selMes) selMes.value = meses[hoy.getMonth()];
+  // Poblar selector año (año actual ± 2)
+  var selAnio = document.getElementById('rrhh-periodo-anio');
+  if (selAnio) {
+    var anioActual = hoy.getFullYear();
+    selAnio.innerHTML = '';
+    for (var a = anioActual - 1; a <= anioActual + 2; a++) {
+      var opt = document.createElement('option');
+      opt.value = a; opt.textContent = a;
+      if (a === anioActual) opt.selected = true;
+      selAnio.appendChild(opt);
+    }
+  }
+  document.getElementById('rrhh-periodo-err').textContent = '';
+  document.getElementById('rrhh-modal-periodo').style.display = 'flex';
+}
+
+function cerrarModalPeriodo() {
+  document.getElementById('rrhh-modal-periodo').style.display = 'none';
+}
+
+async function guardarPeriodo() {
+  var mes   = document.getElementById('rrhh-periodo-mes').value;
+  var anio  = document.getElementById('rrhh-periodo-anio').value;
+  var nombre = mes + ' ' + anio;
+  var errEl  = document.getElementById('rrhh-periodo-err');
+  if (!mes || !anio) { errEl.textContent = 'Seleccioná mes y año.'; return; }
+  if (rrhhPeriodos.includes(nombre)) { errEl.textContent = 'Ese período ya existe.'; return; }
+
+  // Crear período en tabla periodos_rrhh
+  var activos = rrhhEmpleados.filter(function(e){ return e.activo; });
+  try {
+    // 1. Insertar período
+    var resPer = await fetch(SUPA_URL+'/rest/v1/periodos_rrhh', {
+      method:'POST', headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}),
+      body:JSON.stringify({ nombre: nombre, cerrado: false })
+    });
+    if (!resPer.ok) throw new Error('HTTP '+resPer.status);
+    // 2. Crear registros vacíos para todos los empleados activos
+    if (activos.length) {
+      var rows = activos.map(function(e){ return { empleado_id:e.id, periodo:nombre, quincena_1:0, quincena_2:0, horas_extras:0 }; });
+      await fetch(SUPA_URL+'/rest/v1/liquidaciones_sueldo', {
+        method:'POST', headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}), body:JSON.stringify(rows)
+      });
+    }
+    cerrarModalPeriodo();
+    await cargarPeriodos();
+    poblarSelectorPeriodo();
+    document.getElementById('rrhh-periodo-sel').value = nombre;
+    await cargarLiquidacionesSueldo();
+    _renderRRHHTabla();
+  } catch(e) { errEl.textContent = 'Error: '+e.message; }
+}
+
+// Nómina inicial
+var NOMINA_INICIAL = [
+  {nombre:'ICETA MARIANO IGNACIO',       sector:'Administracion'},
+  {nombre:'BUGALLO JUAN BAUTISTA',        sector:'Administracion'},
+  {nombre:'GOMEZ JOSE NOEL',              sector:'Administracion'},
+  {nombre:'SALOMON BRANDAN DAVID YOEL',   sector:'Administracion'},
+  {nombre:'CABRERA CAROLINA DANIELA',     sector:'Administracion'},
+  {nombre:'BRESSAN LUCIA ALEJANDRA',      sector:'Administracion'},
+  {nombre:'TOLEDO GABRIELA ELISA',        sector:'Administracion'},
+  {nombre:'TOMATIS ROSA',                 sector:'Administracion'},
+  {nombre:'SANCHEZ JUAN IGNACIO',         sector:'Administracion'},
+  {nombre:'MOSCOLONI PABLO GASTON',       sector:'Produccion'},
+  {nombre:'AGUIRRE NICANDRO NAHUEL',      sector:'Produccion'},
+  {nombre:'TOLOSA MARCOS EZEQUIEL',       sector:'Produccion'},
+  {nombre:'LUCERO IVAN',                  sector:'Produccion'},
+  {nombre:'RODRIGUEZ LAUREANO EZEQUIEL',  sector:'Produccion'},
+  {nombre:'AVECILLA MARCOS ENRIQUE',      sector:'Produccion'},
+  {nombre:'LEONETTI ADRIAN',              sector:'Produccion'},
+  {nombre:'MENDEZ CLAUDIO',               sector:'Produccion'},
+  {nombre:'CHASSARRETA FRANCO',           sector:'Produccion'},
+  {nombre:'DI TATTA JUAN DANIEL',         sector:'Mantenimiento'},
+  {nombre:'ANDORNO NICOLAS MANUEL',       sector:'Mantenimiento'},
+  {nombre:'ROMERO LUIS RICARDO',          sector:'Mantenimiento'},
+  {nombre:'GIL BRIAN DANIEL',             sector:'Mantenimiento'},
+  {nombre:'LERIN GABRIEL OMAR',           sector:'Mantenimiento'},
+  {nombre:'PONCE DE LEON TOMAS',          sector:'Mantenimiento'},
+  {nombre:'BAREIRO EMANUEL',              sector:'Mantenimiento'},
+  {nombre:'LANDABURU JUAN MIGUEL',        sector:'Acopio'},
+  {nombre:'CASAS CRISTIAN EDGARDO',       sector:'Acopio'},
+  {nombre:'BORDON ALEJANDRO',             sector:'Acopio'},
+  {nombre:'GOROSITO JULIO',               sector:'Acopio'},
+  {nombre:'BUGIOLACHI DARIO MARTIN',      sector:'Balanza'},
+  {nombre:'BARCENA JUAN JOSE',            sector:'Balanza'},
+  {nombre:'HERNANDEZ GUSTAVO GABRIEL',    sector:'Chofer'},
+];
+
+async function cargarNominaInicial() {
+  // Solo si la tabla está vacía
+  var res = await fetch(SUPA_URL+'/rest/v1/empleados?select=id&limit=1', {headers:SUPA_HDRS});
+  var data = res.ok ? await res.json() : [];
+  if (data.length > 0) return; // ya hay datos
+  await fetch(SUPA_URL+'/rest/v1/empleados', {
+    method:'POST',
+    headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}),
+    body:JSON.stringify(NOMINA_INICIAL)
+  });
+}
 
 // ═══════════════════════════════════════════
 // SELECCIÓN MÚLTIPLE LIQUIDACIONES
@@ -3831,6 +4676,55 @@ function imprimirSeleccion() {
 // ═══════════════════════════════════════════
 // PRODUCTORES — base de nombres
 // ═══════════════════════════════════════════
+
+// ═══════════════════════════════════════════
+// SELECTOR GENÉRICO DE PRODUCTORES
+// ═══════════════════════════════════════════
+var PROD_SELECTOR_IDS = ['c-proveedor','v-cliente','cv-cliente'];
+
+function prodSelectorChange(fieldId) {
+  var sel    = document.getElementById(fieldId+'-sel');
+  var wrap   = document.getElementById(fieldId+'-nuevo-wrap');
+  var inp    = document.getElementById(fieldId);
+  var hidden = document.getElementById(fieldId+'-val');
+  if (!sel) return;
+  if (sel.value === '__nuevo__') {
+    if (wrap) wrap.style.display = 'block';
+    if (inp) inp.value = '';
+    if (hidden) hidden.value = '';
+    if (inp) inp.focus();
+  } else {
+    if (wrap) wrap.style.display = 'none';
+    if (hidden) hidden.value = sel.value;
+    if (inp) inp.value = sel.value;
+  }
+}
+
+function poblarSelectoresProductores() {
+  var sorted = productoresData.slice().sort(function(a,b){ return a.nombre.localeCompare(b.nombre, 'es'); });
+  PROD_SELECTOR_IDS.forEach(function(fieldId) {
+    var sel = document.getElementById(fieldId+'-sel');
+    if (!sel) return;
+    var current = sel.value;
+    sel.innerHTML = '<option value="">-- Elegir --</option>' +
+      sorted.map(function(p){
+        return '<option value="'+p.nombre+'">'+p.nombre+'</option>';
+      }).join('') +
+      '<option value="__nuevo__">+ Agregar nuevo...</option>';
+    if (current) sel.value = current;
+  });
+}
+
+function getProdValue(fieldId) {
+  var sel = document.getElementById(fieldId+'-sel');
+  if (!sel) return '';
+  if (sel.value === '__nuevo__') {
+    var inp = document.getElementById(fieldId);
+    return inp ? inp.value.trim() : '';
+  }
+  return sel.value;
+}
+
 async function cargarProductores() {
   try {
     var res = await fetch(SUPA_URL+'/rest/v1/productores?select=id,nombre&order=nombre', {headers:SUPA_HDRS});
@@ -3845,9 +4739,11 @@ async function cargarProductores() {
 function actualizarSelectorProductor() {
   var sel = document.getElementById('liq-f-productor-sel');
   if (!sel) return;
+  var sortedLiq = productoresData.slice().sort(function(a,b){ return a.nombre.localeCompare(b.nombre, 'es'); });
   sel.innerHTML = '<option value="">-- Elegir productor --</option>' +
-    productoresData.map(function(p){ return '<option value="'+p.nombre+'">'+p.nombre+'</option>'; }).join('') +
+    sortedLiq.map(function(p){ return '<option value="'+p.nombre+'">'+p.nombre+'</option>'; }).join('') +
     '<option value="__nuevo__">+ Agregar nuevo...</option>';
+  poblarSelectoresProductores();
 }
 
 function onProductorChange() {
@@ -3962,7 +4858,16 @@ function imprimirLiquidacion(id) {
   ];
   if (r.humedad) {
     campos.push(['Humedad real / Estándar', r.humedad+'%  /  '+(r.humedad_std||'-')+'%']);
-    if (r.merma_kg) campos.push(['Merma fisica', '-'+(r.merma_kg||0)+' kg / Tn netas: '+(r.tn_netas||0)+' tn']);
+    if (r.merma_kg || r.calidad_kg) {
+      if (r.humedad && r.humedad > (r.humedad_std||0)) {
+        var kgHum = (r.merma_kg||0) - (r.calidad_kg||0);
+        campos.push(['Merma por Humedad', '-'+kgHum.toFixed(1)+' kg  ('+r.pctMermaHum+'%)']);
+      }
+      if (r.calidad_kg && r.calidad_kg > 0) {
+        campos.push(['Merma por Calidad', '-'+(r.calidad_kg||0)+' kg  ('+(r.calidad_pct||0)+'%)']);
+      }
+      campos.push(['Total descontado', '-'+(r.merma_kg||0)+' kg  / Tn netas: '+(r.tn_netas||0)+' tn']);
+    }
     if (r.secada_puntos) {
       var secadaStr = (r.secada_puntos||0)+' pts x USD '+(r.secada_costo_punto||0)+'/tn x '+(r.toneladas||0)+' tn = USD '+(r.secada_total_usd||0);
       if (r.tipo_cambio) {
@@ -4126,19 +5031,18 @@ function exportarLiqPDF() {
     doc.text('No hay liquidaciones en esta categoría.', ml, y+6);
   } else {
     // Header tabla
+    // Columnas ajustadas a cw=182mm exactos (sin Estado — se usa color)
+    // Prod:40 Cer:16 Tn:11 FEnt:21 FVenc:21 Tot:30 Pag:20 Sal:23 = 182
     var cols = [
-      {label:'Productor',       x:ml,       w:38},
-      {label:'Cereal',          x:ml+38,    w:18},
-      {label:'Tn',              x:ml+56,    w:14},
-      {label:'F. Entrega',      x:ml+70,    w:22},
-      {label:'F. Vencimiento',  x:ml+92,    w:24},
-      {label:'Total',           x:ml+116,   w:26},
-      {label:'Pagado',          x:ml+142,   w:26},
-      {label:'Saldo',           x:ml+168,   w:24},
-      {label:'Estado',          x:ml+192,   w:22}  // will be clipped to cw
+      {label:'Productor',      x:ml,      w:40},
+      {label:'Cereal',         x:ml+40,   w:16},
+      {label:'Tn',             x:ml+56,   w:11},
+      {label:'F.Entrega',      x:ml+67,   w:21},
+      {label:'F.Vencimiento',  x:ml+88,   w:21},
+      {label:'Total',          x:ml+109,  w:30},
+      {label:'Pagado',         x:ml+139,  w:20},
+      {label:'Saldo',          x:ml+159,  w:23},
     ];
-    // Recalc last col width
-    cols[8].w = ml+cw - cols[8].x;
 
     checkY(10);
     rect(ml, y, cw, 7, '#1e4d2b');
@@ -4165,8 +5069,7 @@ function exportarLiqPDF() {
       doc.text(fmtLiqMonto(r.monto_pagado||0,mon),    cols[6].x+1, y+5.2);
       doc.setTextColor(saldo>0?'#842029':'#0a3622');
       doc.text(fmtLiqMonto(saldo,mon),                cols[7].x+1, y+5.2);
-      doc.setTextColor(ec); doc.setFont('helvetica','bold');
-      doc.text((r.estado||'').toUpperCase(),           cols[8].x+1, y+5.2);
+
       // Alerta vencimiento
       var dias = liqDiasRestantes(r.fecha_vencimiento);
       if (r.estado!=='pagado' && dias<0) {
@@ -4282,7 +5185,58 @@ function exportarFinancieroPDF() {
   });
   y += 22;
 
+  // ── Sección VENCIDOS en PDF ──
+  if (vencidos.length > 0) {
+    checkY(16);
+    doc.setFillColor('#842029'); doc.rect(ml, y, cw, 8, 'F');
+    doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text('VENCIDOS — '+vencidos.length+' liquidaciones sin pagar', ml+3, y+5.5);
+    y += 10;
+
+    // Header tabla vencidos
+    doc.setFillColor('#f8d7da'); doc.rect(ml, y, cw, 6, 'F');
+    doc.setTextColor('#842029'); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+    doc.text('F.Vencimiento', ml+2, y+4.3);
+    doc.text('Productor', ml+28, y+4.3);
+    doc.text('Cereal', ml+80, y+4.3);
+    doc.text('Tn', ml+102, y+4.3);
+    doc.text('Días vencido', ml+116, y+4.3);
+    doc.text('Saldo', pw-mr-2, y+4.3, {align:'right'});
+    y += 6;
+
+    vencidos.forEach(function(r, i) {
+      checkY(7);
+      var dias = Math.abs(liqDiasRestantes(r.fecha_vencimiento));
+      var saldo = (parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+      doc.setFillColor(i%2===0?'#fff5f5':'#ffffff'); doc.rect(ml, y, cw, 7, 'F');
+      doc.setTextColor('#842029'); doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+      doc.text(fmtFecha(r.fecha_vencimiento), ml+2, y+5);
+      doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','normal');
+      doc.text(doc.splitTextToSize(r.productor||'-', 50)[0], ml+28, y+5);
+      doc.text(r.cereal||'-', ml+80, y+5);
+      doc.text(String(r.toneladas||0), ml+102, y+5);
+      doc.setTextColor('#842029'); doc.setFont('helvetica','bold');
+      doc.text(dias+' días', ml+116, y+5);
+      doc.text(fmtLiqMonto(saldo, r.moneda_importe), pw-mr-2, y+5, {align:'right'});
+      y += 7;
+    });
+
+    // Fila total vencidos
+    checkY(9);
+    doc.setFillColor('#842029'); doc.rect(ml, y, cw, 8, 'F');
+    doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text('TOTAL VENCIDO', ml+3, y+5.5);
+    var tvStr2 = liqSaldoStr(vencidos);
+    doc.text(tvStr2, pw-mr-2, y+5.5, {align:'right'});
+    y += 12;
+    doc.setDrawColor('#f5c6cb'); doc.setLineWidth(0.5);
+    doc.line(ml, y-4, ml+cw, y-4);
+    doc.setLineWidth(0.2);
+    y += 6; // espacio extra antes de la proyección
+  }
+
   // ── Proyección 8 semanas ──
+  checkY(14);
   doc.setTextColor('#1e4d2b');
   doc.setFont('times','bold'); doc.setFontSize(12);
   doc.text('Proyección 8 Semanas', ml, y); y += 7;
@@ -4336,7 +5290,7 @@ function exportarFinancieroPDF() {
     var headerFc = esCurrent ? '#ffffff' : '#1e4d2b';
     doc.setFillColor(headerBg); doc.rect(ml, y, cw, 8, 'F');
     doc.setTextColor(headerFc); doc.setFont('helvetica','bold'); doc.setFontSize(8);
-    doc.text((esCurrent?'▶ ':'')+' Semana '+(i+1)+'  ·  '+fechaLabel, ml+2, y+5.5);
+    doc.text((esCurrent?'>> ':'')+' Semana '+(i+1)+'  ·  '+fechaLabel, ml+2, y+5.5);
     doc.text('Pagos: '+semStr, pw-mr-2, y+5.5, {align:'right'});
     y += 8;
 
@@ -4369,9 +5323,9 @@ function exportarFinancieroPDF() {
     y += 8;
   });
 
-  // ── Lista cronológica ──
+  // ── Lista cronológica — siempre en página nueva ──
   if (activos.length) {
-    checkY(14);
+    doc.addPage(); y = 46;
     doc.setTextColor('#1e4d2b'); doc.setFont('times','bold'); doc.setFontSize(12);
     doc.text('Todos los Vencimientos Pendientes', ml, y); y += 7;
 
@@ -4414,8 +5368,7 @@ function exportarFinancieroPDF() {
   for (var p=1;p<=totalPgs;p++){
     doc.setPage(p);
     doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor('#5a7262');
-    doc.text('Don Mauricio Agroganadera SRL  ·  Navarro, Buenos Aires', ml, ph-6);
-    doc.text('Pág. '+p+'/'+totalPgs, pw-mr, ph-6, {align:'right'});
+    doc.text('Pág. '+p+'/'+totalPgs, pw-mr, ph-8, {align:'right'});
   }
 
   doc.save('Financiero_Vencimientos_'+hoy.replace(/\//g,'-')+'.pdf');
@@ -4493,7 +5446,7 @@ function fmtFecha(f) {
 // ── Cargar datos desde Supabase ──
 async function cargarLiquidaciones() {
   try {
-    var res = await fetch(SUPA_URL + '/rest/v1/liquidaciones?select=*&order=fecha_vencimiento.asc', { headers: SUPA_HDRS });
+    var res = await fetch(SUPA_URL + '/rest/v1/liquidaciones?select=*&order=created_at.desc', { headers: SUPA_HDRS });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     liqData = await res.json();
   } catch(e) {
@@ -4574,17 +5527,27 @@ function renderLiqLista() {
     var alerta = liqAlertaColor(dias, r.estado);
     var pendiente = (parseFloat(r.importe_total)||0) - (parseFloat(r.monto_pagado)||0);
     var seleccionado = liqSeleccion.indexOf(String(r.id)) !== -1;
-    return '<div id="liq-card-'+r.id+'" style="background:white;border:2px solid '+(seleccionado?'var(--verde-medio)':'var(--border)')+';border-left:4px solid '+alerta.color+';border-radius:10px;padding:12px 14px;transition:border .15s">' +
+    var borderLeft = r.tipo === 'fijacion' ? '#1d4ed8' : alerta.color;
+    return '<div id="liq-card-'+r.id+'" style="background:white;border:2px solid '+(seleccionado?'var(--verde-medio)':'var(--border)')+';border-left:4px solid '+borderLeft+';border-radius:10px;padding:12px 14px;transition:border .15s">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">' +
         '<label style="display:flex;align-items:center;gap:8px;cursor:pointer;flex:1">' +
           '<input type="checkbox" '+(seleccionado?'checked':'')+' onchange="toggleLiqSeleccion(&quot;'+r.id+'&quot;)" style="width:16px;height:16px;accent-color:var(--verde-medio);cursor:pointer;flex-shrink:0">' +
           '<div style="flex:1">' +
             '<div style="font-weight:700;font-size:13px;color:var(--ink)">'+r.productor+'</div>' +
             '<div style="font-size:10px;color:var(--muted);margin-top:2px">'+r.cereal+' · '+(r.toneladas||0)+' tn'+(r.humedad?' · Hum: '+r.humedad+'%':'')+' · Entrega: '+fmtFecha(r.fecha_compra)+'</div>' +
-          (r.humedad && r.humedad > (r.humedad_std||0) ? '<div style="font-size:9px;color:#842029;margin-top:1px;font-weight:600">Merma: −'+(r.merma_kg||0)+' kg → '+(r.tn_netas||0)+' tn netas'+(r.secada_total_usd?' · Secada: USD '+(r.secada_total_usd):'')+'</div>' : '') +
+          ((r.merma_kg||r.calidad_kg) ? '<div style="font-size:9px;color:#842029;margin-top:1px;font-weight:600">' +
+            (r.merma_kg_hum?'Hum: -'+r.merma_kg_hum+' kg':'') +
+            (r.merma_kg_hum&&r.calidad_kg?' · ':'') +
+            (r.calidad_kg?'Cal: -'+r.calidad_kg+' kg':'') +
+            ' → '+(r.tn_netas||0)+' tn netas' +
+            (r.secada_total_usd?' · Secada: USD '+r.secada_total_usd:'') +
+          '</div>' : '') +
             (r.tipo_precio==='pizarra' ? '<div style="font-size:9px;color:var(--verde-medio);margin-top:2px;font-weight:600">Pizarra '+fmtLiqMonto(r.pizarra_base||0,'ARS')+'/tn − '+(r.pizarra_pct||0)+'% = '+fmtLiqMonto(r.precio_usd||0,'ARS')+'/tn</div>' : '<div style="font-size:9px;color:var(--muted);margin-top:2px">Precio fijo · '+(r.moneda||'USD')+' '+fmtLiqMonto(r.precio_usd||0,r.moneda||'USD')+'/tn</div>') +
           '</div>' +
         '</label>' +
+        (r.tipo === 'fijacion'
+          ? '<span style="background:#dbeafe;color:#1d4ed8;border-radius:20px;padding:2px 9px;font-size:9px;font-weight:700;margin-right:4px">FIJACIÓN</span>'
+          : '<span style="background:#d1e7dd;color:#0a3622;border-radius:20px;padding:2px 9px;font-size:9px;font-weight:700;margin-right:4px">LIQUIDACIÓN</span>') +
         liqEstadoBadge(r.estado) +
       '</div>' +
       '<div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap">' +
@@ -4598,7 +5561,7 @@ function renderLiqLista() {
       '<div style="display:flex;gap:8px;margin-top:10px">' +
         '<button onclick="imprimirLiquidacion(&quot;'+r.id+'&quot;)" style="background:var(--verde-oscuro);color:white;border:none;border-radius:6px;padding:5px 12px;font-family:Arial,sans-serif;font-size:10px;font-weight:700;cursor:pointer">🖨 Imprimir</button>' +
         '<button onclick="editarLiquidacion(&quot;'+r.id+'&quot;)" style="background:var(--verde-light);color:var(--verde-medio);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-family:Arial,sans-serif;font-size:10px;font-weight:600;cursor:pointer">✏ Editar</button>' +
-        (r.estado !== 'pagado' ? '<button onclick="pagarLiquidacion(&quot;'+r.id+'&quot;,'+pendiente+')" style="background:var(--verde-medio);color:white;border:none;border-radius:6px;padding:5px 12px;font-family:Arial,sans-serif;font-size:10px;font-weight:700;cursor:pointer">💰 Registrar Pago</button>' : '') +
+        '<button onclick="pagarLiquidacion(&quot;'+r.id+'&quot;,'+pendiente+')" style="background:'+(r.estado==='pagado'?'var(--verde-light);color:var(--verde-medio);border:1px solid var(--border)':'var(--verde-medio);color:white;border:none')+';border-radius:6px;padding:5px 12px;font-family:Arial,sans-serif;font-size:10px;font-weight:700;cursor:pointer">'+(r.estado==='pagado'?'📋 Ver Pagos':'💰 Registrar Pago')+'</button>' +
         '<button onclick="eliminarLiquidacion(&quot;'+r.id+'&quot;)" style="background:none;color:#842029;border:1px solid #f5c6cb;border-radius:6px;padding:5px 12px;font-family:Arial,sans-serif;font-size:10px;font-weight:600;cursor:pointer">🗑</button>' +
       '</div>' +
     '</div>';
@@ -4660,8 +5623,48 @@ async function renderVencFinanciero() {
 
   var listaEl = document.getElementById('vencf-lista');
 
+  // ── Sección VENCIDOS ──
+  var html = '';
+  if (vencidos.length > 0) {
+    html += "<div style='font-family:Georgia,serif;font-size:14px;font-weight:700;color:#842029;margin:0 0 10px;display:flex;align-items:center;gap:8px'>" +
+      "<span style='background:#842029;color:white;border-radius:6px;padding:3px 10px;font-size:11px'>⚠ VENCIDOS</span>" +
+      "<span style='font-size:12px;font-weight:600'>"+vencidos.length+" liquidaciones sin pagar</span>" +
+    "</div>";
+    html += vencidos.map(function(r) {
+      var dias = liqDiasRestantes(r.fecha_vencimiento);
+      var saldo = (parseFloat(r.importe_total)||0) - (parseFloat(r.monto_pagado)||0);
+      return '<div style="display:flex;align-items:center;gap:12px;background:white;border:1px solid #f5c6cb;border-left:4px solid #842029;border-radius:10px;padding:12px 14px;margin-bottom:8px">' +
+        '<div style="min-width:60px;text-align:center;background:#f8d7da;border-radius:8px;padding:6px">' +
+          '<div style="font-size:14px;font-weight:900;color:#842029">'+fmtFecha(r.fecha_vencimiento).slice(0,5)+'</div>' +
+          '<div style="font-size:9px;color:#842029">'+fmtFecha(r.fecha_vencimiento).slice(6)+'</div>' +
+          '<div style="font-size:9px;font-weight:700;color:#842029;margin-top:2px">'+Math.abs(dias)+'d vencido</div>' +
+        '</div>' +
+        '<div style="flex:1">' +
+          '<div style="font-weight:700;font-size:13px;color:var(--ink)">'+r.productor+'</div>' +
+          '<div style="font-size:10px;color:var(--muted)">'+r.cereal+' · '+(r.toneladas||0)+' tn</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div style="font-weight:800;font-size:15px;color:#842029">'+fmtLiqMonto(saldo, r.moneda_importe)+'</div>' +
+          '<div style="font-size:9px;color:#842029;margin-top:2px">'+liqSaldoStr([r])+'</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    // Total vencidos
+    var tvUSD=0, tvARS=0;
+    vencidos.forEach(function(r){
+      var s=(parseFloat(r.importe_total)||0)-(parseFloat(r.monto_pagado)||0);
+      if((r.moneda_importe||'ARS')==='ARS') tvARS+=s; else tvUSD+=s;
+    });
+    var tvStr=(tvUSD?fmtLiqMonto(tvUSD,'USD'):'')+(tvUSD&&tvARS?' + ':'')+( tvARS?fmtLiqMonto(tvARS,'ARS'):'');
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;background:#f8d7da;border-radius:8px;padding:10px 14px;margin-bottom:8px">' +
+      '<div style="font-size:10px;font-weight:700;color:#842029;text-transform:uppercase;letter-spacing:1px">Total vencido</div>' +
+      '<div style="font-size:15px;font-weight:900;color:#842029">'+tvStr+'</div>' +
+    '</div>';
+    html += '<div style="border-top:2px solid #f5c6cb;margin:16px 0"></div>';
+  }
+
   // Encabezado proyección
-  var html = "<div style='font-family:Georgia,serif;font-size:14px;font-weight:700;color:var(--verde-oscuro);margin:18px 0 10px'>Proyección 8 Semanas</div>";
+  html += "<div style='font-family:Georgia,serif;font-size:14px;font-weight:700;color:var(--verde-oscuro);margin:18px 0 10px'>Proyección 8 Semanas</div>";
 
   if (!hayDatos) {
     html += '<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px 0;background:white;border:1px solid var(--border);border-radius:10px">No hay vencimientos en las próximas 8 semanas.</div>';
@@ -4760,17 +5763,100 @@ async function renderVencFinanciero() {
 
 // ── Modal Liquidacion ──
 var liqEditId = null;
+var liqTipoActual = "liquidacion";
 
 
 // ═══════════════════════════════════════════
 // HUMEDAD — Merma física + Secada
 // ═══════════════════════════════════════════
-var LIQ_HUMEDAD_STD = { 'Soja': 13.5, 'Maíz': 14.5 };
+var LIQ_HUMEDAD_STD = { 'Soja': 13.5, 'Maiz': 14.5 };
+
+// Tablas oficiales de merma por secado (% merma para cada % humedad)
+// Soja: estándar 13.5% — arrancan desde 13.6%
+// Maíz: estándar 14.5% — arrancan desde 14.6%
+// A cada valor se le suma 0.25% de merma por manipuleo
+
+var TABLA_MERMA_SOJA = {
+  13.6:0.69, 13.7:0.80, 13.8:0.92, 13.9:1.03,
+  14.0:1.15, 14.1:1.26, 14.2:1.38, 14.3:1.49, 14.4:1.61, 14.5:1.72,
+  14.6:1.84, 14.7:1.95, 14.8:2.07, 14.9:2.18,
+  15.0:2.30, 15.1:2.41, 15.2:2.53, 15.3:2.64, 15.4:2.76, 15.5:2.87,
+  15.6:2.99, 15.7:3.10, 15.8:3.22, 15.9:3.33,
+  16.0:3.45, 16.1:3.56, 16.2:3.68, 16.3:3.79, 16.4:3.91, 16.5:4.02,
+  16.6:4.14, 16.7:4.25, 16.8:4.37, 16.9:4.48,
+  17.0:4.60, 17.1:4.71, 17.2:4.83, 17.3:4.94, 17.4:5.06, 17.5:5.17,
+  17.6:5.29, 17.7:5.40, 17.8:5.52, 17.9:5.63,
+  18.0:5.75, 18.1:5.86, 18.2:5.98, 18.3:6.09, 18.4:6.21, 18.5:6.32,
+  18.6:6.44, 18.7:6.55, 18.8:6.67, 18.9:6.78,
+  19.0:6.90, 19.1:7.01, 19.2:7.13, 19.3:7.24, 19.4:7.36, 19.5:7.47,
+  19.6:7.59, 19.7:7.70, 19.8:7.82, 19.9:7.93,
+  20.0:8.05, 20.1:8.16, 20.2:8.28, 20.3:8.39, 20.4:8.51, 20.5:8.62,
+  20.6:8.74, 20.7:8.85, 20.8:8.97, 20.9:9.08,
+  21.0:9.20, 21.1:9.31, 21.2:9.43, 21.3:9.54, 21.4:9.66, 21.5:9.77,
+  21.6:9.89, 21.7:10.00, 21.8:10.11, 21.9:10.23,
+  22.0:10.34, 22.1:10.46, 22.2:10.57, 22.3:10.69, 22.4:10.80, 22.5:10.92,
+  22.6:11.03, 22.7:11.15, 22.8:11.26, 22.9:11.38,
+  23.0:11.49, 23.1:11.61, 23.2:11.72, 23.3:11.84, 23.4:11.95,
+  23.5:12.07, 23.6:12.18, 23.7:12.30, 23.8:12.41, 23.9:12.53,
+  24.0:12.64, 24.1:12.76, 24.2:12.87, 24.3:12.99, 24.4:13.10,
+  24.5:13.22, 24.6:13.33, 24.7:13.45, 24.8:13.56, 24.9:13.68,
+  25.0:13.79
+};
+
+var TABLA_MERMA_MAIZ = {
+  14.6:1.27, 14.7:1.39, 14.8:1.50, 14.9:1.62,
+  15.0:1.73, 15.1:1.85, 15.2:1.97, 15.3:2.08, 15.4:2.20, 15.5:2.31,
+  15.6:2.43, 15.7:2.54, 15.8:2.66, 15.9:2.77,
+  16.0:2.89, 16.1:3.01, 16.2:3.12, 16.3:3.24, 16.4:3.35, 16.5:3.47,
+  16.6:3.58, 16.7:3.70, 16.8:3.82, 16.9:3.93,
+  17.0:4.05, 17.1:4.16, 17.2:4.28, 17.3:4.39, 17.4:4.51, 17.5:4.62,
+  17.6:4.74, 17.7:4.86, 17.8:4.97, 17.9:5.09,
+  18.0:5.20, 18.1:5.32, 18.2:5.43, 18.3:5.55, 18.4:5.66, 18.5:5.78,
+  18.6:5.90, 18.7:6.01, 18.8:6.13, 18.9:6.24,
+  19.0:6.36, 19.1:6.47, 19.2:6.59, 19.3:6.71, 19.4:6.82, 19.5:6.94,
+  19.6:7.05, 19.7:7.17, 19.8:7.28, 19.9:7.40,
+  20.0:7.51, 20.1:7.63, 20.2:7.75, 20.3:7.86, 20.4:7.98, 20.5:8.09,
+  20.6:8.21, 20.7:8.32, 20.8:8.44, 20.9:8.55,
+  21.0:8.67, 21.1:8.79, 21.2:8.90, 21.3:9.02, 21.4:9.13, 21.5:9.25,
+  21.6:9.36, 21.7:9.48, 21.8:9.60, 21.9:9.71,
+  22.0:9.83, 22.1:9.94, 22.2:10.06, 22.3:10.17, 22.4:10.29, 22.5:10.40,
+  22.6:10.52, 22.7:10.64, 22.8:10.75, 22.9:10.87,
+  23.0:10.98, 23.1:11.10, 23.2:11.21, 23.3:11.33, 23.4:11.45,
+  23.5:11.56, 23.6:11.68, 23.7:11.79, 23.8:11.91, 23.9:12.02,
+  24.0:12.14, 24.1:12.25, 24.2:12.37, 24.3:12.49, 24.4:12.60,
+  24.5:12.72, 24.6:12.83, 24.7:12.95, 24.8:13.06, 24.9:13.18,
+  25.0:13.29
+};
+
+function liqGetMerma(cereal, humedad) {
+  // Redondear humedad a 1 decimal para buscar en tabla
+  var hum = Math.round(humedad * 10) / 10;
+  var esMaiz = cereal === 'Maiz';
+  var tabla = esMaiz ? TABLA_MERMA_MAIZ : (cereal === 'Soja' ? TABLA_MERMA_SOJA : null);
+  if (!tabla) return 0;
+  var pct = tabla[hum];
+  if (pct === undefined) {
+    // Si está por debajo del mínimo de la tabla → sin merma
+    // Si está por encima del máximo → usar el último valor
+    var keys = Object.keys(tabla).map(Number).sort(function(a,b){return a-b;});
+    if (hum <= keys[0]) return 0;
+    if (hum >= keys[keys.length-1]) pct = tabla[keys[keys.length-1]];
+    else return 0;
+  }
+  // Sumar 0.25% de manipuleo
+  return pct + 0.25;
+}
+
 
 function liqOnCerealChange() {
   var cereal = document.getElementById('liq-f-cereal').value;
   var bloqueH = document.getElementById('liq-bloque-humedad');
   var std = LIQ_HUMEDAD_STD[cereal];
+  // Nunca mostrar humedad en fijaciones
+  if (liqTipoActual === 'fijacion') {
+    bloqueH.style.display = 'none';
+    return;
+  }
   if (std !== undefined) {
     bloqueH.style.display = 'flex';
     document.getElementById('liq-f-humedad-std').value = std;
@@ -4814,20 +5900,30 @@ function liqCalcHumedad() {
   var exceso   = humReal - std;
   var hayMerma = exceso > 0;
 
-  // ── 1. Merma física ──
-  // kg_merma = TN * 1000 * exceso / (100 - std)
-  var kgMerma = 0, tnNetas = tn;
-  if (hayMerma) {
-    kgMerma  = (tn * 1000 * exceso) / (100 - std);
-    tnNetas  = tn - kgMerma / 1000;
-    mermaWrap.style.display = 'block';
-    document.getElementById('liq-f-merma-kg').value = kgMerma.toFixed(1);
-    document.getElementById('liq-f-tn-netas').value = tnNetas.toFixed(3);
+  // ── 1. Merma física — tabla oficial + 0.25% manipuleo ──
+  var pctMerma = hayMerma ? liqGetMerma(cereal, humReal) : 0;
+  var kgMerma  = pctMerma > 0 ? tn * 1000 * pctMerma / 100 : 0;
+  // ── 1b. Merma por Calidad — sobre tn brutas ──
+  var calidadPct = parseFloat(document.getElementById('liq-f-calidad-pct').value) || 0;
+  var kgCalidad  = calidadPct > 0 ? tn * 1000 * calidadPct / 100 : 0;
+  document.getElementById('liq-f-calidad-kg').value = calidadPct > 0 ? kgCalidad.toFixed(1) : '';
+
+  // ── Tn netas totales = tn - merma humedad - merma calidad ──
+  var tnNetas = tn - kgMerma / 1000 - kgCalidad / 1000;
+  var kgTotalDescuento = kgMerma + kgCalidad;
+
+  if (kgTotalDescuento > 0) {
+    mermaWrap.style.display = 'flex';
+    document.getElementById('liq-f-merma-kg-hum').value = kgMerma > 0 ? kgMerma.toFixed(1) : '-';
+    document.getElementById('liq-f-merma-kg-cal').value = kgCalidad > 0 ? kgCalidad.toFixed(1) : '-';
+    document.getElementById('liq-f-merma-kg').value     = kgTotalDescuento.toFixed(1);
+    document.getElementById('liq-f-tn-netas').value     = tnNetas.toFixed(3);
   } else {
     mermaWrap.style.display = 'none';
-    document.getElementById('liq-f-merma-kg').value = '';
-    document.getElementById('liq-f-tn-netas').value = '';
-    tnNetas = tn;
+    document.getElementById('liq-f-merma-kg-hum').value = '';
+    document.getElementById('liq-f-merma-kg-cal').value = '';
+    document.getElementById('liq-f-merma-kg').value     = '';
+    document.getElementById('liq-f-tn-netas').value     = '';
   }
 
   // ── 2. Secada — puntos cobrar = exceso - puntos libres, sobre tn BRUTAS ──
@@ -4925,11 +6021,17 @@ function liqCalcImporte() {
   var humReal = parseFloat(document.getElementById('liq-f-humedad').value);
   var exceso  = 0;
 
+  var kgMermaHum = 0;
   if (std !== undefined && !isNaN(humReal) && humReal > std) {
-    exceso      = humReal - std;
-    var kgMerma = (tn * 1000 * exceso) / (100 - std);
-    tnNetas     = tn - kgMerma / 1000;
+    exceso = humReal - std;
+    var pctMerma = liqGetMerma(cereal, humReal);
+    if (pctMerma > 0) kgMermaHum = tn * 1000 * pctMerma / 100;
   }
+  // Merma por calidad
+  var calidadPct = parseFloat(document.getElementById('liq-f-calidad-pct').value) || 0;
+  var kgCalidadImp = calidadPct > 0 ? tn * 1000 * calidadPct / 100 : 0;
+  // Tn netas = tn - merma humedad - merma calidad
+  tnNetas = tn - kgMermaHum / 1000 - kgCalidadImp / 1000;
 
   // ── Paso 2: Importe bruto = tn_netas × precio ──
   var importe = tnNetas * precio;
@@ -4955,6 +6057,35 @@ function liqCalcImporte() {
   }
 
   document.getElementById('liq-f-importe').value = importe.toFixed(2);
+}
+
+
+// ─── Condición de pago → fecha vencimiento ───
+function liqOnCondicionChange() {
+  var val = document.getElementById('liq-f-condicion').value;
+  var otroWrap = document.getElementById('liq-condicion-otro-wrap');
+  otroWrap.style.display = val === 'otro' ? 'block' : 'none';
+  if (val !== 'otro') liqCalcFechaVenc();
+}
+
+function liqCalcFechaVenc() {
+  var condicion = document.getElementById('liq-f-condicion').value;
+  var fcompra   = document.getElementById('liq-f-fcompra').value;
+  if (!fcompra) return;
+
+  var dias = 0;
+  if (condicion === 'otro') {
+    dias = parseInt(document.getElementById('liq-f-dias-otro').value) || 0;
+  } else {
+    dias = parseInt(condicion) || 0;
+  }
+
+  var fecha = new Date(fcompra + 'T12:00:00');
+  fecha.setDate(fecha.getDate() + dias);
+  var yyyy = fecha.getFullYear();
+  var mm   = String(fecha.getMonth()+1).padStart(2,'0');
+  var dd   = String(fecha.getDate()).padStart(2,'0');
+  document.getElementById('liq-f-fvenc').value = yyyy+'-'+mm+'-'+dd;
 }
 
 function liqSetTipoPrecio(tipo) {
@@ -4987,7 +6118,22 @@ function abrirFormLiquidacion(id) {
   liqEditId = id || null;
   var titulo = document.getElementById('liq-modal-titulo');
   var r = id ? liqData.find(function(x){ return x.id == id; }) : null;
-  titulo.textContent = r ? 'Editar Liquidación' : 'Nueva Liquidación';
+  if (r) liqTipoActual = r.tipo || 'liquidacion';
+  if (!id) liqTipoActual = liqTipoActual || 'liquidacion';
+  var esFijacion = liqTipoActual === 'fijacion';
+  titulo.textContent = r
+    ? (r.tipo === 'fijacion' ? 'Editar Fijación' : 'Editar Liquidación')
+    : (esFijacion ? 'Nueva Fijación' : 'Nueva Liquidación');
+  titulo.style.color = esFijacion ? '#1d4ed8' : 'var(--verde-oscuro)';
+  // Estado/pagado: solo visible al editar
+  var estadoWrap = document.getElementById('liq-estado-pagado-wrap');
+  if (estadoWrap) estadoWrap.style.display = r ? 'flex' : 'none';
+  // Humedad/Calidad: oculto en fijaciones
+  var humedadBloque = document.getElementById('liq-bloque-humedad');
+  if (humedadBloque) humedadBloque.style.display = 'none'; // se activa por liqOnCerealChange si aplica
+  // Label fecha
+  var labelFcompra = document.getElementById('liq-label-fcompra');
+  if (labelFcompra) labelFcompra.textContent = esFijacion ? 'Fecha de Fijación' : 'Fecha de Entrega';
   // Selector productor
   var selP = document.getElementById('liq-f-productor-sel');
   var nuevoW = document.getElementById('liq-productor-nuevo-wrap');
@@ -5016,12 +6162,15 @@ function abrirFormLiquidacion(id) {
     liqOnCerealChange();
     if (r && r.humedad) {
       document.getElementById('liq-f-humedad').value = r.humedad;
+      document.getElementById('liq-f-calidad-pct').value = r.calidad_pct||0;
       document.getElementById('liq-f-secada-libres').value = r.secada_libres||0;
       document.getElementById('liq-f-secada-costo').value  = r.secada_costo_punto||'';
       liqCalcHumedad();
     }
   }, 50);
   document.getElementById('liq-f-importe').value     = r ? r.importe_total : '';
+  document.getElementById('liq-f-calidad-pct').value  = r ? (r.calidad_pct||0) : 0;
+  document.getElementById('liq-f-calidad-kg').value   = '';
   document.getElementById('liq-f-importe-moneda').value = r ? (r.moneda_importe||'USD') : 'USD';
   // Tipo precio
   var tipoPrecio = r ? (r.tipo_precio||'fijo') : 'fijo';
@@ -5040,9 +6189,21 @@ function abrirFormLiquidacion(id) {
 
 function editarLiquidacion(id) { abrirFormLiquidacion(id); }
 
+
+function liqActualizarEstado() {
+  var pagado  = parseFloat(document.getElementById('liq-f-pagado').value) || 0;
+  var importe = parseFloat(document.getElementById('liq-f-importe').value) || 0;
+  var sel = document.getElementById('liq-f-estado');
+  if (!sel) return;
+  if (pagado <= 0)               sel.value = 'pendiente';
+  else if (pagado >= importe - 0.01) sel.value = 'pagado';
+  else                           sel.value = 'parcial';
+}
+
 function cerrarFormLiquidacion() {
   document.getElementById('liq-modal').style.display = 'none';
   liqEditId = null;
+  liqTipoActual = 'liquidacion';
 }
 
 async function guardarLiquidacion() {
@@ -5053,8 +6214,9 @@ async function guardarLiquidacion() {
   var monedaImp   = document.getElementById('liq-f-importe-moneda').value;
   var fcompra     = document.getElementById('liq-f-fcompra').value;
   var fvenc       = document.getElementById('liq-f-fvenc').value;
-  var estado      = document.getElementById('liq-f-estado').value;
   var pagado      = parseFloat(document.getElementById('liq-f-pagado').value)||0;
+  // Estado se recalcula automáticamente según monto pagado
+  var estado = document.getElementById('liq-f-estado').value;
   var obs         = document.getElementById('liq-f-obs').value.trim();
   var errEl       = document.getElementById('liq-f-err');
   // Tipo precio
@@ -5082,8 +6244,11 @@ async function guardarLiquidacion() {
 
   // Leer campos humedad
   var humedad     = parseFloat(document.getElementById('liq-f-humedad').value)||null;
+  var calidadPctGuard = parseFloat(document.getElementById('liq-f-calidad-pct').value)||null;
+  var calidadKgGuard  = parseFloat(document.getElementById('liq-f-calidad-kg').value)||null;
   var humedadStd  = parseFloat(document.getElementById('liq-f-humedad-std').value)||null;
   var mermaKg     = parseFloat(document.getElementById('liq-f-merma-kg').value)||null;
+  var mermaKgHum  = parseFloat(document.getElementById('liq-f-merma-kg-hum').value)||null;
   var tnNetas     = parseFloat(document.getElementById('liq-f-tn-netas').value)||null;
   var secadaLibres= parseFloat(document.getElementById('liq-f-secada-libres').value)||null;
   var secadaCosto = parseFloat(document.getElementById('liq-f-secada-costo').value)||null;
@@ -5092,12 +6257,18 @@ async function guardarLiquidacion() {
 
   var tc = parseFloat(document.getElementById('liq-f-tc').value)||null;
 
-  var body = { productor, cereal, toneladas: toneladas||null, precio_usd: precio||null,
+  var body = { tipo: liqTipoActual, productor, cereal, toneladas: toneladas||null, precio_usd: precio||null,
     moneda: moneda, tipo_precio: tipoPrecio, pizarra_base: pizarraBase, pizarra_pct: pizarraPct,
     importe_total: importe, moneda_importe: monedaImp,
     fecha_compra: fcompra||null, fecha_vencimiento: fvenc,
-    estado, monto_pagado: pagado, observaciones: obs||null,
-    humedad: humedad, humedad_std: humedadStd, merma_kg: mermaKg, tn_netas: tnNetas,
+    estado: (function(){
+      var imp = parseFloat(document.getElementById('liq-f-importe').value)||0;
+      if (pagado <= 0) return 'pendiente';
+      if (pagado >= imp - 0.01) return 'pagado';
+      return 'parcial';
+    })(), monto_pagado: pagado, observaciones: obs||null,
+    humedad: humedad, humedad_std: humedadStd, merma_kg: mermaKg, merma_kg_hum: mermaKgHum, tn_netas: tnNetas,
+    calidad_pct: calidadPctGuard, calidad_kg: calidadKgGuard,
     secada_libres: secadaLibres, secada_costo_punto: secadaCosto,
     secada_puntos: secadaPuntos, secada_total_usd: secadaTotal, tipo_cambio: tc };
 
@@ -5118,22 +6289,263 @@ async function guardarLiquidacion() {
   }
 }
 
-async function pagarLiquidacion(id, saldo) {
-  var monto = prompt('Registrar pago. Saldo pendiente: '+fmtUSD(saldo)+'. Ingresá el monto a pagar (USD):');
-  if (monto === null) return;
-  monto = parseFloat(monto);
-  if (isNaN(monto) || monto <= 0) { alert('Monto inválido.'); return; }
-  var r = liqData.find(function(x){ return x.id == id; });
-  var nuevoPagado = (parseFloat(r.monto_pagado)||0) + monto;
-  var nuevoEstado = nuevoPagado >= (parseFloat(r.importe_total)||0) ? 'pagado' : 'parcial';
+// ═══════════════════════════════════════════
+// SISTEMA DE PAGOS — tabla 'pagos' en Supabase
+// ═══════════════════════════════════════════
+var pagoModalLiqId = null;
+var pagoEditId = null;
+var pagosData = [];
+
+function pagarLiquidacion(id, saldo) {
+  abrirModalPago(id);
+}
+
+async function abrirModalPago(liqId) {
+  pagoModalLiqId = liqId;
+  pagoEditId = null;
+  var r = liqData.find(function(x){ return x.id == liqId; });
+  if (!r) return;
+
+  // Cargar pagos de esta liquidación
+  await cargarPagos(liqId);
+
+  renderModalPago(r);
+  document.getElementById('pago-modal').style.display = 'flex';
+  document.getElementById('pago-modal-monto').value = '';
+  document.getElementById('pago-modal-fecha').value = new Date().toISOString().split('T')[0];
+  document.getElementById('pago-modal-obs').value = '';
+  document.getElementById('pago-modal-err').textContent = '';
+  setTimeout(function(){ document.getElementById('pago-modal-monto').focus(); }, 100);
+}
+
+async function cargarPagos(liqId) {
   try {
-    var res = await fetch(SUPA_URL+'/rest/v1/liquidaciones?id=eq.'+id, {
-      method:'PATCH', headers:Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}),
-      body:JSON.stringify({ monto_pagado: nuevoPagado, estado: nuevoEstado }) });
+    var res = await fetch(SUPA_URL+'/rest/v1/pagos?liquidacion_id=eq.'+liqId+'&order=fecha.asc,created_at.asc', {headers: SUPA_HDRS});
+    pagosData = res.ok ? await res.json() : [];
+  } catch(e) { pagosData = []; }
+}
+
+function renderModalPago(r) {
+  var mon = r.moneda_importe || 'ARS';
+
+  // ── Todas las pendientes del productor ──
+  var pendientes = liqData.filter(function(x){
+    return x.productor === r.productor && x.estado !== 'pagado';
+  }).sort(function(a,b){ return new Date(a.fecha_vencimiento) - new Date(b.fecha_vencimiento); });
+
+  var totalSaldo = pendientes.reduce(function(s,x){
+    return s + (parseFloat(x.importe_total)||0) - (parseFloat(x.monto_pagado)||0);
+  }, 0);
+
+  document.getElementById('pago-modal-productor').textContent = r.productor;
+  document.getElementById('pago-modal-liq-info').innerHTML = pendientes.map(function(x){
+    var saldoX = (parseFloat(x.importe_total)||0) - (parseFloat(x.monto_pagado)||0);
+    var dias = liqDiasRestantes(x.fecha_vencimiento);
+    var alerta = liqAlertaColor(dias, x.estado);
+    var esActual = x.id == pagoModalLiqId;
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-radius:6px;margin-bottom:3px;background:'+(esActual?'var(--verde-light)':'transparent')+';border:'+(esActual?'1px solid var(--verde-medio)':'1px solid transparent')+';cursor:pointer" onclick="cambiarLiqPago(&quot;'+x.id+'&quot;)">' +
+      '<div>' +
+        '<span style="font-size:10px;font-weight:'+(esActual?'700':'500')+';color:var(--ink)">'+fmtFecha(x.fecha_vencimiento)+' · '+x.cereal+' · '+(x.toneladas||0)+' tn</span>' +
+        (esActual ? '<span style="font-size:9px;color:var(--verde-medio);font-weight:700;margin-left:4px">← activa</span>' : '') +
+      '</div>' +
+      '<span style="font-size:10px;font-weight:700;color:'+alerta.color+'">'+fmtLiqMonto(saldoX, x.moneda_importe||mon)+'</span>' +
+    '</div>';
+  }).join('');
+
+  document.getElementById('pago-modal-total').textContent = 'Saldo total pendiente: ' + fmtLiqMonto(totalSaldo, mon);
+  document.getElementById('pago-modal-total').style.color = totalSaldo > 0 ? '#842029' : '#0a3622';
+
+  // ── Historial de pagos de la liquidación activa ──
+  var saldoActual = (parseFloat(r.importe_total)||0) - (parseFloat(r.monto_pagado)||0);
+  document.getElementById('pago-modal-saldo-actual').textContent =
+    'Liquidación activa — Saldo: ' + fmtLiqMonto(saldoActual, mon);
+
+  var histEl = document.getElementById('pago-modal-historial');
+  if (!pagosData.length) {
+    histEl.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:11px;padding:10px">Sin pagos registrados para esta liquidación.</div>';
+  } else {
+    histEl.innerHTML = pagosData.map(function(p) {
+      return '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f4f8f5;border-radius:8px;margin-bottom:6px">' +
+        '<div style="flex:1">' +
+          '<div style="font-size:12px;font-weight:700;color:var(--verde-oscuro)">'+fmtLiqMonto(p.monto, mon)+'</div>' +
+          '<div style="font-size:9px;color:var(--muted);margin-top:1px">'+fmtFecha(p.fecha)+(p.observacion?' · '+p.observacion:'')+'</div>' +
+        '</div>' +
+        '<button onclick="editarPago(&quot;'+p.id+'&quot;,'+p.monto+',&quot;'+p.fecha+'&quot;,&quot;'+encodeURIComponent(p.observacion||'')+'&quot;,&quot;'+mon+'&quot;)" ' +
+          'style="background:var(--verde-light);color:var(--verde-medio);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:9px;font-weight:600;cursor:pointer">✏</button>' +
+        '<button onclick="eliminarPago(&quot;'+p.id+'&quot;)" ' +
+          'style="background:none;color:#842029;border:1px solid #f5c6cb;border-radius:6px;padding:4px 10px;font-size:9px;font-weight:600;cursor:pointer">🗑</button>' +
+      '</div>';
+    }).join('');
+  }
+
+  document.getElementById('pago-btn-guardar').textContent = pagoEditId ? '💾 Actualizar Pago' : '💰 Registrar Pago';
+}
+
+async function cambiarLiqPago(liqId) {
+  pagoModalLiqId = liqId;
+  pagoEditId = null;
+  document.getElementById('pago-modal-monto').value = '';
+  document.getElementById('pago-modal-obs').value = '';
+  document.getElementById('pago-modal-err').textContent = '';
+  await cargarPagos(liqId);
+  var r = liqData.find(function(x){ return x.id == liqId; });
+  if (r) renderModalPago(r);
+}
+
+function editarPago(id, monto, fecha, obs, mon) {
+  pagoEditId = id;
+  document.getElementById('pago-modal-monto').value = monto;
+  document.getElementById('pago-modal-fecha').value = fecha;
+  document.getElementById('pago-modal-obs').value = decodeURIComponent(obs);
+  document.getElementById('pago-btn-guardar').textContent = '💾 Actualizar Pago';
+  document.getElementById('pago-modal-monto').focus();
+}
+
+async function eliminarPago(id) {
+  if (!confirm('¿Eliminar este pago? Se recalculará el saldo en todas las liquidaciones afectadas.')) return;
+  try {
+    // Antes de eliminar, obtener el pago y sus excedentes para saber qué liquidaciones recalcular
+    var resFetch = await fetch(SUPA_URL+'/rest/v1/pagos?or=(id.eq.'+id+',pago_origen_id.eq.'+id+')&select=id,liquidacion_id', {headers: SUPA_HDRS});
+    var pagosAfectados = resFetch.ok ? await resFetch.json() : [];
+    var liqIdsAfectadas = [...new Set(pagosAfectados.map(function(p){ return p.liquidacion_id; }))];
+
+    // Eliminar el pago principal (cascade elimina los excedentes)
+    var res = await fetch(SUPA_URL+'/rest/v1/pagos?id=eq.'+id, {
+      method:'DELETE', headers: SUPA_HDRS });
     if (!res.ok) throw new Error('HTTP '+res.status);
-    renderLiquidaciones();
+
+    // Recalcular todas las liquidaciones afectadas
+    for (var i = 0; i < liqIdsAfectadas.length; i++) {
+      await recalcularMontoPagado(liqIdsAfectadas[i]);
+    }
+
+    await cargarLiquidaciones();
+    await cargarPagos(pagoModalLiqId);
+    var r = liqData.find(function(x){ return x.id == pagoModalLiqId; });
+    if (r) renderModalPago(r);
+    renderLiqLista();
+    renderLiqResumen();
   } catch(e) {
-    alert('Error al registrar pago: '+e.message);
+    document.getElementById('pago-modal-err').textContent = 'Error: '+e.message;
+  }
+}
+
+async function recalcularMontoPagado(liqId) {
+  // Suma todos los pagos y actualiza monto_pagado + estado en liquidacion
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/pagos?liquidacion_id=eq.'+liqId+'&select=monto', {headers: SUPA_HDRS});
+    var ps = res.ok ? await res.json() : [];
+    var total = ps.reduce(function(s,p){ return s+(parseFloat(p.monto)||0); }, 0);
+    var r = liqData.find(function(x){ return x.id == liqId; });
+    var importe = r ? (parseFloat(r.importe_total)||0) : 0;
+    var estado = total <= 0 ? 'pendiente' : (total >= importe - 0.01 ? 'pagado' : 'parcial');
+    await fetch(SUPA_URL+'/rest/v1/liquidaciones?id=eq.'+liqId, {
+      method:'PATCH',
+      headers: Object.assign({}, SUPA_HDRS, {'Prefer':'return=minimal'}),
+      body: JSON.stringify({ monto_pagado: total, estado: estado })
+    });
+    // Actualizar en memoria
+    if (r) { r.monto_pagado = total; r.estado = estado; }
+  } catch(e) { console.error('Error recalculando:', e); }
+}
+
+function cerrarModalPago() {
+  document.getElementById('pago-modal').style.display = 'none';
+  pagoModalLiqId = null;
+  pagoEditId = null;
+  pagosData = [];
+}
+
+async function confirmarPago() {
+  var errEl  = document.getElementById('pago-modal-err');
+  var monto  = parseFloat(document.getElementById('pago-modal-monto').value);
+  var fecha  = document.getElementById('pago-modal-fecha').value;
+  var obs    = document.getElementById('pago-modal-obs').value.trim();
+
+  if (isNaN(monto) || monto <= 0) { errEl.textContent = 'Ingresá un monto válido.'; return; }
+  if (!fecha) { errEl.textContent = 'Ingresá la fecha del pago.'; return; }
+
+  try {
+    if (pagoEditId) {
+      // Actualizar pago existente
+      var res = await fetch(SUPA_URL+'/rest/v1/pagos?id=eq.'+pagoEditId, {
+        method:'PATCH',
+        headers: Object.assign({}, SUPA_HDRS, {'Prefer':'return=minimal'}),
+        body: JSON.stringify({ monto: monto, fecha: fecha, observacion: obs||null })
+      });
+      if (!res.ok) throw new Error('HTTP '+res.status);
+      pagoEditId = null;
+      await recalcularMontoPagado(pagoModalLiqId);
+    } else {
+      // Nuevo pago — distribuir por vencimiento si el monto supera el saldo de esta liq
+      var r0 = liqData.find(function(x){ return x.id == pagoModalLiqId; });
+      var saldo0 = r0 ? (parseFloat(r0.importe_total)||0) - (parseFloat(r0.monto_pagado)||0) : monto;
+
+      if (monto <= saldo0 + 0.01) {
+        // Entra todo en la liquidación activa
+        var res = await fetch(SUPA_URL+'/rest/v1/pagos', {
+          method:'POST',
+          headers: Object.assign({}, SUPA_HDRS, {'Prefer':'return=minimal'}),
+          body: JSON.stringify({ liquidacion_id: pagoModalLiqId, monto: monto, fecha: fecha, observacion: obs||null })
+        });
+        if (!res.ok) throw new Error('HTTP '+res.status);
+        await recalcularMontoPagado(pagoModalLiqId);
+      } else {
+        // Distribuir: primero esta liq, luego siguientes por vencimiento
+        var productor = r0 ? r0.productor : '';
+        var pendientes = liqData.filter(function(x){
+          return x.productor === productor && x.estado !== 'pagado';
+        }).sort(function(a,b){ return new Date(a.fecha_vencimiento) - new Date(b.fecha_vencimiento); });
+        // Asegurarse que la activa vaya primero
+        pendientes = pendientes.filter(function(x){ return x.id != pagoModalLiqId; });
+        var activa = liqData.find(function(x){ return x.id == pagoModalLiqId; });
+        if (activa) pendientes.unshift(activa);
+
+        var restante = monto;
+        var pagoOrigenId = null; // ID del primer pago creado — los excedentes lo referencian
+
+        for (var i = 0; i < pendientes.length && restante > 0.01; i++) {
+          var liq = pendientes[i];
+          var saldoLiq = (parseFloat(liq.importe_total)||0) - (parseFloat(liq.monto_pagado)||0);
+          var aplicar = Math.min(restante, saldoLiq);
+          if (aplicar > 0.01) {
+            var body = {
+              liquidacion_id: liq.id,
+              monto: aplicar,
+              fecha: fecha,
+              observacion: i === 0 ? (obs||null) : ('Excedente de pago' + (obs ? ' — '+obs : '')),
+              pago_origen_id: i === 0 ? null : pagoOrigenId
+            };
+            var rp = await fetch(SUPA_URL+'/rest/v1/pagos', {
+              method:'POST',
+              headers: Object.assign({}, SUPA_HDRS, {'Prefer':'return=representation','Accept':'application/json'}),
+              body: JSON.stringify(body)
+            });
+            if (!rp.ok) throw new Error('HTTP '+rp.status);
+            // Guardar el ID del primer pago para vincular los excedentes
+            if (i === 0) {
+              var rpData = await rp.json();
+              pagoOrigenId = rpData[0] ? rpData[0].id : null;
+            }
+            await recalcularMontoPagado(liq.id);
+            restante -= aplicar;
+          }
+        }
+      }
+    }
+    // Recargar datos y UI
+    await cargarLiquidaciones();
+    await cargarPagos(pagoModalLiqId);
+    var r = liqData.find(function(x){ return x.id == pagoModalLiqId; });
+    document.getElementById('pago-modal-monto').value = '';
+    document.getElementById('pago-modal-obs').value = '';
+    document.getElementById('pago-btn-guardar').textContent = '💰 Registrar Pago';
+    errEl.textContent = '';
+    if (r) renderModalPago(r);
+    renderLiqLista();
+    renderLiqResumen();
+  } catch(e) {
+    errEl.textContent = 'Error: ' + e.message;
   }
 }
 
@@ -5471,7 +6883,7 @@ function abrirFormCanjeVenta() {
   if (!f) return;
   f.style.display = 'block';
   document.getElementById('cv-fecha').value = new Date().toISOString().split('T')[0];
-  document.getElementById('cv-cliente').value = '';
+  getProdValue('cv-cliente') = '';
   document.getElementById('cv-tn').value = '';
   document.getElementById('cv-obs').value = '';
   f.scrollIntoView({behavior:'smooth'});
@@ -5484,7 +6896,7 @@ function cerrarFormCanjeVenta() {
 
 function guardarCanjeVenta() {
   var fecha    = document.getElementById('cv-fecha').value;
-  var cliente  = document.getElementById('cv-cliente').value.trim();
+  var cliente  = getProdValue('cv-cliente').trim();
   var producto = document.getElementById('cv-producto').value;
   var tn       = parseFloat(document.getElementById('cv-tn').value);
   var condpago = document.getElementById('cv-condpago').value;
@@ -5554,7 +6966,10 @@ function saltearseTnReales(){
 function cerrarModalTn(){document.getElementById('modal-tn-reales').style.display='none';_modalCtx=null;}
 function toggleSistemaVenta(id){var i=ventasData.findIndex(function(x){return x.id==id;});if(i===-1)return;ventasData[i].pasadoSistema=!ventasData[i].pasadoSistema;guardarVentaDB(ventasData[i]);renderVentasLista();}
 var fijacionIdActual=null;
-function abrirFormFijacion(){cerrarFormCompra();fijacionIdActual=null;document.getElementById('form-fijacion').style.display='block';document.getElementById('fij-fecha').value=new Date().toISOString().split('T')[0];document.getElementById('fij-proveedor').value='';document.getElementById('fij-tn').value='';document.getElementById('fij-obs').value='';document.getElementById('fij-comprador').value=sesion?sesion.nombre:'';}
+function abrirFormFijacion(){
+  liqTipoActual = 'fijacion';
+  abrirFormLiquidacion(null);
+}
 function cerrarFormFijacion(){document.getElementById('form-fijacion').style.display='none';}
 function guardarFijacion(){var fecha=document.getElementById('fij-fecha').value;var prov=document.getElementById('fij-proveedor').value.trim();var prod=document.getElementById('fij-producto').value;var tn=parseFloat(document.getElementById('fij-tn').value);var obs=document.getElementById('fij-obs').value.trim();var comp=sesion?sesion.nombre:(document.getElementById('fij-comprador').value.trim());if(!fecha||!prov||isNaN(tn)){alert('Completa los campos.');return;}var reg={id:Date.now(),tipo:'fijacion',estado:'En deposito',fecha:fecha,proveedor:prov,producto:prod,tn:tn,precio:null,condpago:'Contado',obs:obs,comprador:comp,pasadoSistema:false};comprasData.unshift(reg);guardarCompraDB(reg);cerrarFormFijacion();renderComprasLista();}
 function abrirFormFijarPrecio(id){fijacionIdActual=id;var c=comprasData.find(function(x){return x.id==id;});if(!c)return;document.getElementById('form-fijar-precio').style.display='block';document.getElementById('fijar-titulo').textContent='Fijar precio - '+c.proveedor;document.getElementById('fij-precio-fecha').value=new Date().toISOString().split('T')[0];document.getElementById('fij-precio-entrega').value='';document.getElementById('fij-tipo-precio').value='fijo';document.getElementById('fij-precio-fijo').value='';document.getElementById('fij-pizarra-ref').value='';document.getElementById('fij-descuento').value='';document.getElementById('fij-precio-calculado').textContent='';toggleFijarPrecio();}
@@ -6731,7 +8146,7 @@ function renderPizarraCompradores() {
           + '<div style="font-size:10px;color:var(--muted);margin-top:3px">'+escHtml(cp.condpago)+(cp.obs?' · <i>'+escHtml(cp.obs)+'</i>':'')+'</div>'
         + '</div>'
         + '<div style="display:flex;gap:4px;align-items:center;margin-left:8px;flex-shrink:0">'
-          + '<button data-usar-id="'+cp.id+'" onclick="usarComprador('+cp.id+')" style="background:var(--verde-light);color:var(--verde-medio);border:1.5px solid var(--verde-medio);border-radius:6px;padding:6px 10px;font-family:\'Outfit\',sans-serif;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">Usar →</button>'
+          + '<button data-usar-id="'+cp.id+'" onclick="usarComprador('+cp.id+')" style="background:var(--verde-light);color:var(--verde-medio);border:1.5px solid var(--verde-medio);border-radius:6px;padding:6px 10px;font-family:Arial,sans-serif;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap">Usar →</button>'
           + (canEdit ? '<button onclick="abrirFormComprador('+cp.id+')" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:10px;cursor:pointer;padding:5px 7px">✏</button>' : '')
           + (sesion && sesion.rol==='admin' ? '<button onclick="eliminarComprador('+cp.id+')" style="background:none;border:none;color:#c0392b;font-size:15px;cursor:pointer;padding:0 3px">×</button>' : '')
         + '</div>'
@@ -6752,11 +8167,16 @@ var portalPosts = [];
 var editandoPostId = null;
 
 var SECCIONES_CONFIG = {
-  mercado:    { label: '📈 Mercado de la semana', color: 'var(--verde-light)', border: 'var(--verde-medio)' },
-  produccion: { label: '⚙️ Producción',           color: '#f0f4ff',           border: '#5566aa' },
-  compras:    { label: '🌾 Compras pendientes',    color: 'var(--dorado-light)', border: 'var(--dorado)' },
-  general:    { label: '📌 General',               color: '#f9f9f9',           border: 'var(--border)' },
+  mercado:    { label: '📈 Mercado de la semana', color: 'var(--verde-light)',   border: 'var(--verde-medio)', roles: ['admin','comercial'] },
+  produccion: { label: '⚙️ Producción',           color: '#f0f4ff',             border: '#5566aa',            roles: ['admin','comercial','mantenimiento'] },
+  compras:    { label: '🌾 Compras pendientes',    color: 'var(--dorado-light)', border: 'var(--dorado)',      roles: ['admin','comercial'] },
+  general:    { label: '📌 General',               color: '#f9f9f9',             border: 'var(--border)',      roles: ['admin','comercial','tesoreria','mantenimiento'] },
 };
+
+// Permisos Banco Diario
+var BANCO_DIARIO_ROLES = ['admin','tesoreria'];
+
+var bancoDiarioData = null; // datos del día actual
 
 function renderPortal() {
   // Fecha actual
@@ -6779,6 +8199,11 @@ function renderPortal() {
   });
 }
 
+function puedeVerSeccion(roles) {
+  if (!sesion) return false;
+  return roles.indexOf(sesion.rol) !== -1;
+}
+
 function renderSeccionesPortal() {
   var secEl = document.getElementById('portal-secciones');
   var genEl = document.getElementById('portal-general');
@@ -6789,11 +8214,14 @@ function renderSeccionesPortal() {
 
   secciones.forEach(function(sec) {
     var cfg = SECCIONES_CONFIG[sec];
+    if (!puedeVerSeccion(cfg.roles)) return; // ocultar si no tiene permiso
     var posts = portalPosts.filter(function(p){return p.seccion===sec;});
     seccionesHTML += '<div style="background:'+cfg.color+';border:1.5px solid '+cfg.border+';border-radius:12px;padding:14px;margin-bottom:12px">';
     seccionesHTML += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:' + (posts.length?'10px':'0') + '">';
     seccionesHTML += '<div style="font-size:11px;font-weight:700;color:var(--ink);letter-spacing:0.5px">'+cfg.label+'</div>';
-    seccionesHTML += '<button onclick="abrirFormPostSeccionBtn(this)" data-sec="'+sec+'" style="background:transparent;border:1px solid '+cfg.border+';border-radius:5px;color:var(--ink);font-size:9px;font-weight:600;cursor:pointer;padding:3px 8px;font-family:sans-serif">+ Agregar</button>';
+    if (sesion && sesion.rol === 'admin') {
+      seccionesHTML += '<button onclick="abrirFormPostSeccionBtn(this)" data-sec="'+sec+'" style="background:transparent;border:1px solid '+cfg.border+';border-radius:5px;color:var(--ink);font-size:9px;font-weight:600;cursor:pointer;padding:3px 8px;font-family:sans-serif">+ Agregar</button>';
+    }
     seccionesHTML += '</div>';
     if (posts.length === 0) {
       seccionesHTML += '<div style="font-size:11px;color:var(--muted);font-style:italic">Sin novedades esta semana</div>';
@@ -6807,19 +8235,202 @@ function renderSeccionesPortal() {
 
   secEl.innerHTML = seccionesHTML;
 
-  // General / mural libre
-  var genPosts = portalPosts.filter(function(p){return p.seccion==='general';});
-  var genHTML = '<div style="margin-top:4px">';
-  genHTML += '<div style="font-size:11px;font-weight:700;color:var(--ink);letter-spacing:0.5px;margin-bottom:10px">📌 General</div>';
-  if (genPosts.length === 0) {
-    genHTML += '<div style="font-size:11px;color:var(--muted);font-style:italic;text-align:center;padding:20px 0">Sin publicaciones generales</div>';
+  // General — todos los roles
+  var genCfg = SECCIONES_CONFIG['general'];
+  if (puedeVerSeccion(genCfg.roles)) {
+    var genPosts = portalPosts.filter(function(p){return p.seccion==='general';});
+    var genHTML = '<div style="margin-top:4px">';
+    genHTML += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">';
+    genHTML += '<div style="font-size:11px;font-weight:700;color:var(--ink);letter-spacing:0.5px">'+genCfg.label+'</div>';
+    if (sesion && sesion.rol === 'admin') {
+      genHTML += '<button onclick="abrirFormPostSeccionBtn(this)" data-sec="general" style="background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--ink);font-size:9px;font-weight:600;cursor:pointer;padding:3px 8px;font-family:sans-serif">+ Agregar</button>';
+    }
+    genHTML += '</div>';
+    if (genPosts.length === 0) {
+      genHTML += '<div style="font-size:11px;color:var(--muted);font-style:italic;text-align:center;padding:20px 0">Sin publicaciones generales</div>';
+    } else {
+      genPosts.forEach(function(p) { genHTML += buildPostCard(p, 'var(--border)'); });
+    }
+    genHTML += '</div>';
+    genEl.innerHTML = genHTML;
   } else {
-    genPosts.forEach(function(p) {
-      genHTML += buildPostCard(p, 'var(--border)');
-    });
+    genEl.innerHTML = '';
   }
-  genHTML += '</div>';
-  genEl.innerHTML = genHTML;
+
+  // Banco Diario — solo admin y tesoreria
+  renderBancoDiario();
+}
+
+// ═══════════════════════════════════════════
+// BANCO DIARIO
+// ═══════════════════════════════════════════
+async function renderBancoDiario() {
+  var el = document.getElementById('portal-banco-diario');
+  if (!el) return;
+  if (!puedeVerSeccion(BANCO_DIARIO_ROLES)) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+
+  // Cargar datos de hoy
+  var hoy = new Date().toISOString().split('T')[0];
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/banco_diario?fecha=eq.'+hoy+'&select=*', {headers: SUPA_HDRS});
+    bancoDiarioData = res.ok ? (await res.json())[0] || null : null;
+  } catch(e) { bancoDiarioData = null; }
+
+  var d = bancoDiarioData || {};
+  var prov  = d.saldo_provincia || 0;
+  var nac   = d.saldo_nacion    || 0;
+  var gal   = d.saldo_galicia   || 0;
+  var total = prov + nac + gal;
+
+  el.innerHTML =
+    '<div style="background:#f0f4ff;border:1.5px solid #5566aa;border-radius:12px;padding:14px">' +
+      '<div style="font-size:11px;font-weight:700;color:#1a2e6e;letter-spacing:0.5px;margin-bottom:12px">🏦 Banco Diario — ' +
+        new Date().toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"numeric"}) + '</div>' +
+
+      // Banco Provincia
+      '<div style="margin-bottom:10px">' +
+        '<div style="font-size:10px;font-weight:700;color:#5566aa;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Banco Provincia</div>' +
+        '<div class="input-wrap" style="position:relative">' +
+          '<span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:700;color:#5566aa">$</span>' +
+          '<input id="banco-prov" type="text" inputmode="numeric" placeholder="0" value="'+(prov?fmtNumBanco(prov):'')+'" ' +
+          'onfocus="bancoDiarioFocus(this)" onblur="bancoDiarioBlur(this)" oninput="bancoDiarioInput(this)" ' +
+          'style="flex:1;border:none;background:transparent;padding:10px 12px 10px 24px;font-family:Arial,sans-serif;font-size:15px;font-weight:700;outline:none;color:#1e4d2b">' +
+        '</div>' +
+      '</div>' +
+
+      // Banco Nación
+      '<div style="margin-bottom:10px">' +
+        '<div style="font-size:10px;font-weight:700;color:#5566aa;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Banco Nación</div>' +
+        '<div class="input-wrap" style="position:relative">' +
+          '<span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:700;color:#5566aa">$</span>' +
+          '<input id="banco-nac" type="text" inputmode="numeric" placeholder="0" value="'+(nac?fmtNumBanco(nac):'')+'" ' +
+          'onfocus="bancoDiarioFocus(this)" onblur="bancoDiarioBlur(this)" oninput="bancoDiarioInput(this)" ' +
+          'style="flex:1;border:none;background:transparent;padding:10px 12px 10px 24px;font-family:Arial,sans-serif;font-size:15px;font-weight:700;outline:none;color:#1e4d2b">' +
+        '</div>' +
+      '</div>' +
+
+      // Banco Galicia
+      '<div style="margin-bottom:14px">' +
+        '<div style="font-size:10px;font-weight:700;color:#5566aa;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Banco Galicia</div>' +
+        '<div class="input-wrap" style="position:relative">' +
+          '<span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:700;color:#5566aa">$</span>' +
+          '<input id="banco-gal" type="text" inputmode="numeric" placeholder="0" value="'+(gal?fmtNumBanco(gal):'')+'" ' +
+          'onfocus="bancoDiarioFocus(this)" onblur="bancoDiarioBlur(this)" oninput="bancoDiarioInput(this)" ' +
+          'style="flex:1;border:none;background:transparent;padding:10px 12px 10px 24px;font-family:Arial,sans-serif;font-size:15px;font-weight:700;outline:none;color:#1e4d2b">' +
+        '</div>' +
+      '</div>' +
+
+      // Total
+      '<div style="background:#1e4d2b;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+        '<div style="font-size:10px;font-weight:700;color:white;text-transform:uppercase;letter-spacing:1px">Total Bancos</div>' +
+        '<div id="banco-total" style="font-size:16px;font-weight:900;color:white">' + fmtARS(total) + '</div>' +
+      '</div>' +
+
+      // Observaciones
+      '<div class="field" style="margin-bottom:12px">' +
+        '<label>Observaciones diarias</label>' +
+        '<div class="input-wrap">' +
+          '<textarea id="banco-obs" placeholder="Notas del día..." rows="3" ' +
+          'style="flex:1;border:none;background:transparent;padding:8px 10px;font-family:Arial,sans-serif;font-size:12px;outline:none;color:var(--ink);resize:vertical;width:100%">' +
+            (d.observaciones||'') +
+          '</textarea>' +
+        '</div>' +
+      '</div>' +
+
+      // Botón guardar
+      '<div style="display:flex;gap:8px">' +
+        '<button onclick="guardarBancoDiario()" style="flex:1;background:#5566aa;color:white;border:none;border-radius:8px;padding:10px;font-family:Arial,sans-serif;font-size:12px;font-weight:700;cursor:pointer">💾 Guardar</button>' +
+      '</div>' +
+      '<div id="banco-msg" style="font-size:10px;color:var(--verde-medio);margin-top:8px;text-align:center"></div>' +
+    '</div>';
+}
+
+function fmtARS(n) {
+  if (!n && n !== 0) return '$ 0,00';
+  return '$ ' + Number(n).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function fmtNumBanco(n) {
+  // Formato sin decimales para mostrar en campo
+  if (!n && n !== 0) return '';
+  return Number(n).toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+
+function parseBancoInput(val) {
+  // Eliminar puntos de miles y convertir coma decimal
+  if (!val) return 0;
+  return parseFloat(val.replace(/\./g,'').replace(',','.')) || 0;
+}
+
+function bancoDiarioFocus(inp) {
+  // Al enfocar: limpiar formato para editar, dejar solo dígitos y signo
+  var val = parseBancoInput(inp.value);
+  inp.value = val !== 0 ? String(val) : '';
+}
+
+function bancoDiarioBlur(inp) {
+  // Al salir: formatear con puntos de miles
+  var val = parseBancoInput(inp.value);
+  inp.value = val !== 0 ? (val < 0 ? '-' : '') + fmtNumBanco(Math.abs(val)) : '';
+  bancoDiarioCalc();
+}
+
+function bancoDiarioInput(inp) {
+  // Formatear en tiempo real mientras escribe (con puntos de miles)
+  var pos = inp.selectionStart;
+  var raw = inp.value;
+  var esNeg = raw.startsWith('-');
+  // Quitar todo salvo dígitos y guión inicial
+  var digits = raw.replace(/[^0-9]/g, '');
+  if (!digits) { inp.value = esNeg ? '-' : ''; bancoDiarioCalc(); return; }
+  var num = parseInt(digits, 10);
+  var formatted = (esNeg ? '-' : '') + num.toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
+  inp.value = formatted;
+  bancoDiarioCalc();
+}
+
+function parseBancoInput(val) {
+  if (!val) return 0;
+  var str = String(val).trim();
+  var esNeg = str.startsWith('-');
+  var num = parseFloat(str.replace(/\./g,'').replace(',','.')) || 0;
+  return esNeg && num > 0 ? -num : num;
+}
+
+function bancoDiarioCalc() {
+  var p = parseBancoInput(document.getElementById('banco-prov').value);
+  var n = parseBancoInput(document.getElementById('banco-nac').value);
+  var g = parseBancoInput(document.getElementById('banco-gal').value);
+  var total = p + n + g;
+  var el = document.getElementById('banco-total');
+  if (el) {
+    el.textContent = fmtARS(total);
+    el.style.color = total < 0 ? '#ff9f9f' : 'white';
+  }
+}
+
+async function guardarBancoDiario() {
+  var p   = parseBancoInput(document.getElementById('banco-prov').value);
+  var n   = parseBancoInput(document.getElementById('banco-nac').value);
+  var g   = parseBancoInput(document.getElementById('banco-gal').value);
+  var obs = document.getElementById('banco-obs').value.trim();
+  var hoy = new Date().toISOString().split('T')[0];
+  var msg = document.getElementById('banco-msg');
+
+  var body = { fecha: hoy, saldo_provincia: p, saldo_nacion: n, saldo_galicia: g, observaciones: obs||null, updated_at: new Date().toISOString() };
+
+  try {
+    // Upsert directo — inserta si no existe, actualiza si existe (por unique en fecha)
+    var res = await fetch(SUPA_URL+'/rest/v1/banco_diario', {
+      method: 'POST',
+      headers: Object.assign({}, SUPA_HDRS, {'Prefer':'resolution=merge-duplicates,return=minimal'}),
+      body: JSON.stringify(body)
+    });
+    if (msg) { msg.textContent = 'Guardado correctamente'; setTimeout(function(){ if(msg) msg.textContent=''; }, 3000); }
+  } catch(e) {
+    if (msg) msg.textContent = 'Error al guardar: '+e.message;
+  }
 }
 
 function buildPostCard(p, borderColor) {
@@ -6948,7 +8559,7 @@ function eliminarPost(id) {
         <div class="field" style="flex:1">
           <label>Cereal</label>
           <div class="input-wrap"><select id="liq-f-cereal" onchange="liqOnCerealChange()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
-            <option value="Soja">Soja</option><option value="Girasol">Girasol</option><option value="Maíz">Maíz</option><option value="Trigo">Trigo</option><option value="Otro">Otro</option>
+            <option value="Soja">Soja</option><option value="Girasol">Girasol</option><option value="Maiz">Maíz</option><option value="Trigo">Trigo</option><option value="Otro">Otro</option>
           </select></div>
         </div>
         <div class="field" style="flex:1">
@@ -6970,12 +8581,34 @@ function eliminarPost(id) {
             <div class="input-wrap"><input id="liq-f-humedad-std" type="number" step="0.1" style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--muted)" readonly></div>
           </div>
         </div>
+        <!-- Merma por Calidad -->
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <div class="field" style="flex:1">
+            <label>Merma por Calidad (%)</label>
+            <div class="input-wrap"><input id="liq-f-calidad-pct" type="number" step="0.1" placeholder="0" value="0" oninput="liqCalcHumedad()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+          </div>
+          <div class="field" style="flex:1">
+            <label>Kg descontados calidad</label>
+            <div class="input-wrap"><input id="liq-f-calidad-kg" type="number" readonly style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:#856404;font-weight:700"></div>
+          </div>
+        </div>
+
         <!-- Merma física -->
-        <div id="liq-merma-wrap" style="display:none">
-          <div style="font-size:9px;font-weight:700;color:#856404;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">↓ Merma Física</div>
+        <div id="liq-merma-wrap" style="display:none;flex-direction:column;gap:6px">
+          <div style="font-size:9px;font-weight:700;color:#856404;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">↓ Descuentos de Peso</div>
           <div style="display:flex;gap:10px">
             <div class="field" style="flex:1">
-              <label>Kg descontados</label>
+              <label>Merma Humedad (kg)</label>
+              <div class="input-wrap"><input id="liq-f-merma-kg-hum" type="number" readonly style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:#856404;font-weight:700"></div>
+            </div>
+            <div class="field" style="flex:1">
+              <label>Merma Calidad (kg)</label>
+              <div class="input-wrap"><input id="liq-f-merma-kg-cal" type="number" readonly style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:#856404;font-weight:700"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <div class="field" style="flex:1">
+              <label>Total descontado (kg)</label>
               <div class="input-wrap"><input id="liq-f-merma-kg" type="number" readonly style="flex:1;border:none;background:var(--bg);padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:#856404;font-weight:700"></div>
             </div>
             <div class="field" style="flex:1">
@@ -7089,17 +8722,40 @@ function eliminarPost(id) {
           </select></div>
         </div>
       </div>
+      <!-- Fecha entrega + Condición pago -->
       <div style="display:flex;gap:10px">
         <div class="field" style="flex:1">
-          <label>Fecha de Entrega</label>
-          <div class="input-wrap"><input id="liq-f-fcompra" type="date" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+          <label id="liq-label-fcompra">Fecha de Entrega</label>
+          <div class="input-wrap"><input id="liq-f-fcompra" type="date" oninput="liqCalcFechaVenc()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
         </div>
         <div class="field" style="flex:1">
-          <label>Fecha de Vencimiento *</label>
-          <div class="input-wrap"><input id="liq-f-fvenc" type="date" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+          <label>Condición de Pago</label>
+          <div class="input-wrap"><select id="liq-f-condicion" onchange="liqOnCondicionChange()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="0">Contado</option>
+            <option value="7">7 días</option>
+            <option value="15">15 días</option>
+            <option value="20">20 días</option>
+            <option value="30">30 días</option>
+            <option value="60">60 días</option>
+            <option value="otro">Otro...</option>
+          </select></div>
         </div>
       </div>
-      <div style="display:flex;gap:10px">
+      <!-- Días personalizados + Fecha vencimiento calculada -->
+      <div style="display:flex;gap:10px;align-items:flex-end">
+        <div id="liq-condicion-otro-wrap" style="display:none;flex:1">
+          <div class="field">
+            <label>Días acordados</label>
+            <div class="input-wrap"><input id="liq-f-dias-otro" type="number" placeholder="Ej: 45" min="0" oninput="liqCalcFechaVenc()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+          </div>
+        </div>
+        <div class="field" style="flex:2">
+          <label>Fecha de Vencimiento</label>
+          <div class="input-wrap" style="background:var(--bg)"><input id="liq-f-fvenc" type="date" readonly style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--verde-oscuro);font-weight:700"></div>
+        </div>
+      </div>
+      <!-- Estado y Monto Pagado — solo visible al EDITAR -->
+      <div id="liq-estado-pagado-wrap" style="display:none;gap:10px">
         <div class="field" style="flex:1">
           <label>Estado</label>
           <div class="input-wrap"><select id="liq-f-estado" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
@@ -7109,8 +8765,8 @@ function eliminarPost(id) {
           </select></div>
         </div>
         <div class="field" style="flex:1">
-          <label>Monto Pagado USD</label>
-          <div class="input-wrap"><input id="liq-f-pagado" type="number" placeholder="0.00" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+          <label>Monto Pagado</label>
+          <div class="input-wrap"><input id="liq-f-pagado" type="number" placeholder="0.00" oninput="liqActualizarEstado()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
         </div>
       </div>
       <div class="field">
@@ -7124,6 +8780,147 @@ function eliminarPost(id) {
     <div style="display:flex;gap:8px;margin-top:18px">
       <button onclick="guardarLiquidacion()" style="flex:2;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Guardar</button>
       <button onclick="cerrarFormLiquidacion()" style="flex:1;background:none;border:1px solid var(--border);border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);cursor:pointer">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PAGO -->
+<div id="pago-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:center;justify-content:center;padding:16px">
+  <div style="background:white;border-radius:16px;padding:22px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+      <div>
+        <div style="font-family:Georgia,serif;font-size:17px;font-weight:700;color:var(--verde-oscuro)" id="pago-modal-productor"></div>
+        <div id="pago-modal-liq-info" style="font-size:10px;color:var(--ink);margin-top:4px"></div>
+        <div style="font-size:11px;font-weight:700;margin-top:6px;padding:6px 10px;background:#fff0f0;border-radius:6px" id="pago-modal-total"></div>
+      </div>
+      <button onclick="cerrarModalPago()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+
+    <!-- Historial pagos -->
+    <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:14px 0 4px">Historial de pagos</div>
+    <div id="pago-modal-saldo-actual" style="font-size:10px;color:var(--muted);margin-bottom:8px"></div>
+    <div id="pago-modal-historial" style="margin-bottom:14px;max-height:220px;overflow-y:auto"></div>
+
+    <!-- Separador -->
+    <div style="border-top:1px solid var(--border);margin-bottom:14px"></div>
+
+    <!-- Nuevo / Editar pago -->
+    <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Nuevo pago</div>
+
+    <div style="display:flex;gap:10px;margin-bottom:10px">
+      <div class="field" style="flex:2">
+        <label>Monto</label>
+        <div class="input-wrap">
+          <input id="pago-modal-monto" type="number" placeholder="0.00" step="0.01"
+            style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;outline:none;color:var(--verde-oscuro)"
+            onkeydown="if(event.key==='Enter') confirmarPago()">
+        </div>
+      </div>
+      <div class="field" style="flex:1">
+        <label>Fecha</label>
+        <div class="input-wrap">
+          <input id="pago-modal-fecha" type="date"
+            style="flex:1;border:none;background:transparent;padding:10px 8px;font-family:'Outfit',sans-serif;font-size:12px;outline:none;color:var(--ink)">
+        </div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:12px">
+      <label>Observación (opcional)</label>
+      <div class="input-wrap">
+        <input id="pago-modal-obs" type="text" placeholder="Ej: Transferencia, cheque..."
+          style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:12px;outline:none;color:var(--ink)">
+      </div>
+    </div>
+
+    <div id="pago-modal-err" style="color:#842029;font-size:11px;margin-bottom:10px"></div>
+
+    <div style="display:flex;gap:8px">
+      <button id="pago-btn-guardar" onclick="confirmarPago()" style="flex:2;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:12px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer">💰 Registrar Pago</button>
+      <button onclick="cerrarModalPago()" style="flex:1;background:none;border:1px solid var(--border);border-radius:8px;padding:12px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);cursor:pointer">Cerrar</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL EMPLEADO -->
+<div id="rrhh-modal-emp" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200;align-items:center;justify-content:center;padding:16px">
+  <div style="background:white;border-radius:16px;padding:22px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div id="rrhh-emp-titulo" style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:var(--verde-oscuro)">Gestión de Empleados</div>
+      <button onclick="cerrarModalEmpleado()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+    <!-- Lista empleados activos/inactivos -->
+    <div id="rrhh-emp-lista" style="margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:14px"></div>
+    <!-- Formulario nuevo -->
+    <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Agregar nuevo empleado</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="field">
+        <label>Nombre completo *</label>
+        <div class="input-wrap"><input id="rrhh-emp-nombre" type="text" placeholder="Apellido Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)"></div>
+      </div>
+      <div class="field">
+        <label>Sector *</label>
+        <div class="input-wrap"><select id="rrhh-emp-sector" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+          <option value="Administracion">Administración</option>
+          <option value="Produccion">Producción</option>
+          <option value="Mantenimiento">Mantenimiento</option>
+          <option value="Acopio">Acopio</option>
+          <option value="Balanza">Balanza</option>
+          <option value="Chofer">Chofer</option>
+        </select></div>
+      </div>
+      <div class="field">
+        <label>Estado</label>
+        <div class="input-wrap"><select id="rrhh-emp-activo" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+          <option value="true">Activo</option>
+          <option value="false">Baja</option>
+        </select></div>
+      </div>
+    </div>
+    <div id="rrhh-emp-err" style="color:#842029;font-size:11px;margin-top:10px"></div>
+    <div style="display:flex;gap:8px;margin-top:18px">
+      <button onclick="guardarEmpleado()" style="flex:2;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Guardar</button>
+      <button onclick="cerrarModalEmpleado()" style="flex:1;background:none;border:1px solid var(--border);border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);cursor:pointer">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PERÍODO -->
+<div id="rrhh-modal-periodo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200;align-items:center;justify-content:center;padding:16px">
+  <div style="background:white;border-radius:16px;padding:22px;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:var(--verde-oscuro)">Nuevo Período</div>
+      <button onclick="cerrarModalPeriodo()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)">✕</button>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:4px">
+      <div class="field" style="flex:2">
+        <label>Mes</label>
+        <div class="input-wrap"><select id="rrhh-periodo-mes" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+          <option value="Enero">Enero</option><option value="Febrero">Febrero</option>
+          <option value="Marzo">Marzo</option><option value="Abril">Abril</option>
+          <option value="Mayo">Mayo</option><option value="Junio">Junio</option>
+          <option value="Julio">Julio</option><option value="Agosto">Agosto</option>
+          <option value="Septiembre">Septiembre</option><option value="Octubre">Octubre</option>
+          <option value="Noviembre">Noviembre</option><option value="Diciembre">Diciembre</option>
+        </select></div>
+      </div>
+      <div class="field" style="flex:1">
+        <label>Año</label>
+        <div class="input-wrap"><select id="rrhh-periodo-anio" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+        </select></div>
+      </div>
+    </div>
+    <div id="rrhh-periodo-err" style="color:#842029;font-size:11px;margin-top:6px"></div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button onclick="guardarPeriodo()" style="flex:2;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Crear Período</button>
+      <button onclick="cerrarModalPeriodo()" style="flex:1;background:none;border:1px solid var(--border);border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);cursor:pointer">Cancelar</button>
     </div>
   </div>
 </div>
