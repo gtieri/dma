@@ -549,6 +549,7 @@
   <button class="tab" onclick="switchTab('flete')">Flete</button>
   <button class="tab" id="tab-btn-comercial" onclick="switchTab('comercial')">Comercial</button>
   <button class="tab" onclick="switchTab('vencimientos')">Vencimientos</button>
+  <button class="tab" onclick="switchTab('tesoreria')">Tesorería</button>
   <button class="tab" onclick="switchTab('rrhh')">RRHH</button>
   <button class="tab" onclick="switchTab('historial')">Historial</button>
   <button class="tab" onclick="switchTab('acopio')">🌾 Acopio</button>
@@ -1610,6 +1611,119 @@
 
   </div>
 
+  <!-- TESORERÍA -->
+  <div class="panel" id="tab-tesoreria">
+
+    <!-- Sub-tabs (preparado para futuras secciones de tesorería) -->
+    <div style="display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:10px">
+      <button class="sub-tab-v active" onclick="switchSubTabT('caja-diaria')" id="subtabt-btn-caja-diaria"
+        style="background:var(--verde-medio);color:white;border:none;border-radius:6px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s">
+        Caja Diaria
+      </button>
+    </div>
+
+    <!-- ── SUB-PANEL: CAJA DIARIA ── -->
+    <div class="sub-panel-v active" id="tab-caja-diaria">
+
+      <!-- Selector de fecha -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-family:Georgia,serif;font-size:16px;font-weight:700;color:var(--verde-oscuro)">Caja Diaria</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px" id="caja-fecha-label"></div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button onclick="cajaCambiarDia(-1)" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer">←</button>
+          <input type="date" id="caja-fecha-sel" onchange="cajaSeleccionarFecha(this.value)" style="border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--ink);background:white">
+          <button onclick="cajaCambiarDia(1)" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 10px;font-size:12px;cursor:pointer">→</button>
+          <button onclick="cajaIrHoy()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">Hoy</button>
+          <button onclick="exportarCajaDiariaPDF()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">⬇ PDF</button>
+        </div>
+      </div>
+
+      <div id="caja-banner-cerrado" style="display:none;background:#fff4e0;border:1.5px solid #e0a030;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:11px;font-weight:600;color:#8a5d00">
+        🔒 Este día está cerrado. Solo Admin puede reabrirlo para editar movimientos.
+      </div>
+
+      <!-- Ingresos / Egresos -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px" id="caja-grid-mov">
+        <div class="card" style="margin-bottom:0">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-size:11px;font-weight:700;color:var(--verde-oscuro);letter-spacing:0.5px">INGRESOS</div>
+            <button id="caja-btn-add-ingreso" onclick="abrirFormCajaMov('ingreso')" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:6px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;cursor:pointer">+ Agregar</button>
+          </div>
+          <div id="caja-lista-ingresos"></div>
+          <div id="caja-totales-ingresos" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-size:11px;font-weight:700;color:#b83232;letter-spacing:0.5px">EGRESOS</div>
+            <button id="caja-btn-add-egreso" onclick="abrirFormCajaMov('egreso')" style="background:#b83232;color:white;border:none;border-radius:8px;padding:6px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;cursor:pointer">+ Agregar</button>
+          </div>
+          <div id="caja-lista-egresos"></div>
+          <div id="caja-totales-egresos" style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)"></div>
+        </div>
+      </div>
+
+      <!-- Formulario modal-inline -->
+      <div id="form-caja-mov" style="display:none" class="card">
+        <div style="font-size:11px;font-weight:700;color:var(--verde-oscuro);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)" id="caja-mov-titulo">Nuevo movimiento</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field" style="margin-bottom:0">
+            <label id="caja-mov-label-entidad">Cliente</label>
+            <div class="input-wrap"><input type="text" id="caja-mov-entidad" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)" list="caja-entidades-list"></div>
+            <datalist id="caja-entidades-list"></datalist>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Concepto</label>
+            <div class="input-wrap"><select id="caja-mov-concepto" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:12px;outline:none;color:var(--ink)"></select></div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>B / N</label>
+            <div class="input-wrap"><select id="caja-mov-bn" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)"><option value="N">N</option><option value="B">B</option></select></div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Moneda</label>
+            <div class="input-wrap"><select id="caja-mov-moneda" onchange="cajaMovToggleTC()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;outline:none;color:var(--ink)"><option value="$">$ Pesos</option><option value="U$D">U$D Dólares</option></select></div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Forma</label>
+            <div class="input-wrap"><select id="caja-mov-forma" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:12px;outline:none;color:var(--ink)">
+              <option value="EFECTIVO">EFECTIVO</option>
+              <option value="CHEQUE 3°">CHEQUE 3°</option>
+              <option value="TRANSFERENCIA">TRANSFERENCIA</option>
+              <option value="CHEQUE PROPIO">CHEQUE PROPIO</option>
+            </select></div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Importe</label>
+            <div class="input-wrap"><input type="text" inputmode="numeric" id="caja-mov-importe" placeholder="0" onfocus="cajaMontoFocus(this)" onblur="cajaMontoBlur(this)" oninput="cajaMontoInput(this)" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;font-weight:700;outline:none;color:var(--ink)"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button onclick="guardarCajaMov()" style="flex:1;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:600;cursor:pointer">Guardar movimiento</button>
+          <button onclick="cerrarFormCajaMov()" style="flex:1;background:var(--border);color:var(--muted);border:none;border-radius:8px;padding:10px;font-size:12px;font-weight:600;cursor:pointer">Cancelar</button>
+        </div>
+      </div>
+
+      <!-- Resumen del día -->
+      <div class="card" id="caja-resumen-dia"></div>
+
+      <!-- Resumen semanal -->
+      <div class="card" style="margin-top:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="font-size:11px;font-weight:700;color:var(--verde-oscuro);letter-spacing:0.5px">RESUMEN SEMANAL</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button onclick="cajaCambiarSemana(-1)" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 9px;font-size:11px;cursor:pointer">←</button>
+            <div id="caja-semana-label" style="font-size:11px;font-weight:600;color:var(--ink);min-width:150px;text-align:center"></div>
+            <button onclick="cajaCambiarSemana(1)" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:6px 9px;font-size:11px;cursor:pointer">→</button>
+          </div>
+        </div>
+        <div id="caja-resumen-semanal" style="overflow-x:auto"></div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- RRHH -->
   <div class="panel" id="tab-rrhh">
 
@@ -2395,9 +2509,9 @@ function aplicarPermisosTabs() {
   if(!sesion) return;
   var rol=sesion.rol;
   var tabsVisibles={
-    admin:        ['portal','cotizador','config','flete','comercial','vencimientos','rrhh','historial','acopio','admin'],
+    admin:        ['portal','cotizador','config','flete','comercial','vencimientos','tesoreria','rrhh','historial','acopio','admin'],
     comercial:    ['portal','cotizador','config','flete','comercial','vencimientos','historial','acopio'],
-    tesoreria:    ['portal','comercial','vencimientos','historial','acopio'],
+    tesoreria:    ['portal','vencimientos','tesoreria'],
     mantenimiento:['portal','config'],
     rrhh:         ['portal','rrhh'],
   };
@@ -3729,6 +3843,7 @@ function switchTab(tab) {
   if (tab === 'portal') renderPortal();
   if (tab === 'acopio') { renderAcopioLista(); renderAcopioResumen(); renderPizarraCompradores(); }
   if (tab === 'vencimientos') { switchSubTabV('liquidaciones'); }
+  if (tab === 'tesoreria') { switchSubTabT('caja-diaria'); initTesoreria(); }
   if (tab === 'rrhh') { initRRHH(); }
 }
 
@@ -4247,28 +4362,37 @@ async function guardarLiqSueldo(inp) {
   var liq = rrhhLiqData[empId];
   var body = { empleado_id: empId, periodo: periodo, quincena_1: liq.quincena_1||0, quincena_2: liq.quincena_2||0, horas_extras: liq.horas_extras||0 };
 
-  try {
-    // Intentar PATCH primero (actualizar si existe)
-    var liqId = rrhhLiqData[empId] ? rrhhLiqData[empId].id : null;
-    if (liqId) {
-      await fetch(SUPA_URL+'/rest/v1/liquidaciones_sueldo?id=eq.'+liqId, {
-        method:'PATCH',
-        headers: Object.assign({},SUPA_HDRS,{'Prefer':'return=minimal'}),
-        body: JSON.stringify({ quincena_1: liq.quincena_1||0, quincena_2: liq.quincena_2||0, horas_extras: liq.horas_extras||0 })
-      });
-    } else {
-      // Insertar si no existe
-      var res = await fetch(SUPA_URL+'/rest/v1/liquidaciones_sueldo', {
+  // Encolar el guardado por empleado para evitar requests en paralelo
+  // que disparan 409 (insert vs insert) cuando todavía no hay id asignado.
+  if (!window._rrhhSaveQueue) window._rrhhSaveQueue = {};
+  var prevPromise = window._rrhhSaveQueue[empId] || Promise.resolve();
+
+  var thisPromise = prevPromise.then(async function() {
+    try {
+      // Upsert atómico contra el constraint unique(empleado_id, periodo).
+      // Evita la carrera PATCH/POST: no importa si dos guardados del
+      // mismo empleado se disparan casi al mismo tiempo, Supabase
+      // resuelve el conflicto en lugar de tirar 409.
+      var res = await fetch(SUPA_URL+'/rest/v1/liquidaciones_sueldo?on_conflict=empleado_id,periodo', {
         method:'POST',
-        headers: Object.assign({},SUPA_HDRS,{'Prefer':'return=representation'}),
+        headers: Object.assign({},SUPA_HDRS,{
+          'Prefer':'resolution=merge-duplicates,return=representation'
+        }),
         body: JSON.stringify(body)
       });
       if (res.ok) {
         var data = await res.json();
-        if (data[0]) rrhhLiqData[empId].id = data[0].id;
+        if (data[0]) {
+          rrhhLiqData[empId].id = data[0].id;
+        }
+      } else {
+        console.error('Error guardando sueldo, status:', res.status, await res.text());
       }
-    }
-  } catch(e) { console.error('Error guardando sueldo:', e); }
+    } catch(e) { console.error('Error guardando sueldo:', e); }
+  });
+
+  window._rrhhSaveQueue[empId] = thisPromise;
+  await thisPromise;
 }
 
 // ── Modal Empleado ──
@@ -8495,15 +8619,577 @@ function guardarPost() {
   }).catch(function(e){ console.error('guardarPost:', e); });
 }
 
-function eliminarPost(id) {
-  if (!confirm('¿Eliminar esta publicación?')) return;
-  fetch('https://pznjdgutvzfjhkoflopk.supabase.co/rest/v1/portal_posts?id=eq.'+id, {
-    method: 'DELETE',
-    headers: {'apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bmpkZ3V0dnpmamhrb2Zsb3BrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODI5NjUsImV4cCI6MjA5NTA1ODk2NX0.mkXaPZPZHJN-BEDvqqoxDrfp5YmAqPwwwt_LCvu0HGA','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6bmpkZ3V0dnpmamhrb2Zsb3BrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODI5NjUsImV4cCI6MjA5NTA1ODk2NX0.mkXaPZPZHJN-BEDvqqoxDrfp5YmAqPwwwt_LCvu0HGA'}
-  }).then(function(){ renderPortal(); });
+// ═══════════════════════════════════════════
+// TESORERÍA — CAJA DIARIA
+// ═══════════════════════════════════════════
+var CONCEPTOS_INGRESO_CAJA = ['Aporte Personal - Socio GT','Alquileres','Cambio Cheques','Cheque Rechazado',
+  'Ingreso por Integracion de Granja Chocho','Intereses Financieros Positivos','Prestamos de 3°','Venta de Aceite',
+  'Venta de Bienes de Uso','Venta de Cheques','Venta de Fletes','Venta de Insumos','Venta de Maiz','Venta de Soja',
+  'Venta de Sorgo','Venta de Trigo','Venta de U$S','Venta Expeller','Retiro Bancario','Otros ingresos'];
+
+var CONCEPTOS_EGRESO_CAJA = ['Alquileres','Cambio Cheques','Cheque Rechazado','Combustible','Comisiones',
+  'Compra de U$S','Depositos bancarios','Descuento de Cheques','Gastos Agronomia','Gastos Comunicación',
+  'Gastos varios administracion','Gastos de Energía Eléctrica','Gastos de Gas','Gastos de Librería','Gastos de Fletes',
+  'Gastos varios produccion','Gastos Honorarios Profesionales','Gastos Repuestos Fabrica','Gastos Rodados',
+  'Pago Proveedores varios','Gastos Seguros','Gastos Viaticos','Intereses Financieros','Pago créditos',
+  'Pago inversiones','Pago inversiones extra','Pago Impuestos','Pago Impuestos ARBA','Pago IVA Adicional',
+  'Pago Proveedores Maiz','Pago Proveedores Soja','Pago Proveedores Trigo','Pago Proveedores Insumos',
+  'Pago contratistas rurales','Prestamos a Pagar','Retiro Personal - Socio GT','Retiro Personal - Socio MI','Sueldos y Jornales'];
+
+var CAJA_ROLES = ['admin','tesoreria'];
+
+var cajaFechaActual = null;
+var cajaMovimientos = [];
+var cajaCierreHoy = null;
+var cajaCierreAnterior = null;
+var cajaSemanaInicio = null;
+var cajaMovTipoActual = null;
+
+function switchSubTabT(subTab) {
+  document.querySelectorAll('#tab-tesoreria [id^="subtabt-btn-"]').forEach(function(btn) {
+    var isActive = btn.id === 'subtabt-btn-' + subTab;
+    btn.classList.toggle('active', isActive);
+    btn.style.background = isActive ? 'var(--verde-medio)' : 'none';
+    btn.style.color = isActive ? 'white' : 'var(--muted)';
+    btn.style.border = isActive ? 'none' : '1px solid var(--border)';
+    btn.style.fontWeight = isActive ? '700' : '600';
+  });
+  document.querySelectorAll('#tab-tesoreria .sub-panel-v').forEach(function(p){ p.classList.remove('active'); });
+  var panel = document.getElementById('tab-' + subTab);
+  if (panel) panel.classList.add('active');
+}
+
+function initTesoreria() {
+  if (!sesion || CAJA_ROLES.indexOf(sesion.rol) === -1) return;
+  if (!cajaFechaActual) cajaFechaActual = new Date().toISOString().split('T')[0];
+  var sel = document.getElementById('caja-fecha-sel');
+  if (sel) sel.value = cajaFechaActual;
+  if (!cajaSemanaInicio) cajaSemanaInicio = cajaLunesDeSemana(cajaFechaActual);
+  cargarCajaDia(cajaFechaActual);
+  cargarCajaSemana();
+}
+
+// ── Utilidades de fecha ──
+function cajaLunesDeSemana(fechaStr) {
+  var d = new Date(fechaStr + 'T00:00:00');
+  var day = d.getDay();
+  var diff = day === 0 ? -6 : 1 - day;
+  d.setDate(d.getDate() + diff);
+  return d.toISOString().split('T')[0];
+}
+function cajaSumarDias(fechaStr, n) {
+  var d = new Date(fechaStr + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split('T')[0];
+}
+function fmtFechaCortaCaja(f) {
+  var d = new Date(f + 'T00:00:00');
+  return d.toLocaleDateString('es-AR', {day:'2-digit', month:'2-digit'});
+}
+
+// ── Navegación de fecha ──
+function cajaCambiarDia(delta) { cajaSeleccionarFecha(cajaSumarDias(cajaFechaActual, delta)); }
+function cajaIrHoy() { cajaSeleccionarFecha(new Date().toISOString().split('T')[0]); }
+function cajaSeleccionarFecha(f) {
+  cajaFechaActual = f;
+  var sel = document.getElementById('caja-fecha-sel');
+  if (sel) sel.value = f;
+  cargarCajaDia(f);
+}
+
+// ── Formato numérico ──
+function cajaParseNum(val) {
+  if (!val) return 0;
+  var str = String(val).trim();
+  var neg = str.indexOf('-') === 0;
+  var num = parseFloat(str.replace(/\./g,'').replace(',','.')) || 0;
+  return neg && num > 0 ? -num : num;
+}
+function cajaFmtNum(n) {
+  if (!n && n !== 0) return '';
+  return Number(n).toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function fmtNum2(n) {
+  return Number(n||0).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function cajaMontoFocus(inp) {
+  var v = cajaParseNum(inp.value);
+  inp.value = v !== 0 ? String(v) : '';
+}
+function cajaMontoBlur(inp) {
+  var v = cajaParseNum(inp.value);
+  inp.value = v !== 0 ? (v<0?'-':'') + cajaFmtNum(Math.abs(v)) : '';
+  if (inp.id==='caja-saldo-ini-pesos' || inp.id==='caja-saldo-ini-usd' || inp.id==='caja-tc-cierre') cajaResumenRecalc();
+}
+function cajaMontoInput(inp) {
+  var raw = inp.value;
+  var esNeg = raw.indexOf('-') === 0;
+  var digits = raw.replace(/[^0-9]/g, '');
+  if (!digits) { inp.value = esNeg ? '-' : ''; }
+  else {
+    var num = parseInt(digits, 10);
+    inp.value = (esNeg?'-':'') + num.toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
+  }
+  if (inp.id==='caja-saldo-ini-pesos' || inp.id==='caja-saldo-ini-usd' || inp.id==='caja-tc-cierre') cajaResumenRecalc();
+}
+function cajaMovToggleTC() { /* reservado para futuras validaciones según moneda */ }
+
+// ── Carga del día ──
+async function cargarCajaDia(fecha) {
+  var elI = document.getElementById('caja-lista-ingresos'), elE = document.getElementById('caja-lista-egresos');
+  if (elI) elI.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:11px;padding:10px 0">Cargando...</div>';
+  if (elE) elE.innerHTML = '';
+  try {
+    var [resMov, resCierreHoy, resCierreAnt] = await Promise.all([
+      fetch(SUPA_URL+'/rest/v1/caja_movimientos?fecha=eq.'+fecha+'&select=*&order=created_at', {headers:SUPA_HDRS}),
+      fetch(SUPA_URL+'/rest/v1/caja_cierres?fecha=eq.'+fecha+'&select=*', {headers:SUPA_HDRS}),
+      fetch(SUPA_URL+'/rest/v1/caja_cierres?fecha=lt.'+fecha+'&select=*&order=fecha.desc&limit=1', {headers:SUPA_HDRS})
+    ]);
+    cajaMovimientos = resMov.ok ? await resMov.json() : [];
+    var cierresHoy = resCierreHoy.ok ? await resCierreHoy.json() : [];
+    cajaCierreHoy = cierresHoy[0] || null;
+    var cierresAnt = resCierreAnt.ok ? await resCierreAnt.json() : [];
+    cajaCierreAnterior = cierresAnt[0] || null;
+  } catch(e) {
+    cajaMovimientos = []; cajaCierreHoy = null; cajaCierreAnterior = null;
+    console.error('Error cargando caja diaria:', e);
+  }
+  renderCajaDia();
+}
+
+function calcularTotalesCaja(lista) {
+  var t = {pesos_efectivo:0, pesos_cheque3:0, pesos_transf:0, pesos_chprop:0, pesos_B:0, pesos_N:0,
+    usd_efectivo:0, usd_B:0, usd_N:0, usd_total:0, pesos_total:0};
+  lista.forEach(function(m) {
+    var imp = Number(m.importe) || 0;
+    if (m.moneda === 'U$D') {
+      t.usd_total += imp;
+      if (m.forma === 'EFECTIVO') t.usd_efectivo += imp;
+      if (m.bn === 'B') t.usd_B += imp; else t.usd_N += imp;
+    } else {
+      t.pesos_total += imp;
+      if (m.forma === 'EFECTIVO') t.pesos_efectivo += imp;
+      if (m.forma === 'CHEQUE 3°') t.pesos_cheque3 += imp;
+      if (m.forma === 'TRANSFERENCIA') t.pesos_transf += imp;
+      if (m.forma === 'CHEQUE PROPIO') t.pesos_chprop += imp;
+      if (m.bn === 'B') t.pesos_B += imp; else t.pesos_N += imp;
+    }
+  });
+  return t;
+}
+
+function renderCajaDia() {
+  var dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  var fechaObj = new Date(cajaFechaActual + 'T00:00:00');
+  var lbl = document.getElementById('caja-fecha-label');
+  if (lbl) lbl.textContent = dias[fechaObj.getDay()] + ' · ' + fechaObj.toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric'});
+
+  var cerrado = !!(cajaCierreHoy && cajaCierreHoy.cerrado);
+  var esAdmin = sesion && sesion.rol === 'admin';
+  var puedeEditar = !cerrado || esAdmin;
+
+  var banner = document.getElementById('caja-banner-cerrado');
+  if (banner) banner.style.display = cerrado ? 'flex' : 'none';
+  var btnAddI = document.getElementById('caja-btn-add-ingreso'), btnAddE = document.getElementById('caja-btn-add-egreso');
+  if (btnAddI) btnAddI.style.display = puedeEditar ? '' : 'none';
+  if (btnAddE) btnAddE.style.display = puedeEditar ? '' : 'none';
+  if (!puedeEditar) cerrarFormCajaMov();
+
+  var ingresos = cajaMovimientos.filter(function(m){ return m.tipo === 'ingreso'; });
+  var egresos  = cajaMovimientos.filter(function(m){ return m.tipo === 'egreso'; });
+
+  var elI = document.getElementById('caja-lista-ingresos'), elE = document.getElementById('caja-lista-egresos');
+  if (elI) elI.innerHTML = ingresos.length ? ingresos.map(function(m){ return buildCajaMovRow(m, puedeEditar); }).join('') : '<div style="text-align:center;color:var(--muted);font-size:11px;padding:10px 0;font-style:italic">Sin ingresos cargados</div>';
+  if (elE) elE.innerHTML = egresos.length ? egresos.map(function(m){ return buildCajaMovRow(m, puedeEditar); }).join('') : '<div style="text-align:center;color:var(--muted);font-size:11px;padding:10px 0;font-style:italic">Sin egresos cargados</div>';
+
+  var tIng = calcularTotalesCaja(ingresos), tEgr = calcularTotalesCaja(egresos);
+  var elTI = document.getElementById('caja-totales-ingresos'), elTE = document.getElementById('caja-totales-egresos');
+  if (elTI) elTI.innerHTML = buildCajaColTotales(tIng);
+  if (elTE) elTE.innerHTML = buildCajaColTotales(tEgr);
+
+  renderCajaResumen(ingresos, egresos, cerrado, puedeEditar, tIng, tEgr);
+}
+
+function buildCajaMovRow(m, puedeEditar) {
+  var color = m.tipo === 'ingreso' ? 'var(--verde-medio)' : '#b83232';
+  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);gap:8px">'
+    + '<div style="flex:1;min-width:0">'
+      + '<div style="font-size:12px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escHtml(m.entidad||'—') + '</div>'
+      + '<div style="font-size:9px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escHtml(m.concepto||'') + ' · ' + m.bn + ' · ' + m.forma + '</div>'
+    + '</div>'
+    + '<div style="text-align:right;flex-shrink:0">'
+      + '<div style="font-size:12px;font-weight:700;color:'+color+'">' + (m.moneda==='U$D'?'U$D ':'$ ') + fmtNum2(m.importe) + '</div>'
+    + '</div>'
+    + (puedeEditar ? '<button onclick="eliminarCajaMov('+m.id+')" style="background:none;border:none;color:#b83232;font-size:14px;cursor:pointer;padding:0 2px;flex-shrink:0">×</button>' : '<span style="width:14px;display:inline-block;flex-shrink:0"></span>')
+  + '</div>';
+}
+
+function buildCajaColTotales(t) {
+  return '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:2px"><span>Total $</span><span style="font-weight:700;color:var(--ink)">$ '+fmtNum2(t.pesos_total)+'</span></div>'
+    + '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted)"><span>Total U$D</span><span style="font-weight:700;color:var(--ink)">U$D '+fmtNum2(t.usd_total)+'</span></div>';
+}
+
+// ── Resumen del día ──
+function cajaResumenCampo(label, val, id, editable, prefix) {
+  if (editable) {
+    return '<div class="field" style="margin-bottom:0"><label>'+label+'</label><div class="input-wrap"><input type="text" inputmode="numeric" id="'+id+'" value="'+(val?cajaFmtNum(val):'')+'" placeholder="0" onfocus="cajaMontoFocus(this)" onblur="cajaMontoBlur(this)" oninput="cajaMontoInput(this)" style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:13px;font-weight:700;outline:none;color:var(--ink)"></div></div>';
+  }
+  return '<div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">'+label+'</div><div style="font-size:14px;font-weight:700;color:var(--ink)">'+prefix+' '+fmtNum2(val)+'</div></div>';
+}
+function cajaResumenChip(label, val, color) {
+  return '<div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">'+label+'</div><div style="font-size:14px;font-weight:700;color:'+color+'">'+fmtNum2(val)+'</div></div>';
+}
+
+function renderCajaResumen(ingresos, egresos, cerrado, puedeEditar, tIng, tEgr) {
+  window._cajaTIng = tIng; window._cajaTEgr = tEgr;
+
+  var saldoIniPesos = cajaCierreHoy ? Number(cajaCierreHoy.saldo_inicial_pesos)||0 : (cajaCierreAnterior ? Number(cajaCierreAnterior.saldo_cierre_pesos)||0 : 0);
+  var saldoIniUsd    = cajaCierreHoy ? Number(cajaCierreHoy.saldo_inicial_usd)||0   : (cajaCierreAnterior ? Number(cajaCierreAnterior.saldo_cierre_usd)||0   : 0);
+  window._cajaIniPesos = saldoIniPesos; window._cajaIniUsd = saldoIniUsd;
+
+  var editableInicial = !cajaCierreAnterior && puedeEditar && !cerrado;
+  var tc = (cajaCierreHoy && cajaCierreHoy.tc_cierre != null) ? cajaCierreHoy.tc_cierre : '';
+
+  var html = '<div style="font-size:11px;font-weight:700;color:var(--verde-oscuro);letter-spacing:0.5px;margin-bottom:12px">RESUMEN DEL DÍA</div>';
+
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px">';
+  html += cajaResumenCampo('Saldo Anterior $', saldoIniPesos, 'caja-saldo-ini-pesos', editableInicial, '$');
+  html += cajaResumenCampo('Saldo Anterior U$D', saldoIniUsd, 'caja-saldo-ini-usd', editableInicial, 'U$D');
+  html += cajaResumenChip('Ingresos $', tIng.pesos_total, '#1e7d45');
+  html += cajaResumenChip('Egresos $', tEgr.pesos_total, '#b83232');
+  html += cajaResumenChip('Ingresos U$D', tIng.usd_total, '#1e7d45');
+  html += cajaResumenChip('Egresos U$D', tEgr.usd_total, '#b83232');
+  html += '</div>';
+
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">';
+  html += '<div style="background:var(--verde-oscuro);border-radius:8px;padding:10px 12px"><div style="font-size:9px;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:1px">Saldo Cierre $</div><div id="caja-out-saldo-pesos" style="font-size:16px;font-weight:900;color:white;margin-top:2px"></div></div>';
+  html += '<div style="background:var(--verde-oscuro);border-radius:8px;padding:10px 12px"><div style="font-size:9px;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:1px">Saldo Cierre U$D</div><div id="caja-out-saldo-usd" style="font-size:16px;font-weight:900;color:white;margin-top:2px"></div></div>';
+  html += '<div class="field" style="margin-bottom:0"><label>T.C. Cierre</label><div class="input-wrap"><input type="text" inputmode="numeric" id="caja-tc-cierre" value="'+(tc!==''?cajaFmtNum(tc):'')+'" placeholder="0" onfocus="cajaMontoFocus(this)" onblur="cajaMontoBlur(this)" oninput="cajaMontoInput(this)" '+(puedeEditar?'':'disabled')+' style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;font-weight:700;outline:none;color:var(--ink)"></div></div>';
+  html += '</div>';
+
+  html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap">';
+  html += '<div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Equivalente Total en $ (saldo $ + saldo U$D × TC)</div>';
+  html += '<div id="caja-out-equivalente" style="font-size:15px;font-weight:800;color:var(--verde-oscuro)"></div>';
+  html += '</div>';
+
+  if (puedeEditar) {
+    if (!cerrado) {
+      html += '<button onclick="cerrarCajaDia()" style="width:100%;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:11px;font-family:\'Outfit\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔒 Cerrar Día</button>';
+    } else if (esAdminGlobal()) {
+      html += '<button onclick="reabrirCajaDia()" style="width:100%;background:none;border:1px solid #e0a030;color:#8a5d00;border-radius:8px;padding:11px;font-family:\'Outfit\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔓 Reabrir Día</button>';
+    }
+  }
+  html += '<div id="caja-resumen-msg" style="font-size:10px;color:var(--verde-medio);margin-top:8px;text-align:center"></div>';
+
+  var el = document.getElementById('caja-resumen-dia');
+  if (el) el.innerHTML = html;
+  cajaResumenRecalc();
+}
+
+function esAdminGlobal() { return !!(sesion && sesion.rol === 'admin'); }
+
+function cajaResumenRecalc() {
+  var tIng = window._cajaTIng || {pesos_total:0, usd_total:0};
+  var tEgr = window._cajaTEgr || {pesos_total:0, usd_total:0};
+  var iniPEl = document.getElementById('caja-saldo-ini-pesos');
+  var iniUEl = document.getElementById('caja-saldo-ini-usd');
+  var tcEl   = document.getElementById('caja-tc-cierre');
+  var iniP = iniPEl ? cajaParseNum(iniPEl.value) : (window._cajaIniPesos || 0);
+  var iniU = iniUEl ? cajaParseNum(iniUEl.value) : (window._cajaIniUsd || 0);
+  var tc   = tcEl ? cajaParseNum(tcEl.value) : 0;
+  var saldoP = iniP + tIng.pesos_total - tEgr.pesos_total;
+  var saldoU = iniU + tIng.usd_total - tEgr.usd_total;
+  var eq = saldoP + (saldoU * tc);
+  var elP = document.getElementById('caja-out-saldo-pesos'); if (elP) elP.textContent = '$ ' + fmtNum2(saldoP);
+  var elU = document.getElementById('caja-out-saldo-usd');   if (elU) elU.textContent = 'U$D ' + fmtNum2(saldoU);
+  var elE = document.getElementById('caja-out-equivalente'); if (elE) elE.textContent = '$ ' + fmtNum2(eq);
+}
+
+// ── Cierre / reapertura del día ──
+async function cerrarCajaDia() {
+  var iniPEl = document.getElementById('caja-saldo-ini-pesos');
+  var iniUEl = document.getElementById('caja-saldo-ini-usd');
+  var tcEl   = document.getElementById('caja-tc-cierre');
+  var iniP = iniPEl ? cajaParseNum(iniPEl.value) : (window._cajaIniPesos || 0);
+  var iniU = iniUEl ? cajaParseNum(iniUEl.value) : (window._cajaIniUsd || 0);
+  var tc   = tcEl ? cajaParseNum(tcEl.value) : 0;
+  var tIng = window._cajaTIng || {pesos_total:0, usd_total:0};
+  var tEgr = window._cajaTEgr || {pesos_total:0, usd_total:0};
+  var saldoP = iniP + tIng.pesos_total - tEgr.pesos_total;
+  var saldoU = iniU + tIng.usd_total - tEgr.usd_total;
+  var msg = document.getElementById('caja-resumen-msg');
+  if (msg) msg.textContent = '⏳ Cerrando día...';
+
+  var body = {
+    fecha: cajaFechaActual,
+    saldo_inicial_pesos: iniP,
+    saldo_inicial_usd: iniU,
+    saldo_cierre_pesos: saldoP,
+    saldo_cierre_usd: saldoU,
+    tc_cierre: tc || null,
+    cerrado: true,
+    usuario_cierre: sesion ? sesion.nombre : null,
+    cerrado_at: new Date().toISOString()
+  };
+  try {
+    // Upsert atómico contra el constraint unique(fecha) — mismo patrón
+    // que evita el 409 en liquidaciones_sueldo.
+    var res = await fetch(SUPA_URL+'/rest/v1/caja_cierres?on_conflict=fecha', {
+      method:'POST',
+      headers: Object.assign({}, SUPA_HDRS, {'Prefer':'resolution=merge-duplicates,return=minimal'}),
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      if (msg) msg.textContent = '✓ Día cerrado correctamente';
+      cargarCajaDia(cajaFechaActual);
+      cargarCajaSemana();
+    } else {
+      if (msg) msg.textContent = 'Error al cerrar (status '+res.status+')';
+    }
+  } catch(e) {
+    if (msg) msg.textContent = 'Error: ' + e.message;
+  }
+}
+
+async function reabrirCajaDia() {
+  if (!esAdminGlobal()) return;
+  if (!confirm('¿Reabrir este día para edición? Vas a poder modificar movimientos hasta que lo cierres de nuevo.')) return;
+  try {
+    await fetch(SUPA_URL+'/rest/v1/caja_cierres?fecha=eq.'+cajaFechaActual, {
+      method:'PATCH',
+      headers: Object.assign({}, SUPA_HDRS, {'Prefer':'return=minimal'}),
+      body: JSON.stringify({cerrado:false})
+    });
+    cargarCajaDia(cajaFechaActual);
+    cargarCajaSemana();
+  } catch(e) { alert('Error al reabrir: ' + e.message); }
+}
+
+// ── Movimientos (alta / baja) ──
+function abrirFormCajaMov(tipo) {
+  cajaMovTipoActual = tipo;
+  document.getElementById('caja-mov-titulo').textContent = tipo === 'ingreso' ? 'Nuevo Ingreso' : 'Nuevo Egreso';
+  document.getElementById('caja-mov-label-entidad').textContent = tipo === 'ingreso' ? 'Cliente' : 'Proveedor';
+  document.getElementById('caja-mov-entidad').value = '';
+  document.getElementById('caja-mov-importe').value = '';
+  poblarConceptoSelectCaja(tipo);
+  document.getElementById('caja-mov-bn').value = 'N';
+  document.getElementById('caja-mov-moneda').value = '$';
+  document.getElementById('caja-mov-forma').value = 'EFECTIVO';
+  poblarEntidadesDatalistCaja();
+  var form = document.getElementById('form-caja-mov');
+  form.style.display = 'block';
+  form.scrollIntoView({behavior:'smooth', block:'center'});
+}
+function cerrarFormCajaMov() {
+  var form = document.getElementById('form-caja-mov');
+  if (form) form.style.display = 'none';
+  cajaMovTipoActual = null;
+}
+function poblarConceptoSelectCaja(tipo) {
+  var sel = document.getElementById('caja-mov-concepto');
+  var lista = tipo === 'ingreso' ? CONCEPTOS_INGRESO_CAJA : CONCEPTOS_EGRESO_CAJA;
+  sel.innerHTML = lista.map(function(c){ return '<option value="'+escHtml(c)+'">'+escHtml(c)+'</option>'; }).join('');
+}
+function poblarEntidadesDatalistCaja() {
+  var set = {};
+  cajaMovimientos.forEach(function(m){ if (m.entidad) set[m.entidad] = true; });
+  var dl = document.getElementById('caja-entidades-list');
+  if (dl) dl.innerHTML = Object.keys(set).map(function(n){ return '<option value="'+escHtml(n)+'">'; }).join('');
+}
+
+async function guardarCajaMov() {
+  if (!cajaMovTipoActual) return;
+  var entidad  = document.getElementById('caja-mov-entidad').value.trim();
+  var concepto = document.getElementById('caja-mov-concepto').value;
+  var bn       = document.getElementById('caja-mov-bn').value;
+  var moneda   = document.getElementById('caja-mov-moneda').value;
+  var forma    = document.getElementById('caja-mov-forma').value;
+  var importe  = cajaParseNum(document.getElementById('caja-mov-importe').value);
+  if (!entidad)  { alert('Ingresá el nombre de '+(cajaMovTipoActual==='ingreso'?'el cliente':'el proveedor')+'.'); return; }
+  if (!importe)  { alert('Ingresá un importe mayor a 0.'); return; }
+
+  var body = {
+    fecha: cajaFechaActual, tipo: cajaMovTipoActual, entidad: entidad, concepto: concepto,
+    bn: bn, moneda: moneda, forma: forma, importe: importe,
+    usuario: sesion ? sesion.nombre : null
+  };
+  try {
+    var res = await fetch(SUPA_URL+'/rest/v1/caja_movimientos', {
+      method:'POST',
+      headers: Object.assign({}, SUPA_HDRS, {'Prefer':'return=minimal'}),
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      cerrarFormCajaMov();
+      cargarCajaDia(cajaFechaActual);
+      cargarCajaSemana();
+    } else {
+      alert('Error al guardar el movimiento (status '+res.status+').');
+    }
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function eliminarCajaMov(id) {
+  if (!confirm('¿Eliminar este movimiento?')) return;
+  try {
+    await fetch(SUPA_URL+'/rest/v1/caja_movimientos?id=eq.'+id, {
+      method:'DELETE',
+      headers: Object.assign({}, SUPA_HDRS, {'Prefer':'return=minimal'})
+    });
+    cargarCajaDia(cajaFechaActual);
+    cargarCajaSemana();
+  } catch(e) { alert('Error al eliminar: ' + e.message); }
+}
+
+// ── Resumen semanal ──
+function cajaCambiarSemana(delta) {
+  cajaSemanaInicio = cajaSumarDias(cajaSemanaInicio, delta * 7);
+  cargarCajaSemana();
+}
+
+async function cargarCajaSemana() {
+  if (!cajaSemanaInicio) cajaSemanaInicio = cajaLunesDeSemana(cajaFechaActual);
+  var dias = [0,1,2,3,4,5].map(function(i){ return cajaSumarDias(cajaSemanaInicio, i); });
+  var fechaFin = dias[5];
+  var lbl = document.getElementById('caja-semana-label');
+  if (lbl) lbl.textContent = fmtFechaCortaCaja(dias[0]) + ' — ' + fmtFechaCortaCaja(dias[5]);
+  var cont = document.getElementById('caja-resumen-semanal');
+  if (cont) cont.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:11px;padding:14px 0">Cargando...</div>';
+
+  try {
+    var [resMov, resCierres] = await Promise.all([
+      fetch(SUPA_URL+'/rest/v1/caja_movimientos?fecha=gte.'+dias[0]+'&fecha=lte.'+fechaFin+'&select=*', {headers:SUPA_HDRS}),
+      fetch(SUPA_URL+'/rest/v1/caja_cierres?fecha=gte.'+dias[0]+'&fecha=lte.'+fechaFin+'&select=*', {headers:SUPA_HDRS})
+    ]);
+    var movs = resMov.ok ? await resMov.json() : [];
+    var cierres = resCierres.ok ? await resCierres.json() : [];
+    renderCajaResumenSemanal(dias, movs, cierres);
+  } catch(e) {
+    if (cont) cont.innerHTML = '<div style="text-align:center;color:#b83232;font-size:11px;padding:14px 0">Error al cargar el resumen semanal</div>';
+  }
+}
+
+function renderCajaResumenSemanal(dias, movs, cierres) {
+  var diasNombres = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  var cierreByFecha = {}; cierres.forEach(function(c){ cierreByFecha[c.fecha] = c; });
+  var movByFecha = {}; dias.forEach(function(f){ movByFecha[f] = movs.filter(function(m){ return m.fecha === f; }); });
+
+  function filtrar(f, tipo, forma) {
+    return movByFecha[f].filter(function(m){ return m.tipo===tipo && m.moneda==='$' && (!forma || m.forma===forma); });
+  }
+
+  var filas = [
+    {label:'Saldo Inicial $', calc:function(f){ var c=cierreByFecha[f]; return c ? Number(c.saldo_inicial_pesos)||0 : null; }},
+    {label:'Ingreso Efectivo $', calc:function(f){ return calcularTotalesCaja(filtrar(f,'ingreso','EFECTIVO')).pesos_total; }},
+    {label:'Ingreso Cheques 3° $', calc:function(f){ return calcularTotalesCaja(filtrar(f,'ingreso','CHEQUE 3°')).pesos_total; }},
+    {label:'Egreso Efectivo $', calc:function(f){ return -calcularTotalesCaja(filtrar(f,'egreso','EFECTIVO')).pesos_total; }},
+    {label:'Egreso Cheques 3° $', calc:function(f){ return -calcularTotalesCaja(filtrar(f,'egreso','CHEQUE 3°')).pesos_total; }},
+    {label:'Saldo Cierre $', calc:function(f){ var c=cierreByFecha[f]; return c ? Number(c.saldo_cierre_pesos)||0 : null; }, bold:true},
+    {label:'Saldo Cierre U$D', calc:function(f){ var c=cierreByFecha[f]; return c ? Number(c.saldo_cierre_usd)||0 : null; }, bold:true, usd:true}
+  ];
+
+  var html = '<table style="width:100%;border-collapse:collapse;font-size:11px;min-width:680px">';
+  html += '<thead><tr><th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--border);color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:0.5px">Concepto</th>';
+  dias.forEach(function(f,i){ html += '<th style="text-align:right;padding:6px 8px;border-bottom:2px solid var(--border);color:var(--muted);font-size:9px;text-transform:uppercase">'+diasNombres[i]+'</th>'; });
+  html += '<th style="text-align:right;padding:6px 8px;border-bottom:2px solid var(--border);color:var(--verde-oscuro);font-size:9px;text-transform:uppercase">Total</th></tr></thead><tbody>';
+
+  filas.forEach(function(fila) {
+    var total = 0, faltaAlguno = false;
+    html += '<tr><td style="padding:6px 8px;border-bottom:1px solid var(--border);font-weight:'+(fila.bold?'700':'600')+';color:var(--ink)">'+fila.label+'</td>';
+    dias.forEach(function(f) {
+      var v = fila.calc(f);
+      if (v === null) { html += '<td style="text-align:right;padding:6px 8px;border-bottom:1px solid var(--border);color:var(--muted)">—</td>'; faltaAlguno = true; }
+      else { total += v; html += '<td style="text-align:right;padding:6px 8px;border-bottom:1px solid var(--border);font-weight:'+(fila.bold?'700':'400')+';color:var(--ink)">'+(fila.usd?'U$D ':'$ ')+fmtNum2(v)+'</td>'; }
+    });
+    var totalTxt = (faltaAlguno && fila.bold) ? '—' : (fila.usd?'U$D ':'$ ')+fmtNum2(total);
+    html += '<td style="text-align:right;padding:6px 8px;border-bottom:1px solid var(--border);font-weight:700;color:var(--verde-oscuro)">'+totalTxt+'</td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table>';
+  var el = document.getElementById('caja-resumen-semanal');
+  if (el) el.innerHTML = html;
+}
+
+// ── Exportar PDF del día ──
+function exportarCajaDiariaPDF() {
+  var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFLib) { alert('Libreria PDF no cargada.'); return; }
+  var doc = new jsPDFLib({ orientation:'portrait', unit:'mm', format:'a4' });
+  var pw=210, ph=297, ml=14, mr=14, cw=182;
+  var hoy = new Date().toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  var y=0;
+  function checkY(n){ if (y+n > ph-14) { doc.addPage(); y=46; } }
+
+  doc.setFillColor('#ffffff'); doc.rect(0,0,pw,38,'F');
+  doc.setFillColor('#1e4d2b'); doc.rect(0,36,pw,2,'F');
+  try { doc.addImage(LOGO_DM_B64,'JPEG',ml,4,28,28); } catch(e){}
+  doc.setTextColor('#1e4d2b'); doc.setFont('times','bold'); doc.setFontSize(24);
+  doc.text('Don Mauricio', ml+33, 17);
+  doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+  doc.setCharSpace(2.5); doc.text('AGROGANADERA  S.R.L.', ml+33, 24); doc.setCharSpace(0);
+  doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  doc.text('CAJA DIARIA — '+cajaFechaActual, pw-mr, 14, {align:'right'});
+  doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Emitido: '+hoy, pw-mr, 21, {align:'right'});
+  y=46;
+
+  var ingresos = cajaMovimientos.filter(function(m){ return m.tipo==='ingreso'; });
+  var egresos  = cajaMovimientos.filter(function(m){ return m.tipo==='egreso'; });
+
+  function tablaMov(titulo, lista, colorHex) {
+    checkY(14);
+    doc.setFillColor(colorHex); doc.rect(ml,y,cw,7,'F');
+    doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text(titulo, ml+2, y+5);
+    doc.text('B/N', ml+92, y+5, {align:'center'});
+    doc.text('FORMA', ml+128, y+5, {align:'center'});
+    doc.text('IMPORTE', ml+cw-2, y+5, {align:'right'});
+    y+=7;
+    if (!lista.length) {
+      checkY(7);
+      doc.setFillColor('#f4f8f5'); doc.rect(ml,y,cw,7,'F');
+      doc.setTextColor('#999'); doc.setFont('helvetica','italic'); doc.setFontSize(7.5);
+      doc.text('Sin movimientos', ml+2, y+5);
+      y+=7;
+    }
+    lista.forEach(function(m,i) {
+      checkY(7);
+      doc.setFillColor(i%2===0?'#f4f8f5':'#ffffff'); doc.rect(ml,y,cw,7,'F');
+      doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.text(String(m.entidad||'—').substring(0,40), ml+2, y+5);
+      doc.text(m.bn||'', ml+92, y+5, {align:'center'});
+      doc.text(m.forma||'', ml+128, y+5, {align:'center'});
+      doc.text((m.moneda==='U$D'?'U$D ':'$ ')+fmtNum2(m.importe), ml+cw-2, y+5, {align:'right'});
+      y+=7;
+    });
+    y+=4;
+  }
+
+  tablaMov('INGRESOS', ingresos, '#1e4d2b');
+  tablaMov('EGRESOS', egresos, '#b83232');
+
+  var tIng = calcularTotalesCaja(ingresos), tEgr = calcularTotalesCaja(egresos);
+  checkY(40);
+  doc.setFillColor('#1e4d2b'); doc.rect(ml,y,cw,32,'F');
+  doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text('RESUMEN DEL DÍA', ml+4, y+7);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8);
+  doc.text('Ingresos $: '+fmtNum2(tIng.pesos_total), ml+4, y+14);
+  doc.text('Egresos $: '+fmtNum2(tEgr.pesos_total), ml+95, y+14);
+  doc.text('Ingresos U$D: '+fmtNum2(tIng.usd_total), ml+4, y+20);
+  doc.text('Egresos U$D: '+fmtNum2(tEgr.usd_total), ml+95, y+20);
+  var saldoP = (cajaCierreHoy ? Number(cajaCierreHoy.saldo_cierre_pesos)||0 : null);
+  var saldoU = (cajaCierreHoy ? Number(cajaCierreHoy.saldo_cierre_usd)||0 : null);
+  doc.setFont('helvetica','bold');
+  doc.text('Saldo Cierre $: ' + (saldoP!==null ? fmtNum2(saldoP) : '(día no cerrado)'), ml+4, y+27);
+  doc.text('Saldo Cierre U$D: ' + (saldoU!==null ? fmtNum2(saldoU) : '—'), ml+95, y+27);
+
+  doc.save('Caja_Diaria_'+cajaFechaActual+'.pdf');
 }
 
 </script>
+
 
 <!-- MODAL TN REALES -->
 <div id="modal-tn-reales" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:999;align-items:center;justify-content:center;padding:20px">
