@@ -3020,7 +3020,7 @@ function exportarPDF() {
   const inicioS1 = new Date(hoy); inicioS1.setDate(hoy.getDate() - diaSemana);
   const semanas = Array.from({ length: 8 }, (_, i) => {
     const inicio = new Date(inicioS1); inicio.setDate(inicioS1.getDate() + i * 7);
-    const fin = new Date(inicio); fin.setDate(inicio.getDate() + 6);
+    const fin = new Date(inicio); fin.setDate(inicio.getDate() + 6); fin.setHours(23,59,59,999);
     return { inicio, fin, cobros: [], pagos: [] };
   });
   ventasData.forEach(v => {
@@ -3863,6 +3863,7 @@ function renderFinanciero() {
     inicio.setDate(inicioSemana1.getDate() + i * 7);
     const fin = new Date(inicio);
     fin.setDate(inicio.getDate() + 6);
+    fin.setHours(23,59,59,999);
     return { inicio, fin, cobros: [], pagos: [] };
   });
 
@@ -5695,7 +5696,7 @@ function exportarFinancieroPDF() {
 
   var semanas = Array.from({length:8}, function(_,i){
     var inicio = new Date(inicioS1); inicio.setDate(inicioS1.getDate()+i*7);
-    var fin = new Date(inicio); fin.setDate(inicio.getDate()+6);
+    var fin = new Date(inicio); fin.setDate(inicio.getDate()+6); fin.setHours(23,59,59,999);
     return {inicio:inicio, fin:fin, items:[]};
   });
   activos.forEach(function(r){
@@ -6075,7 +6076,7 @@ async function renderVencFinanciero() {
 
   var semanas = Array.from({length:8}, function(_,i) {
     var inicio = new Date(inicioS1); inicio.setDate(inicioS1.getDate() + i*7);
-    var fin = new Date(inicio); fin.setDate(inicio.getDate() + 6);
+    var fin = new Date(inicio); fin.setDate(inicio.getDate() + 6); fin.setHours(23,59,59,999);
     return { inicio:inicio, fin:fin, items:[] };
   });
 
