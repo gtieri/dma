@@ -5849,6 +5849,7 @@ function switchSubTabV(subTab) {
 // ── Helpers ──
 var liqFiltroActual = 'todos';
 var liqData = [];
+var vencfOrdenVencidos = 'antiguedad'; // 'antiguedad' | 'monto'
 
 function liqEstadoBadge(estado) {
   var map = {
@@ -6041,7 +6042,15 @@ function renderLiqLista() {
 async function renderVencFinanciero() {
   document.getElementById('vencf-lista').innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:30px 0">Cargando...</div>';
   await cargarLiquidaciones();
+  renderVencFinancieroBody();
+}
 
+function vencfSetOrdenVencidos(orden) {
+  vencfOrdenVencidos = orden;
+  renderVencFinancieroBody();
+}
+
+function renderVencFinancieroBody() {
   var activos = liqData.filter(function(r){ return r.estado !== 'pagado'; });
   activos.sort(function(a,b){ return new Date(a.fecha_vencimiento) - new Date(b.fecha_vencimiento); });
 
@@ -6117,7 +6126,18 @@ async function renderVencFinanciero() {
     });
     var tvStr=(tvUSD?fmtLiqMonto(tvUSD,'USD'):'')+(tvUSD&&tvARS?' + ':'')+( tvARS?fmtLiqMonto(tvARS,'ARS'):'');
 
-    var detallesVenc = Object.keys(porProdVenc).map(function(prod) {
+    var clavesVenc = Object.keys(porProdVenc);
+    if (vencfOrdenVencidos === 'monto') {
+      clavesVenc.sort(function(a,b) {
+        var ma = porProdVenc[a].saldoUSD + porProdVenc[a].saldoARS;
+        var mb = porProdVenc[b].saldoUSD + porProdVenc[b].saldoARS;
+        return mb - ma; // mayor monto primero
+      });
+    } else {
+      clavesVenc.sort(function(a,b) { return porProdVenc[b].diasMax - porProdVenc[a].diasMax; }); // más antiguo primero
+    }
+
+    var detallesVenc = clavesVenc.map(function(prod) {
       var g = porProdVenc[prod];
       var saldoStr = (g.saldoUSD?fmtLiqMonto(g.saldoUSD,'USD'):'') +
         (g.saldoUSD&&g.saldoARS?' + ':'') +
@@ -6145,6 +6165,11 @@ async function renderVencFinanciero() {
           '<div style="font-size:9px;color:rgba(255,255,255,.6);letter-spacing:1px;text-transform:uppercase">Total vencido</div>' +
           '<div style="font-size:13px;font-weight:700;color:#ff9f9f">'+tvStr+'</div>' +
         '</div>' +
+      '</div>' +
+      '<div style="padding:8px 14px 0;background:#fff5f5;display:flex;gap:6px;align-items:center">' +
+        '<span style="font-size:8px;font-weight:700;color:#842029;text-transform:uppercase;letter-spacing:1px">Ordenar:</span>' +
+        '<button onclick="vencfSetOrdenVencidos(&quot;antiguedad&quot;)" style="background:'+(vencfOrdenVencidos==='antiguedad'?'#842029':'none')+';color:'+(vencfOrdenVencidos==='antiguedad'?'white':'#842029')+';border:1px solid #842029;border-radius:6px;padding:3px 9px;font-family:Arial,sans-serif;font-size:9px;font-weight:700;cursor:pointer">Antigüedad</button>' +
+        '<button onclick="vencfSetOrdenVencidos(&quot;monto&quot;)" style="background:'+(vencfOrdenVencidos==='monto'?'#842029':'none')+';color:'+(vencfOrdenVencidos==='monto'?'white':'#842029')+';border:1px solid #842029;border-radius:6px;padding:3px 9px;font-family:Arial,sans-serif;font-size:9px;font-weight:700;cursor:pointer">Monto</button>' +
       '</div>' +
       '<div style="padding:10px 14px;background:#fff5f5">' +
         '<div style="font-size:9px;font-weight:700;color:#842029;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">↓ Pagos vencidos</div>' +
@@ -9828,6 +9853,7 @@ var cajaCierreHoy = null;
 var cajaCierreAnterior = null;
 var cajaSemanaInicio = null;
 var cajaMovTipoActual = null;
+var CAJA_IDS_RECALC = ['caja-saldo-ini-pesos','caja-saldo-ini-usd','caja-saldo-ini-efectivo','caja-saldo-ini-cheques','caja-tc-cierre'];
 
 function switchSubTabT(subTab) {
   document.querySelectorAll('#tab-tesoreria [id^="subtabt-btn-"]').forEach(function(btn) {
@@ -9903,7 +9929,7 @@ function cajaMontoFocus(inp) {
 function cajaMontoBlur(inp) {
   var v = cajaParseNum(inp.value);
   inp.value = v !== 0 ? (v<0?'-':'') + cajaFmtNum(Math.abs(v)) : '';
-  if (inp.id==='caja-saldo-ini-pesos' || inp.id==='caja-saldo-ini-usd' || inp.id==='caja-tc-cierre') cajaResumenRecalc();
+  if (CAJA_IDS_RECALC.indexOf(inp.id) !== -1) cajaResumenRecalc();
 }
 function cajaMontoInput(inp) {
   var raw = inp.value;
@@ -9914,7 +9940,7 @@ function cajaMontoInput(inp) {
     var num = parseInt(digits, 10);
     inp.value = (esNeg?'-':'') + num.toLocaleString('es-AR', {minimumFractionDigits:0, maximumFractionDigits:0});
   }
-  if (inp.id==='caja-saldo-ini-pesos' || inp.id==='caja-saldo-ini-usd' || inp.id==='caja-tc-cierre') cajaResumenRecalc();
+  if (CAJA_IDS_RECALC.indexOf(inp.id) !== -1) cajaResumenRecalc();
 }
 function cajaMovToggleTC() { /* reservado para futuras validaciones según moneda */ }
 
@@ -9942,7 +9968,7 @@ async function cargarCajaDia(fecha) {
 }
 
 function calcularTotalesCaja(lista) {
-  var t = {pesos_efectivo:0, pesos_cheque3:0, pesos_transf:0, pesos_chprop:0, pesos_B:0, pesos_N:0,
+  var t = {pesos_efectivo:0, pesos_cheque3:0, pesos_transf:0, pesos_chprop:0, pesos_cheques:0, pesos_B:0, pesos_N:0,
     usd_efectivo:0, usd_B:0, usd_N:0, usd_total:0, pesos_total:0};
   lista.forEach(function(m) {
     var imp = Number(m.importe) || 0;
@@ -9953,9 +9979,9 @@ function calcularTotalesCaja(lista) {
     } else {
       t.pesos_total += imp;
       if (m.forma === 'EFECTIVO') t.pesos_efectivo += imp;
-      if (m.forma === 'CHEQUE 3°') t.pesos_cheque3 += imp;
+      if (m.forma === 'CHEQUE 3°') { t.pesos_cheque3 += imp; t.pesos_cheques += imp; }
       if (m.forma === 'TRANSFERENCIA') t.pesos_transf += imp;
-      if (m.forma === 'CHEQUE PROPIO') t.pesos_chprop += imp;
+      if (m.forma === 'CHEQUE PROPIO') { t.pesos_chprop += imp; t.pesos_cheques += imp; }
       if (m.bn === 'B') t.pesos_B += imp; else t.pesos_N += imp;
     }
   });
@@ -10049,7 +10075,10 @@ function renderCajaResumen(ingresos, egresos, cerrado, puedeEditar, tIng, tEgr) 
 
   var saldoIniPesos = cajaCierreHoy ? Number(cajaCierreHoy.saldo_inicial_pesos)||0 : (cajaCierreAnterior ? Number(cajaCierreAnterior.saldo_cierre_pesos)||0 : 0);
   var saldoIniUsd    = cajaCierreHoy ? Number(cajaCierreHoy.saldo_inicial_usd)||0   : (cajaCierreAnterior ? Number(cajaCierreAnterior.saldo_cierre_usd)||0   : 0);
+  var saldoIniEfectivo = cajaCierreHoy ? Number(cajaCierreHoy.saldo_inicial_efectivo)||0 : (cajaCierreAnterior ? Number(cajaCierreAnterior.saldo_cierre_efectivo)||0 : 0);
+  var saldoIniCheques  = cajaCierreHoy ? Number(cajaCierreHoy.saldo_inicial_cheques)||0  : (cajaCierreAnterior ? Number(cajaCierreAnterior.saldo_cierre_cheques)||0  : 0);
   window._cajaIniPesos = saldoIniPesos; window._cajaIniUsd = saldoIniUsd;
+  window._cajaIniEfectivo = saldoIniEfectivo; window._cajaIniCheques = saldoIniCheques;
 
   var editableInicial = !cajaCierreAnterior && puedeEditar && !cerrado;
   var tc = (cajaCierreHoy && cajaCierreHoy.tc_cierre != null) ? cajaCierreHoy.tc_cierre : '';
@@ -10065,10 +10094,23 @@ function renderCajaResumen(ingresos, egresos, cerrado, puedeEditar, tIng, tEgr) 
   html += cajaResumenChip('Egresos U$D', tEgr.usd_total, '#b83232');
   html += '</div>';
 
+  html += '<div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Composición del saldo $ — Efectivo / Cheques</div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px">';
+  html += cajaResumenCampo('Saldo Anterior Efectivo $', saldoIniEfectivo, 'caja-saldo-ini-efectivo', editableInicial, '$');
+  html += cajaResumenCampo('Saldo Anterior Cheques $', saldoIniCheques, 'caja-saldo-ini-cheques', editableInicial, '$');
+  html += cajaResumenChip('Efectivo hoy (neto) $', tIng.pesos_efectivo - tEgr.pesos_efectivo, '#1e4d2b');
+  html += cajaResumenChip('Cheques hoy (neto) $', tIng.pesos_cheques - tEgr.pesos_cheques, '#1e4d2b');
+  html += '</div>';
+
   html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">';
   html += '<div style="background:var(--verde-oscuro);border-radius:8px;padding:10px 12px"><div style="font-size:9px;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:1px">Saldo Cierre $</div><div id="caja-out-saldo-pesos" style="font-size:16px;font-weight:900;color:white;margin-top:2px"></div></div>';
   html += '<div style="background:var(--verde-oscuro);border-radius:8px;padding:10px 12px"><div style="font-size:9px;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:1px">Saldo Cierre U$D</div><div id="caja-out-saldo-usd" style="font-size:16px;font-weight:900;color:white;margin-top:2px"></div></div>';
   html += '<div class="field" style="margin-bottom:0"><label>T.C. Cierre</label><div class="input-wrap"><input type="text" inputmode="numeric" id="caja-tc-cierre" value="'+(tc!==''?cajaFmtNum(tc):'')+'" placeholder="0" onfocus="cajaMontoFocus(this)" onblur="cajaMontoBlur(this)" oninput="cajaMontoInput(this)" '+(puedeEditar?'':'disabled')+' style="flex:1;border:none;background:transparent;padding:10px 12px;font-size:14px;font-weight:700;outline:none;color:var(--ink)"></div></div>';
+  html += '</div>';
+
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">';
+  html += '<div style="background:#3f6b4a;border-radius:8px;padding:10px 12px"><div style="font-size:9px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:1px">Saldo Cierre Efectivo $</div><div id="caja-out-saldo-efectivo" style="font-size:16px;font-weight:900;color:white;margin-top:2px"></div></div>';
+  html += '<div style="background:#3f6b4a;border-radius:8px;padding:10px 12px"><div style="font-size:9px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:1px">Saldo Cierre Cheques $</div><div id="caja-out-saldo-cheques" style="font-size:16px;font-weight:900;color:white;margin-top:2px"></div></div>';
   html += '</div>';
 
   html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap">';
@@ -10093,34 +10135,48 @@ function renderCajaResumen(ingresos, egresos, cerrado, puedeEditar, tIng, tEgr) 
 function esAdminGlobal() { return !!(sesion && sesion.rol === 'admin'); }
 
 function cajaResumenRecalc() {
-  var tIng = window._cajaTIng || {pesos_total:0, usd_total:0};
-  var tEgr = window._cajaTEgr || {pesos_total:0, usd_total:0};
+  var tIng = window._cajaTIng || {pesos_total:0, usd_total:0, pesos_efectivo:0, pesos_cheques:0};
+  var tEgr = window._cajaTEgr || {pesos_total:0, usd_total:0, pesos_efectivo:0, pesos_cheques:0};
   var iniPEl = document.getElementById('caja-saldo-ini-pesos');
   var iniUEl = document.getElementById('caja-saldo-ini-usd');
+  var iniEfEl = document.getElementById('caja-saldo-ini-efectivo');
+  var iniChEl = document.getElementById('caja-saldo-ini-cheques');
   var tcEl   = document.getElementById('caja-tc-cierre');
   var iniP = iniPEl ? cajaParseNum(iniPEl.value) : (window._cajaIniPesos || 0);
   var iniU = iniUEl ? cajaParseNum(iniUEl.value) : (window._cajaIniUsd || 0);
+  var iniEf = iniEfEl ? cajaParseNum(iniEfEl.value) : (window._cajaIniEfectivo || 0);
+  var iniCh = iniChEl ? cajaParseNum(iniChEl.value) : (window._cajaIniCheques || 0);
   var tc   = tcEl ? cajaParseNum(tcEl.value) : 0;
   var saldoP = iniP + tIng.pesos_total - tEgr.pesos_total;
   var saldoU = iniU + tIng.usd_total - tEgr.usd_total;
+  var saldoEf = iniEf + tIng.pesos_efectivo - tEgr.pesos_efectivo;
+  var saldoCh = iniCh + tIng.pesos_cheques - tEgr.pesos_cheques;
   var eq = saldoP + (saldoU * tc);
   var elP = document.getElementById('caja-out-saldo-pesos'); if (elP) elP.textContent = '$ ' + fmtNum2(saldoP);
   var elU = document.getElementById('caja-out-saldo-usd');   if (elU) elU.textContent = 'U$D ' + fmtNum2(saldoU);
   var elE = document.getElementById('caja-out-equivalente'); if (elE) elE.textContent = '$ ' + fmtNum2(eq);
+  var elEf = document.getElementById('caja-out-saldo-efectivo'); if (elEf) elEf.textContent = '$ ' + fmtNum2(saldoEf);
+  var elCh = document.getElementById('caja-out-saldo-cheques');  if (elCh) elCh.textContent = '$ ' + fmtNum2(saldoCh);
 }
 
 // ── Cierre / reapertura del día ──
 async function cerrarCajaDia() {
   var iniPEl = document.getElementById('caja-saldo-ini-pesos');
   var iniUEl = document.getElementById('caja-saldo-ini-usd');
+  var iniEfEl = document.getElementById('caja-saldo-ini-efectivo');
+  var iniChEl = document.getElementById('caja-saldo-ini-cheques');
   var tcEl   = document.getElementById('caja-tc-cierre');
   var iniP = iniPEl ? cajaParseNum(iniPEl.value) : (window._cajaIniPesos || 0);
   var iniU = iniUEl ? cajaParseNum(iniUEl.value) : (window._cajaIniUsd || 0);
+  var iniEf = iniEfEl ? cajaParseNum(iniEfEl.value) : (window._cajaIniEfectivo || 0);
+  var iniCh = iniChEl ? cajaParseNum(iniChEl.value) : (window._cajaIniCheques || 0);
   var tc   = tcEl ? cajaParseNum(tcEl.value) : 0;
-  var tIng = window._cajaTIng || {pesos_total:0, usd_total:0};
-  var tEgr = window._cajaTEgr || {pesos_total:0, usd_total:0};
+  var tIng = window._cajaTIng || {pesos_total:0, usd_total:0, pesos_efectivo:0, pesos_cheques:0};
+  var tEgr = window._cajaTEgr || {pesos_total:0, usd_total:0, pesos_efectivo:0, pesos_cheques:0};
   var saldoP = iniP + tIng.pesos_total - tEgr.pesos_total;
   var saldoU = iniU + tIng.usd_total - tEgr.usd_total;
+  var saldoEf = iniEf + tIng.pesos_efectivo - tEgr.pesos_efectivo;
+  var saldoCh = iniCh + tIng.pesos_cheques - tEgr.pesos_cheques;
   var msg = document.getElementById('caja-resumen-msg');
   if (msg) msg.textContent = '⏳ Cerrando día...';
 
@@ -10128,8 +10184,12 @@ async function cerrarCajaDia() {
     fecha: cajaFechaActual,
     saldo_inicial_pesos: iniP,
     saldo_inicial_usd: iniU,
+    saldo_inicial_efectivo: iniEf,
+    saldo_inicial_cheques: iniCh,
     saldo_cierre_pesos: saldoP,
     saldo_cierre_usd: saldoU,
+    saldo_cierre_efectivo: saldoEf,
+    saldo_cierre_cheques: saldoCh,
     tc_cierre: tc || null,
     cerrado: true,
     usuario_cierre: sesion ? sesion.nombre : null,
@@ -10347,6 +10407,8 @@ function renderCajaResumenSemanal(dias, movs, cierres) {
     {label:'Egreso Efectivo $', calc:function(f){ return -calcularTotalesCaja(filtrar(f,'egreso','EFECTIVO')).pesos_total; }},
     {label:'Egreso Cheques 3° $', calc:function(f){ return -calcularTotalesCaja(filtrar(f,'egreso','CHEQUE 3°')).pesos_total; }},
     {label:'Saldo Cierre $', calc:function(f){ var c=cierreByFecha[f]; return c ? Number(c.saldo_cierre_pesos)||0 : null; }, bold:true},
+    {label:'Saldo Cierre Efectivo $', calc:function(f){ var c=cierreByFecha[f]; return (c && c.saldo_cierre_efectivo!=null) ? Number(c.saldo_cierre_efectivo)||0 : null; }, bold:true},
+    {label:'Saldo Cierre Cheques $', calc:function(f){ var c=cierreByFecha[f]; return (c && c.saldo_cierre_cheques!=null) ? Number(c.saldo_cierre_cheques)||0 : null; }, bold:true},
     {label:'Saldo Cierre U$D', calc:function(f){ var c=cierreByFecha[f]; return c ? Number(c.saldo_cierre_usd)||0 : null; }, bold:true, usd:true}
   ];
 
