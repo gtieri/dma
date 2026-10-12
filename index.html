@@ -548,6 +548,7 @@
 <div class="tabs">
   <button class="tab" onclick="switchTab('portal')">&#127968; Inicio</button>
   <button class="tab active" onclick="switchTab('cotizador')">Cotizador</button>
+  <button class="tab" onclick="switchTab('compraest')">📊 Compras Estimadas</button>
   <button class="tab" onclick="switchTab('config')">Datos Planta</button>
   <button class="tab" onclick="switchTab('flete')">Flete</button>
   <button class="tab" id="tab-btn-comercial" onclick="switchTab('comercial')">Comercial</button>
@@ -871,6 +872,149 @@
 
       <div class="alerta" id="alerta-canje" style="display:none;margin-top:12px"></div>
     </div>
+
+  </div>
+
+  <!-- COMPRAS ESTIMADAS -->
+  <div class="panel" id="tab-compraest">
+
+    <div class="section-label">Período y Molienda</div>
+    <div class="card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end">
+        <div class="field" style="margin-bottom:0">
+          <label>Período</label>
+          <div class="input-wrap">
+            <input type="month" id="ce-periodo" style="border:none;outline:none;width:100%;font-family:'Outfit',sans-serif;font-size:14px">
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Molienda objetivo <span class="badge">tn</span></label>
+          <div class="input-wrap">
+            <input type="text" inputmode="numeric" id="ce-molienda" oninput="fmtInput(this);renderCompraEst()" placeholder="0">
+          </div>
+        </div>
+      </div>
+      <button onclick="cargarCompraEstDB(true)" style="width:100%;margin-top:12px;background:none;border:1px solid var(--border);border-radius:8px;padding:9px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">↻ Cargar estimación guardada de este período</button>
+    </div>
+
+    <div class="section-label">Pizarra Base del Mix</div>
+    <div class="card">
+      <div class="field" style="margin-bottom:0">
+        <label>Pizarra Soja <span class="badge">$/tn</span></label>
+        <div class="input-wrap">
+          <span class="unit">$</span>
+          <input type="text" inputmode="numeric" id="ce-pizarra" oninput="fmtInput(this);renderCompraEst()" placeholder="0" style="font-size:16px;font-weight:600">
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:8px">Se aplica a todas las operaciones de tipo Pizarra cargadas abajo.</div>
+    </div>
+
+    <div class="section-label">Nueva operación</div>
+    <div class="card">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="field" style="margin-bottom:0">
+          <label>Tipo</label>
+          <select id="ce-tipo" onchange="toggleCETipo()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;background:white">
+            <option value="pizarra">Pizarra</option>
+            <option value="canje">Canje</option>
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Toneladas</label>
+          <div class="input-wrap">
+            <input type="number" id="ce-tn" placeholder="0" step="1">
+            <span class="unit right">tn</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="ce-campos-pizarra" style="margin-top:12px">
+        <div class="field" style="margin-bottom:0">
+          <label>Descuento / Prima sobre Pizarra</label>
+          <div class="input-wrap">
+            <input type="number" id="ce-pct" placeholder="-12" step="0.1">
+            <span class="unit right">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="ce-campos-canje" style="display:none;margin-top:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field" style="margin-bottom:0">
+            <label>% de Canje</label>
+            <div class="input-wrap">
+              <input type="number" id="ce-ratio" placeholder="105" step="0.5">
+              <span class="unit right">%</span>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label>Producto entregado</label>
+            <select id="ce-producto" onchange="toggleCEProducto()" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:13px;background:white">
+              <option value="expeller">Expeller</option>
+              <option value="aceite">Aceite</option>
+            </select>
+          </div>
+        </div>
+        <div id="ce-precio-expeller" style="margin-top:12px">
+          <div class="field" style="margin-bottom:0">
+            <label>Precio Expeller <span class="badge">$/tn</span></label>
+            <div class="input-wrap">
+              <span class="unit">$</span>
+              <input type="text" inputmode="numeric" id="ce-precio-prod" oninput="fmtInput(this)" placeholder="0">
+            </div>
+          </div>
+        </div>
+        <div id="ce-precio-aceite" style="display:none;margin-top:12px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="field" style="margin-bottom:0">
+              <label>Precio Aceite <span class="badge">USD/tn</span></label>
+              <div class="input-wrap">
+                <span class="unit">USD</span>
+                <input type="text" inputmode="numeric" id="ce-precio-prod-usd" oninput="fmtInput(this)" placeholder="0">
+              </div>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>TC <span class="badge">divisa BNA</span></label>
+              <div class="input-wrap">
+                <span class="unit">$</span>
+                <input type="text" inputmode="numeric" id="ce-tc" oninput="fmtInput(this)" placeholder="0">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="agregarOperacionCE()" style="width:100%;margin-top:14px;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer">+ Agregar operación</button>
+    </div>
+
+    <div id="ce-lista" style="margin-top:4px"></div>
+
+    <div class="resultado-card" style="margin-top:16px">
+      <div class="resultado-row">
+        <div><div class="resultado-label">Toneladas cargadas</div><div class="resultado-nombre">vs. molienda objetivo</div></div>
+        <div><div class="resultado-valor" id="ce-tn-total" style="color:#7ec87e">—</div></div>
+      </div>
+      <div class="resultado-row">
+        <div><div class="resultado-label">Precio promedio ponderado</div><div class="resultado-nombre">costo soja del mix</div></div>
+        <div><div class="resultado-valor" id="ce-precio-prom">—</div><div class="resultado-sub">$/tn</div></div>
+      </div>
+      <div class="resultado-row">
+        <div><div class="resultado-label">% sobre Pizarra</div><div class="resultado-nombre">precio promedio vs. pizarra base</div></div>
+        <div><div class="resultado-valor" id="ce-pct-pizarra">—</div><div class="resultado-sub" id="ce-pct-pizarra-sub">—</div></div>
+      </div>
+      <div class="resultado-row">
+        <div><div class="resultado-label">Costo total estimado</div><div class="resultado-nombre">del mix cargado</div></div>
+        <div><div class="resultado-valor" id="ce-costo-total">—</div></div>
+      </div>
+      <div class="resultado-row">
+        <div><div class="resultado-label">Mix</div><div class="resultado-nombre">Pizarra vs Canje</div></div>
+        <div><div class="resultado-valor" id="ce-mix-desglose" style="font-size:12px">—</div></div>
+      </div>
+    </div>
+
+    <div class="alerta" id="ce-alerta" style="display:none;margin-top:12px"></div>
+
+    <button onclick="guardarCompraEstDB()" style="width:100%;margin-top:14px;background:var(--verde-oscuro);color:white;border:none;border-radius:8px;padding:12px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer">💾 Guardar estimación del período</button>
 
   </div>
 
@@ -2825,8 +2969,8 @@ function aplicarPermisosTabs() {
   if(!sesion) return;
   var rol=sesion.rol;
   var tabsVisibles={
-    admin:        ['portal','cotizador','config','flete','comercial','vencimientos','tesoreria','rrhh','historial','acopio','pesadas','admin'],
-    comercial:    ['portal','cotizador','config','flete','comercial','vencimientos','historial','acopio','pesadas'],
+    admin:        ['portal','cotizador','compraest','config','flete','comercial','vencimientos','tesoreria','rrhh','historial','acopio','pesadas','admin'],
+    comercial:    ['portal','cotizador','compraest','config','flete','comercial','vencimientos','historial','acopio','pesadas'],
     tesoreria:    ['portal','vencimientos','tesoreria'],
     mantenimiento:['portal','config'],
     rrhh:         ['portal','rrhh'],
@@ -3613,6 +3757,210 @@ function calcularCanje() {
 }
 
 
+// ═══════════════════════════════════════════
+// COMPRAS ESTIMADAS — simulador de mix de compra
+// ═══════════════════════════════════════════
+let ceOperaciones = [];
+
+function toggleCETipo() {
+  var esPizarra = document.getElementById('ce-tipo').value === 'pizarra';
+  document.getElementById('ce-campos-pizarra').style.display = esPizarra ? 'block' : 'none';
+  document.getElementById('ce-campos-canje').style.display = esPizarra ? 'none' : 'block';
+}
+
+function toggleCEProducto() {
+  var esExpeller = document.getElementById('ce-producto').value === 'expeller';
+  document.getElementById('ce-precio-expeller').style.display = esExpeller ? 'block' : 'none';
+  document.getElementById('ce-precio-aceite').style.display = esExpeller ? 'none' : 'block';
+}
+
+function agregarOperacionCE() {
+  var tipo = document.getElementById('ce-tipo').value;
+  var tn = parseFloat(document.getElementById('ce-tn').value);
+  if (!tn || tn <= 0) { alert('Ingresá las toneladas de la operación.'); return; }
+  var op = { tipo: tipo, tn: tn };
+  if (tipo === 'pizarra') {
+    var pct = parseFloat(document.getElementById('ce-pct').value);
+    if (isNaN(pct)) { alert('Ingresá el % sobre Pizarra.'); return; }
+    op.pct = pct;
+  } else {
+    var ratio = parseFloat(document.getElementById('ce-ratio').value);
+    var producto = document.getElementById('ce-producto').value;
+    if (isNaN(ratio)) { alert('Ingresá el % de canje.'); return; }
+    op.ratio = ratio;
+    op.producto = producto;
+    if (producto === 'expeller') {
+      op.precioProd = v('ce-precio-prod');
+      if (op.precioProd === '') { alert('Ingresá el precio del Expeller.'); return; }
+    } else {
+      op.precioProdUsd = v('ce-precio-prod-usd');
+      op.tc = v('ce-tc');
+      if (op.precioProdUsd === '' || op.tc === '') { alert('Ingresá el precio del Aceite y el TC.'); return; }
+    }
+  }
+  ceOperaciones.push(op);
+  ['ce-tn','ce-pct','ce-ratio','ce-precio-prod','ce-precio-prod-usd','ce-tc'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  renderCompraEst();
+}
+
+function eliminarOperacionCE(idx) {
+  ceOperaciones.splice(idx, 1);
+  renderCompraEst();
+}
+
+// Precio implícito de compra ($/tn de soja) para una operación del mix
+function precioImplicitoCE(op, pizarraGlobal) {
+  if (op.tipo === 'pizarra') {
+    return pizarraGlobal !== '' ? pizarraGlobal * (1 + op.pct / 100) : '';
+  }
+  var precioProdPesos = op.producto === 'expeller'
+    ? op.precioProd
+    : (op.precioProdUsd !== '' && op.tc !== '' ? op.precioProdUsd * op.tc : '');
+  return precioProdPesos !== '' && precioProdPesos !== undefined ? (op.ratio / 100) * precioProdPesos : '';
+}
+
+function renderListaCE(pizarraGlobal) {
+  var cont = document.getElementById('ce-lista');
+  if (!ceOperaciones.length) {
+    cont.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px 0">Sin operaciones cargadas todavía.</div>';
+    return;
+  }
+  cont.innerHTML = ceOperaciones.map(function(op, i) {
+    var precio = precioImplicitoCE(op, pizarraGlobal);
+    var detalle = op.tipo === 'pizarra'
+      ? (op.pct >= 0 ? '+' : '') + op.pct + '% s/Pizarra'
+      : op.ratio + '% canje · ' + (op.producto === 'expeller' ? 'Expeller' : 'Aceite');
+    return '<div class="card" style="margin-bottom:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center">' +
+      '<div><div style="font-size:12px;font-weight:600;color:var(--ink)">' + op.tn.toLocaleString('es-AR') + ' tn — ' + detalle + '</div>' +
+      '<div style="font-size:11px;color:var(--muted);margin-top:2px">' + (precio !== '' ? fmt(precio) + '/tn' : 'Falta precio') + '</div></div>' +
+      '<button onclick="eliminarOperacionCE(' + i + ')" style="background:none;border:none;color:var(--red);font-size:16px;cursor:pointer;padding:4px 8px">×</button>' +
+      '</div>';
+  }).join('');
+}
+
+function renderCompraEst() {
+  var pizarraGlobal = v('ce-pizarra');
+  renderListaCE(pizarraGlobal);
+
+  var tnTotal = 0, costoTotal = 0, tnPizarra = 0, tnCanje = 0, incompleto = false;
+  ceOperaciones.forEach(function(op) {
+    var precio = precioImplicitoCE(op, pizarraGlobal);
+    tnTotal += op.tn;
+    if (op.tipo === 'pizarra') tnPizarra += op.tn; else tnCanje += op.tn;
+    if (precio === '') { incompleto = true; return; }
+    costoTotal += op.tn * precio;
+  });
+
+  var molienda = v('ce-molienda');
+  var pctAvance = molienda > 0 ? (tnTotal / molienda) * 100 : '';
+  var tnTotalEl = document.getElementById('ce-tn-total');
+  tnTotalEl.textContent = tnTotal.toLocaleString('es-AR') + ' tn' + (pctAvance !== '' ? ' (' + pctAvance.toFixed(0) + '%)' : '');
+  tnTotalEl.style.color = pctAvance === '' ? 'white' : pctAvance >= 100 ? '#7ec87e' : pctAvance >= 70 ? '#f5c518' : '#ff9f9f';
+
+  var precioProm = tnTotal > 0 && !incompleto ? costoTotal / tnTotal : '';
+  document.getElementById('ce-precio-prom').textContent = precioProm !== '' ? fmt(precioProm) : '—';
+  document.getElementById('ce-costo-total').textContent = !incompleto && costoTotal > 0 ? fmt(costoTotal) : '—';
+
+  var pctPizarraEl = document.getElementById('ce-pct-pizarra');
+  var pctPizarraSubEl = document.getElementById('ce-pct-pizarra-sub');
+  if (precioProm !== '' && pizarraGlobal > 0) {
+    var pctSobrePizarra = (precioProm / pizarraGlobal) * 100;
+    var equivalente = pctSobrePizarra - 100;
+    pctPizarraEl.textContent = pctSobrePizarra.toFixed(1) + '%';
+    pctPizarraEl.style.color = equivalente >= 0 ? '#7ec87e' : '#ff9f9f';
+    pctPizarraSubEl.textContent = (equivalente >= 0 ? '+' : '') + equivalente.toFixed(1) + '% s/Pizarra';
+  } else {
+    pctPizarraEl.textContent = '—';
+    pctPizarraSubEl.textContent = '—';
+  }
+
+  var mixTxt = tnTotal > 0 ? 'Pizarra ' + tnPizarra.toLocaleString('es-AR') + ' tn · Canje ' + tnCanje.toLocaleString('es-AR') + ' tn' : '—';
+  document.getElementById('ce-mix-desglose').textContent = mixTxt;
+
+  var alertaEl = document.getElementById('ce-alerta');
+  if (!ceOperaciones.length) {
+    alertaEl.style.display = 'block';
+    alertaEl.textContent = 'Agregá operaciones para estimar el precio de compra del mix.';
+  } else if (pizarraGlobal === '' && ceOperaciones.some(function(o){return o.tipo === 'pizarra';})) {
+    alertaEl.style.display = 'block';
+    alertaEl.textContent = 'Ingresá el precio Pizarra base para calcular las operaciones de tipo Pizarra.';
+  } else if (incompleto) {
+    alertaEl.style.display = 'block';
+    alertaEl.textContent = 'Faltan precios en alguna operación de Canje.';
+  } else {
+    alertaEl.style.display = 'none';
+  }
+}
+
+async function guardarCompraEstDB() {
+  var periodo = document.getElementById('ce-periodo').value;
+  if (!periodo) { alert('Elegí el período (mes) antes de guardar.'); return; }
+  if (!ceOperaciones.length) { alert('No hay operaciones cargadas para guardar.'); return; }
+  var pizarraGlobal = v('ce-pizarra');
+  var molienda = v('ce-molienda');
+  var tnTotal = ceOperaciones.reduce(function(s, o) { return s + o.tn; }, 0);
+  var costoTotal = ceOperaciones.reduce(function(s, o) {
+    var p = precioImplicitoCE(o, pizarraGlobal);
+    return s + (p !== '' ? o.tn * p : 0);
+  }, 0);
+  var precioProm = tnTotal > 0 ? costoTotal / tnTotal : null;
+  var body = {
+    periodo: periodo,
+    pizarra: pizarraGlobal !== '' ? pizarraGlobal : null,
+    molienda_objetivo: molienda !== '' ? molienda : null,
+    operaciones: ceOperaciones,
+    precio_promedio: precioProm,
+    costo_total: costoTotal,
+    creado_por: (typeof sesion !== 'undefined' && sesion) ? sesion.nombre : null
+  };
+  try {
+    var res = await supaPost('compras_estimadas', body, 'resolution=merge-duplicates,return=minimal,on_conflict=periodo');
+    if (res.ok) {
+      alert('Estimación guardada para el período ' + periodo + '.');
+    } else {
+      throw new Error('Supabase respondió con error');
+    }
+  } catch (e) {
+    alert('No se pudo guardar en Supabase. Verificá la conexión y que exista la tabla compras_estimadas.');
+  }
+}
+
+async function cargarCompraEstDB(mostrarAlerta) {
+  var periodo = document.getElementById('ce-periodo').value;
+  if (!periodo) { if (mostrarAlerta) alert('Elegí el período (mes) primero.'); return; }
+  try {
+    var data = await supaFetch('compras_estimadas', 'select=*&periodo=eq.' + periodo);
+    if (data && !data.error && data.length) {
+      var r = data[0];
+      document.getElementById('ce-pizarra').value = r.pizarra ? Math.round(r.pizarra).toLocaleString('es-AR') : '';
+      document.getElementById('ce-molienda').value = r.molienda_objetivo ? Math.round(r.molienda_objetivo).toLocaleString('es-AR') : '';
+      ceOperaciones = r.operaciones || [];
+      renderCompraEst();
+    } else if (mostrarAlerta) {
+      alert('No hay una estimación guardada para ese período.');
+    }
+  } catch (e) {
+    if (mostrarAlerta) alert('No se pudo consultar Supabase.');
+  }
+}
+
+function initCompraEst() {
+  var periodoEl = document.getElementById('ce-periodo');
+  if (periodoEl && !periodoEl.value) {
+    var hoy = new Date();
+    periodoEl.value = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0');
+  }
+  var moliendaEl = document.getElementById('ce-molienda');
+  var prodConfig = v('produccion_mensual');
+  if (moliendaEl && !moliendaEl.value && prodConfig !== '') {
+    moliendaEl.value = Math.round(prodConfig).toLocaleString('es-AR');
+  }
+  renderCompraEst();
+}
+
+
 let fleteToggleActivo = false;
 function toggleFleteCotizador() {
   fleteToggleActivo = !fleteToggleActivo;
@@ -4170,6 +4518,7 @@ function switchTab(tab) {
   if (tab === 'vencimientos') { switchSubTabV('liquidaciones'); }
   if (tab === 'tesoreria') { switchSubTabT('caja-diaria'); initTesoreria(); }
   if (tab === 'rrhh') { initRRHH(); }
+  if (tab === 'compraest') { initCompraEst(); }
 }
 
 function switchSubTab(subTab) {
