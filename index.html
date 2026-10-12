@@ -144,6 +144,56 @@
     background: rgba(255,255,255,0.04);
   }
 
+  /* NAV DOS NIVELES */
+  .gtab {
+    flex: 1;
+    padding: 12px 4px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .gtab.active {
+    color: #fff;
+    border-bottom: 2px solid var(--dorado);
+    background: rgba(255,255,255,0.06);
+  }
+  .subtabs-bar {
+    display: flex;
+    gap: 4px;
+    background: var(--verde-light);
+    border-bottom: 1px solid var(--border);
+    padding: 0 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .subtabs-bar::-webkit-scrollbar { display: none; }
+  .subtabs-bar .tab {
+    flex: 0 0 auto;
+    padding: 10px 16px;
+    color: var(--muted);
+    font-size: 10.5px;
+    letter-spacing: 1px;
+  }
+  .subtabs-bar .tab.active {
+    color: var(--verde-oscuro);
+    font-weight: 700;
+    border-bottom: 2px solid var(--dorado);
+    background: white;
+  }
+  @media (max-width: 600px) {
+    .gtab { flex: 0 0 auto; padding: 12px 14px; }
+    .subtabs-bar { padding: 0 8px; }
+  }
+
   /* MAIN */
   .main {
     padding: 16px 20px 32px;
@@ -545,20 +595,31 @@
   </div>
 </header>
 
-<div class="tabs">
-  <button class="tab" onclick="switchTab('portal')">&#127968; Inicio</button>
+<div class="tabs gtabs" id="nav-grupos">
+  <button class="gtab" data-group="inicio" onclick="switchGroup('inicio')">&#127968; Inicio</button>
+  <button class="gtab" data-group="aceitera" onclick="switchGroup('aceitera')">&#127981; Aceitera</button>
+  <button class="gtab" data-group="comercial" onclick="switchGroup('comercial')">&#128200; Comercial</button>
+  <button class="gtab" data-group="acopio" onclick="switchGroup('acopio')">&#127806; Acopio</button>
+  <button class="gtab" data-group="finanzas" onclick="switchGroup('finanzas')">&#128176; Finanzas</button>
+  <button class="gtab" data-group="rrhh" onclick="switchGroup('rrhh')">&#128101; RRHH</button>
+  <button class="gtab" data-group="admin" onclick="switchGroup('admin')">&#9881; Admin</button>
+</div>
+
+<div class="subtabs-bar" id="nav-subtabs">
+  <button class="tab" onclick="switchTab('portal')">Inicio</button>
   <button class="tab active" onclick="switchTab('cotizador')">Cotizador</button>
-  <button class="tab" onclick="switchTab('compraest')">📊 Compras Estimadas</button>
   <button class="tab" onclick="switchTab('config')">Datos Planta</button>
+  <button class="tab" onclick="switchTab('compraest')">Compras Estimadas</button>
+  <button class="tab" onclick="switchTab('ventasac')">Ventas</button>
+  <button class="tab" id="tab-btn-comercial" onclick="switchTab('comercial')">Operaciones</button>
+  <button class="tab" onclick="switchTab('historial')">Historial</button>
   <button class="tab" onclick="switchTab('flete')">Flete</button>
-  <button class="tab" id="tab-btn-comercial" onclick="switchTab('comercial')">Comercial</button>
+  <button class="tab" onclick="switchTab('acopio')">Compra-Venta</button>
+  <button class="tab" onclick="switchTab('pesadas')">Pesadas</button>
   <button class="tab" onclick="switchTab('vencimientos')">Vencimientos</button>
   <button class="tab" onclick="switchTab('tesoreria')">Tesorería</button>
   <button class="tab" onclick="switchTab('rrhh')">RRHH</button>
-  <button class="tab" onclick="switchTab('historial')">Historial</button>
-  <button class="tab" onclick="switchTab('acopio')">🌾 Acopio</button>
-  <button class="tab" onclick="switchTab('pesadas')">⚖️ Pesadas</button>
-  <button class="tab" id="tab-btn-admin" onclick="switchTab('admin')" style="display:none">&#9881; Admin</button>
+  <button class="tab" id="tab-btn-admin" onclick="switchTab('admin')">Usuarios</button>
 </div>
 
 <div class="main">
@@ -1015,6 +1076,116 @@
     <div class="alerta" id="ce-alerta" style="display:none;margin-top:12px"></div>
 
     <button onclick="guardarCompraEstDB()" style="width:100%;margin-top:14px;background:var(--verde-oscuro);color:white;border:none;border-radius:8px;padding:12px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer">💾 Guardar estimación del período</button>
+    <button onclick="exportarCompraEstPDF()" style="width:100%;margin-top:8px;background:white;color:var(--verde-medio);border:1.5px solid var(--verde-medio);border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer">📄 Exportar estimación PDF</button>
+
+  </div>
+
+  <!-- VENTAS ACEITERA -->
+  <div class="panel" id="tab-ventasac">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;flex-wrap:wrap;gap:8px">
+      <div class="section-label" style="margin:0;border:none">Ventas Aceitera</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="exportarVentasAceiteraPDF()" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">&#11015; PDF del mes</button>
+        <button id="va-btn-nueva" onclick="abrirFormVentaAceitera()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Nueva venta</button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card" style="margin-top:12px;padding:12px 14px">
+      <div style="display:flex;gap:10px;align-items:end;flex-wrap:wrap">
+        <div class="field" style="margin-bottom:0;min-width:150px">
+          <label>Mes</label>
+          <div class="input-wrap"><input type="month" id="va-mes" onchange="renderVentasAceitera()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="piz-fbtn active-piz" data-vaprod="Todos" onclick="vaSetFiltro('Todos')">Todos</button>
+          <button class="piz-fbtn" data-vaprod="Expeller de Soja" onclick="vaSetFiltro('Expeller de Soja')">Expeller</button>
+          <button class="piz-fbtn" data-vaprod="Aceite de Soja" onclick="vaSetFiltro('Aceite de Soja')">Aceite</button>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="piz-fbtn active-piz" data-vacirc="" onclick="vaSetCircuito('')">1 + 2</button>
+          <button class="piz-fbtn" data-vacirc="1" onclick="vaSetCircuito('1')">Solo 1</button>
+          <button class="piz-fbtn" data-vacirc="2" onclick="vaSetCircuito('2')">Solo 2</button>
+        </div>
+        <div class="field" style="margin-bottom:0;min-width:200px;flex:1;max-width:300px">
+          <label>Cliente</label>
+          <div class="input-wrap"><select id="va-filtro-cliente" onchange="vaSetCliente(this.value)" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="">Todos los clientes</option></select></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <div id="form-venta-aceitera" style="display:none" class="card">
+      <div id="va-form-titulo" style="font-size:11px;font-weight:700;color:var(--ink);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)">Nueva venta</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field" style="margin-bottom:0"><label>Fecha</label>
+          <div class="input-wrap"><input type="date" id="va-fecha" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div></div>
+        <div class="field" style="margin-bottom:0"><label>Tipo de operación</label>
+          <div class="input-wrap"><select id="va-tipo" onchange="vaToggleCampos()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="Venta">Venta</option><option value="Canje">Canje</option></select></div></div>
+        <div class="field" style="margin-bottom:0"><label>Producto</label>
+          <div class="input-wrap"><select id="va-producto" onchange="vaToggleCampos()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="Expeller de Soja">Expeller de Soja</option><option value="Aceite de Soja">Aceite de Soja</option></select></div></div>
+        <div class="field" style="margin-bottom:0"><label>Cliente</label>
+          <div class="input-wrap"><input type="text" id="va-cliente" list="va-clientes-list" placeholder="Nombre" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div>
+          <datalist id="va-clientes-list"></datalist></div>
+        <div class="field" style="margin-bottom:0"><label>Toneladas</label>
+          <div class="input-wrap"><input type="number" id="va-tn" step="0.01" placeholder="0" oninput="vaPreview()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"><span class="unit right">tn</span></div></div>
+        <div class="field" style="margin-bottom:0"><label id="va-precio-label">Precio / tn</label>
+          <div class="input-wrap"><span class="unit" id="va-precio-unit">$</span><input type="text" inputmode="numeric" id="va-precio" placeholder="0" oninput="fmtInput(this);vaPreview()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink);font-weight:600"></div></div>
+      </div>
+      <div id="va-tc-wrap" style="display:none;margin-top:10px">
+        <div class="field" style="margin-bottom:0"><label>Tipo de cambio <span class="badge">divisa BNA</span></label>
+          <div class="input-wrap"><span class="unit">$</span><input type="text" inputmode="numeric" id="va-tc" placeholder="0" oninput="fmtInput(this);vaPreview()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"><span class="unit right">/ USD</span></div></div>
+      </div>
+
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:10px">&#128666; Flete</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field" style="margin-bottom:0"><label>Flete / tn</label>
+            <div class="input-wrap"><span class="unit">$</span><input type="text" inputmode="numeric" id="va-flete" placeholder="0 = sin flete" oninput="fmtInput(this);vaPreview()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"><span class="unit right">$/tn</span></div></div>
+          <div class="field" style="margin-bottom:0"><label>Quién paga el flete</label>
+            <div class="input-wrap"><select id="va-flete-paga" onchange="vaPreview()" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+              <option value="dm">Don Mauricio (precio puesto en destino)</option>
+              <option value="cliente">Cliente (retira / paga él)</option></select></div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+        <div class="field" style="margin-bottom:0"><label>Condición de pago</label>
+          <div class="input-wrap"><select id="va-condpago" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="Contado">Contado</option><option value="7/10 días">7/10 días</option><option value="15 días">15 días</option><option value="30 días">30 días</option><option value="60 días">60 días</option></select></div></div>
+        <div class="field" style="margin-bottom:0"><label>Circuito</label>
+          <div class="input-wrap"><select id="va-circuito" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:13px;outline:none;color:var(--ink)">
+            <option value="1">1</option><option value="2">2</option></select></div></div>
+        <div class="field" style="margin-bottom:0"><label>N° de contrato <span style="font-size:8px;color:var(--muted);text-transform:none;letter-spacing:0">(opcional)</span></label>
+          <div class="input-wrap"><input type="text" id="va-contrato" placeholder="A definir" style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink);text-transform:uppercase"></div></div>
+      </div>
+      <div class="field" style="margin-top:10px;margin-bottom:0"><label>Observaciones</label>
+        <div class="input-wrap"><input type="text" id="va-obs" placeholder="Notas..." style="flex:1;border:none;background:transparent;padding:10px 12px;font-family:'Outfit',sans-serif;font-size:14px;outline:none;color:var(--ink)"></div></div>
+
+      <div id="va-preview" style="display:none;margin-top:12px;background:var(--verde-light);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--ink);line-height:1.7"></div>
+      <div id="va-error" style="display:none;background:#fff0f0;border:1px solid #e74c3c;color:#c0392b;border-radius:7px;padding:10px 14px;font-size:12px;font-weight:600;margin-top:10px"></div>
+
+      <div style="display:flex;gap:8px;margin-top:14px">
+        <button onclick="guardarVentaAceitera()" style="flex:2;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer">Guardar venta</button>
+        <button onclick="cerrarFormVentaAceitera()" style="flex:1;background:var(--border);color:var(--muted);border:none;border-radius:8px;padding:11px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Resumen del mes por producto -->
+    <div class="section-label">Resumen del mes</div>
+    <div id="va-resumen" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px"></div>
+
+    <!-- Operaciones del mes -->
+    <div class="section-label">Operaciones del mes</div>
+    <div id="va-lista"></div>
+
+    <!-- Evolución mensual -->
+    <div class="section-label">Evolución mensual (últimos 12 meses)</div>
+    <div id="va-mensual" class="card" style="overflow-x:auto"></div>
 
   </div>
 
@@ -2969,21 +3140,16 @@ function aplicarPermisosTabs() {
   if(!sesion) return;
   var rol=sesion.rol;
   var tabsVisibles={
-    admin:        ['portal','cotizador','compraest','config','flete','comercial','vencimientos','tesoreria','rrhh','historial','acopio','pesadas','admin'],
-    comercial:    ['portal','cotizador','compraest','config','flete','comercial','vencimientos','historial','acopio','pesadas'],
+    admin:        ['portal','cotizador','compraest','ventasac','config','flete','comercial','vencimientos','tesoreria','rrhh','historial','acopio','pesadas','admin'],
+    comercial:    ['portal','cotizador','compraest','ventasac','config','flete','comercial','vencimientos','historial','acopio','pesadas'],
     tesoreria:    ['portal','vencimientos','tesoreria'],
     mantenimiento:['portal','config'],
     rrhh:         ['portal','rrhh'],
     balanza:      ['pesadas'],
   };
   var visibles=tabsVisibles[rol]||tabsVisibles.tesoreria;
-  document.querySelectorAll('.tab').forEach(function(btn){
-    var onclick=btn.getAttribute('onclick')||'';
-    var m=onclick.match(/switchTab\('([^']+)'\)/);
-    var tabId=m?m[1]:null;
-    if(!tabId) return;
-    btn.style.display=visibles.includes(tabId)?'':'none';
-  });
+  window._tabsPermitidos = visibles;
+  renderNav(window._tabActual || null);
   var pW=PERMISOS[rol]||PERMISOS.tesoreria;
   // Config readonly
   document.querySelectorAll('#tab-config input,#tab-config select').forEach(function(el){
@@ -2999,8 +3165,7 @@ function aplicarPermisosTabs() {
   if(btnNF) btnNF.style.display=pW.writeCompras?'':'none';
   if(btnNV) btnNV.style.display=pW.writeVentas?'':'none';
   // Tab admin
-  var adminBtn=document.getElementById('tab-btn-admin');
-  if(adminBtn) adminBtn.style.display=rol==='admin'?'':'none';
+
 }
 
 // ── Admin usuarios ──
@@ -3946,6 +4111,617 @@ async function cargarCompraEstDB(mostrarAlerta) {
   }
 }
 
+function exportarCompraEstPDF() {
+  var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFLib) { alert('Librería PDF no cargada. Verificá conexión.'); return; }
+  if (!ceOperaciones.length) { alert('No hay operaciones cargadas para exportar.'); return; }
+
+  var periodo = document.getElementById('ce-periodo').value || '';
+  var pizarraGlobal = v('ce-pizarra');
+  var molienda = v('ce-molienda');
+  var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  var periodoLabel = periodo ? (meses[parseInt(periodo.split('-')[1],10)-1] + ' ' + periodo.split('-')[0]) : 'Sin período';
+
+  // Cálculos (misma lógica que renderCompraEst)
+  var tnTotal = 0, costoTotal = 0, tnPizarra = 0, tnCanje = 0, incompleto = false;
+  var filas = ceOperaciones.map(function(op) {
+    var precio = precioImplicitoCE(op, pizarraGlobal);
+    tnTotal += op.tn;
+    if (op.tipo === 'pizarra') tnPizarra += op.tn; else tnCanje += op.tn;
+    if (precio === '') incompleto = true; else costoTotal += op.tn * precio;
+    var detalle;
+    if (op.tipo === 'pizarra') {
+      detalle = (op.pct >= 0 ? '+' : '') + op.pct + '% s/Pizarra';
+    } else if (op.producto === 'expeller') {
+      detalle = op.ratio + '% canje · Expeller $ ' + Math.round(op.precioProd||0).toLocaleString('es-AR') + '/tn';
+    } else {
+      detalle = op.ratio + '% canje · Aceite USD ' + Math.round(op.precioProdUsd||0).toLocaleString('es-AR') + ' x TC ' + Math.round(op.tc||0).toLocaleString('es-AR');
+    }
+    return { tipo: op.tipo === 'pizarra' ? 'Pizarra' : 'Canje', tn: op.tn, detalle: detalle, precio: precio };
+  });
+  var precioProm = tnTotal > 0 && !incompleto ? costoTotal / tnTotal : '';
+  var pctAvance = molienda > 0 ? (tnTotal / molienda) * 100 : '';
+  var pctSobrePiz = (precioProm !== '' && pizarraGlobal > 0) ? (precioProm / pizarraGlobal) * 100 : '';
+
+  var doc = new jsPDFLib({ orientation:'portrait', unit:'mm', format:'a4' });
+  var pw=210, ph=297, ml=14, mr=14, cw=182;
+  var hoy = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  var y = 0;
+  function checkY(n){ if (y+n > ph-16) { doc.addPage(); y = 18; } }
+  function fm(n){ return (n === '' || n === null || isNaN(n)) ? '—' : '$ ' + Math.round(n).toLocaleString('es-AR'); }
+
+  // Header
+  doc.setFillColor('#ffffff'); doc.rect(0,0,pw,38,'F');
+  doc.setFillColor('#1e4d2b'); doc.rect(0,36,pw,2,'F');
+  try { doc.addImage(LOGO_DM_B64,'JPEG',ml,4,28,28); } catch(e){}
+  doc.setTextColor('#1e4d2b'); doc.setFont('times','bold'); doc.setFontSize(24);
+  doc.text('Don Mauricio', ml+33, 17);
+  doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+  doc.setCharSpace(2.5); doc.text('AGROGANADERA  S.R.L.', ml+33, 24); doc.setCharSpace(0);
+  doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  doc.text('COMPRAS ESTIMADAS', pw-mr, 13, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  doc.text('Período: ' + periodoLabel, pw-mr, 20, {align:'right'});
+  doc.setTextColor('#5a7262'); doc.setFontSize(8);
+  doc.text('Emitido: ' + hoy + (sesion ? ' · ' + sesion.nombre.toUpperCase() : ''), pw-mr, 26, {align:'right'});
+  y = 46;
+
+  // Parámetros
+  var cardW = (cw-8)/3;
+  var params = [
+    ['PIZARRA BASE', pizarraGlobal !== '' ? fm(pizarraGlobal) + '/tn' : '—'],
+    ['MOLIENDA OBJETIVO', molienda !== '' ? Math.round(molienda).toLocaleString('es-AR') + ' tn' : '—'],
+    ['OPERACIONES', String(ceOperaciones.length)]
+  ];
+  params.forEach(function(pr, i) {
+    var cx = ml + i*(cardW+4);
+    doc.setFillColor('#f4f8f5'); doc.rect(cx, y, cardW, 15, 'F');
+    doc.setTextColor('#5a7262'); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+    doc.text(pr[0], cx+4, y+5.5);
+    doc.setTextColor('#1a2e1f'); doc.setFontSize(11);
+    doc.text(pr[1], cx+4, y+12);
+  });
+  y += 22;
+
+  // Tabla de operaciones
+  var cols = [
+    {label:'#',            x:ml,     w:8},
+    {label:'Tipo',         x:ml+8,   w:20},
+    {label:'Toneladas',    x:ml+28,  w:24},
+    {label:'Condición',    x:ml+52,  w:66},
+    {label:'Precio $/tn',  x:ml+118, w:30},
+    {label:'Subtotal',     x:ml+148, w:34}
+  ];
+  doc.setFillColor('#1e4d2b'); doc.rect(ml, y, cw, 7, 'F');
+  doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+  cols.forEach(function(c, i){
+    if (i >= 4) doc.text(c.label, c.x+c.w-2, y+5, {align:'right'});
+    else doc.text(c.label, c.x+2, y+5);
+  });
+  y += 7;
+
+  filas.forEach(function(f, i) {
+    checkY(8);
+    doc.setFillColor(i%2===0 ? '#f4f8f5' : '#ffffff'); doc.rect(ml, y, cw, 7.5, 'F');
+    doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+    doc.text(String(i+1), cols[0].x+2, y+5);
+    doc.setTextColor(f.tipo === 'Pizarra' ? '#1e4d2b' : '#b8860b'); doc.setFont('helvetica','bold');
+    doc.text(f.tipo, cols[1].x+2, y+5);
+    doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','normal');
+    doc.text(f.tn.toLocaleString('es-AR') + ' tn', cols[2].x+2, y+5);
+    doc.text(doc.splitTextToSize(f.detalle, cols[3].w-3)[0], cols[3].x+2, y+5);
+    doc.text(fm(f.precio), cols[4].x+cols[4].w-2, y+5, {align:'right'});
+    doc.setFont('helvetica','bold');
+    doc.text(f.precio !== '' ? fm(f.tn * f.precio) : '—', cols[5].x+cols[5].w-2, y+5, {align:'right'});
+    y += 7.5;
+  });
+  // Total tabla
+  checkY(9);
+  doc.setFillColor('#e8f0eb'); doc.rect(ml, y, cw, 8, 'F');
+  doc.setTextColor('#1e4d2b'); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  doc.text('TOTAL', cols[1].x+2, y+5.5);
+  doc.text(tnTotal.toLocaleString('es-AR') + ' tn', cols[2].x+2, y+5.5);
+  doc.text(fm(precioProm), cols[4].x+cols[4].w-2, y+5.5, {align:'right'});
+  doc.text(!incompleto ? fm(costoTotal) : '—', cols[5].x+cols[5].w-2, y+5.5, {align:'right'});
+  y += 14;
+
+  // Resultado
+  checkY(52);
+  doc.setFillColor('#1e4d2b'); doc.rect(ml, y, cw, 48, 'F');
+  doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text('RESULTADO DEL MIX', ml+5, y+8);
+  var res = [
+    ['Toneladas cargadas vs. molienda', tnTotal.toLocaleString('es-AR') + ' tn' + (pctAvance !== '' ? '  (' + pctAvance.toFixed(0) + '%)' : '')],
+    ['Precio promedio ponderado', fm(precioProm) + '/tn'],
+    ['% sobre Pizarra', pctSobrePiz !== '' ? pctSobrePiz.toFixed(1) + '%  (' + ((pctSobrePiz-100) >= 0 ? '+' : '') + (pctSobrePiz-100).toFixed(1) + '% s/Pizarra)' : '—'],
+    ['Costo total estimado', !incompleto ? fm(costoTotal) : '—'],
+    ['Mix', 'Pizarra ' + tnPizarra.toLocaleString('es-AR') + ' tn · Canje ' + tnCanje.toLocaleString('es-AR') + ' tn']
+  ];
+  res.forEach(function(r, i) {
+    var ry = y + 16 + i*6.5;
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor('#cfe3d5');
+    doc.text(r[0], ml+5, ry);
+    doc.setFont('helvetica','bold'); doc.setTextColor('#ffffff');
+    doc.text(r[1], pw-mr-5, ry, {align:'right'});
+  });
+  y += 54;
+
+  if (incompleto) {
+    checkY(10);
+    doc.setTextColor('#842029'); doc.setFont('helvetica','italic'); doc.setFontSize(8);
+    doc.text('Atención: hay operaciones sin precio completo; el promedio y el costo total no se calcularon.', ml, y);
+  }
+
+  // Footer
+  var pgs = doc.internal.getNumberOfPages();
+  for (var pg = 1; pg <= pgs; pg++) {
+    doc.setPage(pg);
+    doc.setDrawColor('#c8ddd0'); doc.line(ml, ph-10, pw-mr, ph-10);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor('#5a7262');
+    doc.text('Don Mauricio Agroganadera SRL — Compras Estimadas ' + periodoLabel + ' — Uso interno', ml, ph-6);
+    doc.text('Pág. ' + pg + '/' + pgs, pw-mr, ph-6, {align:'right'});
+  }
+
+  doc.save('ComprasEstimadas_DM_' + (periodo || 'sin-periodo') + '.pdf');
+}
+
+// ═══════════════════════════════════════════
+// ACEITERA — VENTAS (tabla ventas_aceitera)
+// ═══════════════════════════════════════════
+var vaData = [];
+var vaEditId = null;
+var vaFiltroProd = 'Todos';
+var vaFiltroCliente = '';
+var vaFiltroCirc = '';
+var VA_PRODUCTOS = ['Expeller de Soja', 'Aceite de Soja'];
+var VA_MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+function vaCorto(prod) { return prod === 'Aceite de Soja' ? 'Aceite' : 'Expeller'; }
+function vaMesLabel(m) { if (!m) return ''; var p = m.split('-'); return VA_MESES[parseInt(p[1],10)-1] + ' ' + p[0]; }
+function vaFm(n) { return (n === null || n === undefined || isNaN(n)) ? '—' : '$ ' + Math.round(n).toLocaleString('es-AR'); }
+function vaTn(n) { return (Math.round((n||0)*100)/100).toLocaleString('es-AR') + ' tn'; }
+
+function mapVaFromDB(r) {
+  return { id: r.id, fecha: r.fecha, producto: r.producto, tipo: r.tipo_operacion || 'Venta',
+    cliente: r.cliente || '', tn: Number(r.tn) || 0, moneda: r.moneda || 'ARS',
+    precio: r.precio != null ? Number(r.precio) : null, tc: r.tipo_cambio != null ? Number(r.tipo_cambio) : null,
+    fleteTn: r.flete_tn != null ? Number(r.flete_tn) : 0, fletePaga: r.flete_paga || null,
+    condpago: r.condpago || '', circuito: r.circuito ? String(r.circuito) : '1', contrato: r.contrato || '', obs: r.obs || '', usuario: r.usuario || '' };
+}
+
+// Precio en $/tn, neto en planta (descontando flete si lo paga DM) y totales
+function vaCalc(op) {
+  var precioArs = null;
+  if (op.precio != null && op.precio > 0) {
+    if (op.moneda === 'USD') precioArs = op.tc > 0 ? op.precio * op.tc : null;
+    else precioArs = op.precio;
+  }
+  var descFlete = op.fletePaga === 'dm' ? (op.fleteTn || 0) : 0;
+  return {
+    precioArs: precioArs,
+    netoArs: precioArs != null ? precioArs - descFlete : null,
+    totalArs: precioArs != null ? precioArs * op.tn : null,
+    fleteTotal: (op.fleteTn || 0) * op.tn
+  };
+}
+
+function vaStats(ops) {
+  var s = { ops: ops.length, tn1: 0, tn2: 0, tnVenta: 0, tnCanje: 0, tnPrecio: 0, sumBruto: 0, sumNeto: 0, sumUsd: 0, tnUsd: 0, total: 0, fleteDM: 0 };
+  ops.forEach(function(o) {
+    var c = vaCalc(o);
+    if (o.tipo === 'Canje') s.tnCanje += o.tn; else s.tnVenta += o.tn;
+    if (o.circuito === '2') s.tn2 += o.tn; else s.tn1 += o.tn;
+    if (o.tipo === 'Venta' && c.precioArs != null) {
+      s.tnPrecio += o.tn; s.sumBruto += c.precioArs * o.tn; s.sumNeto += c.netoArs * o.tn; s.total += c.totalArs;
+      if (o.moneda === 'USD' && o.precio > 0) { s.sumUsd += o.precio * o.tn; s.tnUsd += o.tn; }
+    }
+    if (o.fletePaga === 'dm') s.fleteDM += c.fleteTotal;
+  });
+  s.pppBruto = s.tnPrecio > 0 ? s.sumBruto / s.tnPrecio : null;
+  s.pppNeto  = s.tnPrecio > 0 ? s.sumNeto / s.tnPrecio : null;
+  s.pppUsd   = s.tnUsd > 0 ? s.sumUsd / s.tnUsd : null;
+  return s;
+}
+
+function vaOpsMes(mes, prod) {
+  return vaData.filter(function(o) {
+    return o.fecha && o.fecha.slice(0,7) === mes && (!prod || prod === 'Todos' || o.producto === prod)
+      && (!vaFiltroCliente || o.cliente === vaFiltroCliente)
+      && (!vaFiltroCirc || o.circuito === vaFiltroCirc);
+  });
+}
+function vaProductosFiltrados() { return vaFiltroProd === 'Todos' ? VA_PRODUCTOS : [vaFiltroProd]; }
+
+function initVentasAceitera() {
+  var mesEl = document.getElementById('va-mes');
+  if (mesEl && !mesEl.value) mesEl.value = new Date().toISOString().slice(0,7);
+  var btn = document.getElementById('va-btn-nueva');
+  if (btn) btn.style.display = checkEscritura('ventas') ? '' : 'none';
+  cargarVentasAceitera();
+}
+
+async function cargarVentasAceitera() {
+  var lista = document.getElementById('va-lista');
+  if (lista) lista.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px 0">Cargando...</div>';
+  try {
+    var data = await supaFetch('ventas_aceitera', 'select=*&order=fecha.desc,id.desc');
+    if (!Array.isArray(data)) throw new Error((data && data.message) || 'Error Supabase');
+    vaData = data.map(mapVaFromDB);
+    try { localStorage.setItem('dm_ventas_aceitera', JSON.stringify(vaData)); } catch(e){}
+  } catch(e) {
+    console.error('cargarVentasAceitera:', e);
+    try { vaData = JSON.parse(localStorage.getItem('dm_ventas_aceitera') || '[]'); } catch(x) { vaData = []; }
+  }
+  renderVentasAceitera();
+}
+
+function vaSetFiltro(prod) {
+  vaFiltroProd = prod;
+  document.querySelectorAll('[data-vaprod]').forEach(function(b) {
+    b.classList.toggle('active-piz', b.getAttribute('data-vaprod') === prod);
+  });
+  renderVentasAceitera();
+}
+
+function vaSetCircuito(c) {
+  vaFiltroCirc = c || '';
+  document.querySelectorAll('[data-vacirc]').forEach(function(b) {
+    b.classList.toggle('active-piz', b.getAttribute('data-vacirc') === vaFiltroCirc);
+  });
+  renderVentasAceitera();
+}
+
+function vaSetCliente(c) {
+  vaFiltroCliente = c || '';
+  renderVentasAceitera();
+}
+
+function vaPoblarClientes() {
+  var sel = document.getElementById('va-filtro-cliente');
+  if (!sel) return;
+  var set = {};
+  vaData.forEach(function(o) { if (o.cliente) set[o.cliente] = true; });
+  var nombres = Object.keys(set).sort(function(a, b) { return a.localeCompare(b, 'es'); });
+  if (vaFiltroCliente && nombres.indexOf(vaFiltroCliente) === -1) vaFiltroCliente = '';
+  sel.innerHTML = '<option value="">Todos los clientes</option>' +
+    nombres.map(function(n) { return '<option value="' + escHtml(n) + '">' + escHtml(n) + '</option>'; }).join('');
+  sel.value = vaFiltroCliente;
+}
+
+function renderVentasAceitera() {
+  vaPoblarClientes();
+  var mes = document.getElementById('va-mes').value || new Date().toISOString().slice(0,7);
+  renderVaResumen(mes);
+  renderVaLista(mes);
+  renderVaMensual(mes);
+}
+
+function renderVaResumen(mes) {
+  var el = document.getElementById('va-resumen');
+  el.innerHTML = vaProductosFiltrados().map(function(prod) {
+    var s = vaStats(vaOpsMes(mes, prod));
+    var esAceite = prod === 'Aceite de Soja';
+    var fila = function(l, v, color) {
+      return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--border);font-size:11px">' +
+        '<span style="color:var(--muted)">' + l + '</span><span style="font-weight:700;color:' + (color || 'var(--ink)') + '">' + v + '</span></div>';
+    };
+    return '<div class="card" style="margin-bottom:0">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+        '<div style="font-size:12px;font-weight:700;color:var(--verde-oscuro)">' + prod + '</div>' +
+        '<span style="font-size:9px;color:var(--muted)">' + s.ops + ' op.</span></div>' +
+      '<div style="background:var(--verde-oscuro);border-radius:8px;padding:10px 12px;margin-bottom:8px">' +
+        '<div style="font-size:9px;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:1px">Precio prom. neto en planta</div>' +
+        '<div style="font-family:Georgia,serif;font-size:20px;font-weight:700;color:#f5c518">' + (s.pppNeto != null ? vaFm(s.pppNeto) + '/tn' : '—') + '</div>' +
+      '</div>' +
+      fila('Tn vendidas', vaTn(s.tnVenta)) +
+      fila('Tn entregadas en canje', vaTn(s.tnCanje), 'var(--dorado)') +
+      (!vaFiltroCirc ? fila('Tn en 1 / en 2', vaTn(s.tn1) + ' / ' + vaTn(s.tn2)) : '') +
+      fila('Precio prom. bruto', s.pppBruto != null ? vaFm(s.pppBruto) + '/tn' : '—') +
+      (esAceite ? fila('Precio prom. USD', s.pppUsd != null ? 'USD ' + Math.round(s.pppUsd).toLocaleString('es-AR') + '/tn' : '—') : '') +
+      fila('Flete a cargo DM', vaFm(s.fleteDM), '#b83232') +
+      fila('Facturación (ventas)', vaFm(s.total), 'var(--verde-oscuro)') +
+    '</div>';
+  }).join('');
+}
+
+function renderVaLista(mes) {
+  var el = document.getElementById('va-lista');
+  var ops = vaOpsMes(mes, vaFiltroProd);
+  if (!ops.length) {
+    el.innerHTML = '<div style="text-align:center;padding:24px 16px;color:var(--muted);font-size:12px;background:var(--bg);border-radius:10px;border:1px dashed var(--border)>Sin ventas registradas en ' + vaMesLabel(mes) + (vaFiltroCliente ? ' para ' + escHtml(vaFiltroCliente) : '') + (vaFiltroCirc ? ' (solo ' + vaFiltroCirc + ')' : '') + '.</div>';
+    return;
+  }
+  var puedeEditar = checkEscritura('ventas');
+  var puedeBorrar = sesion && sesion.rol === 'admin';
+  el.innerHTML = ops.map(function(o) {
+    var c = vaCalc(o);
+    var esCanje = o.tipo === 'Canje';
+    var precioTxt = o.precio > 0
+      ? (o.moneda === 'USD' ? 'USD ' + Math.round(o.precio).toLocaleString('es-AR') + (o.tc ? ' × TC ' + Math.round(o.tc).toLocaleString('es-AR') : '') : vaFm(o.precio)) + '/tn'
+      : (esCanje ? 'Sin precio (canje)' : '—');
+    var fleteTxt = o.fleteTn > 0 ? vaFm(o.fleteTn) + '/tn · ' + (o.fletePaga === 'dm' ? 'paga DM' : 'paga cliente') : 'Sin flete';
+    return '<div class="card" style="margin-bottom:8px;padding:12px 14px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">' +
+            '<span style="font-size:13px;font-weight:700;color:var(--ink)">' + escHtml(o.cliente || 'Sin cliente') + '</span>' +
+            '<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;background:' + (o.producto === 'Aceite de Soja' ? '#fdf3e0;color:#92400e' : '#e0f0e6;color:#1e4d2b') + '">' + vaCorto(o.producto).toUpperCase() + '</span>' +
+            (esCanje ? '<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;background:var(--dorado-light);color:var(--dorado)">CANJE</span>' : '') +
+            '<span style="font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;' + (o.circuito === '2' ? 'background:#ede9fe;color:#6d28d9' : 'background:#e0ecff;color:#1d4ed8') + '">' + (o.circuito || '1') + '</span>' +
+            (o.contrato ? '<span style="font-size:9px;color:var(--muted)">· ' + escHtml(o.contrato) + '</span>' : '') +
+          '</div>' +
+          '<div style="font-size:10px;color:var(--muted)">' + formatFecha(o.fecha) + ' · ' + vaTn(o.tn) + ' · ' + precioTxt + ' · ' + fleteTxt + (o.condpago ? ' · ' + escHtml(o.condpago) : '') + '</div>' +
+          (o.obs ? '<div style="font-size:10px;color:#5566aa;margin-top:2px">' + escHtml(o.obs) + '</div>' : '') +
+        '</div>' +
+        '<div style="text-align:right;flex-shrink:0">' +
+          '<div style="font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--verde-oscuro)">' + (c.totalArs != null ? vaFm(c.totalArs) : '—') + '</div>' +
+          '<div style="font-size:9px;color:var(--muted)">Neto planta: ' + (c.netoArs != null ? vaFm(c.netoArs) + '/tn' : '—') + '</div>' +
+          '<div style="display:flex;gap:4px;justify-content:flex-end;margin-top:6px">' +
+            (puedeEditar ? '<button onclick="abrirFormVentaAceitera(' + o.id + ')" style="background:none;border:1px solid var(--border);border-radius:5px;color:var(--muted);font-size:10px;cursor:pointer;padding:3px 8px">✏</button>' : '') +
+            (puedeBorrar ? '<button onclick="eliminarVentaAceitera(' + o.id + ')" style="background:none;border:1px solid var(--border);border-radius:5px;color:#842029;font-size:10px;cursor:pointer;padding:3px 8px">🗑</button>' : '') +
+          '</div>' +
+        '</div>' +
+      '</div></div>';
+  }).join('');
+}
+
+function renderVaMensual(mesSel) {
+  var el = document.getElementById('va-mensual');
+  var p = mesSel.split('-'), y = parseInt(p[0],10), m = parseInt(p[1],10);
+  var meses = [];
+  for (var i = 0; i < 12; i++) {
+    var mm = m - i, yy = y;
+    while (mm <= 0) { mm += 12; yy--; }
+    meses.push(yy + '-' + String(mm).padStart(2,'0'));
+  }
+  var html = '';
+  vaProductosFiltrados().forEach(function(prod) {
+    var filas = meses.map(function(mes) { return { mes: mes, s: vaStats(vaOpsMes(mes, prod)) }; })
+      .filter(function(f) { return f.s.ops > 0; });
+    html += '<div style="font-size:11px;font-weight:700;color:var(--verde-oscuro);margin:' + (html ? '16px' : '0') + ' 0 8px">' + prod + (vaFiltroCliente ? ' · ' + escHtml(vaFiltroCliente) : '') + (vaFiltroCirc ? ' · Solo ' + vaFiltroCirc : '') + '</div>';
+    if (!filas.length) { html += '<div style="font-size:11px;color:var(--muted);font-style:italic">Sin operaciones en los últimos 12 meses.</div>'; return; }
+    var esAceite = prod === 'Aceite de Soja';
+    var th = 'padding:7px 8px;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border)';
+    var td = 'padding:7px 8px;border-bottom:1px solid var(--border);font-size:11px';
+    html += '<table style="width:100%;border-collapse:collapse;min-width:560px"><thead><tr>' +
+      '<th style="' + th + ';text-align:left">Mes</th><th style="' + th + ';text-align:right">Tn venta</th><th style="' + th + ';text-align:right">Tn canje</th>' +
+      (esAceite ? '<th style="' + th + ';text-align:right">Prom. USD/tn</th>' : '') +
+      '<th style="' + th + ';text-align:right">Prom. bruto $/tn</th><th style="' + th + ';text-align:right">Prom. neto $/tn</th><th style="' + th + ';text-align:right">Facturación</th></tr></thead><tbody>' +
+      filas.map(function(f) {
+        var s = f.s, act = f.mes === mesSel;
+        return '<tr style="' + (act ? 'background:var(--verde-light);font-weight:700' : '') + '">' +
+          '<td style="' + td + '">' + vaMesLabel(f.mes) + '</td>' +
+          '<td style="' + td + ';text-align:right">' + vaTn(s.tnVenta) + '</td>' +
+          '<td style="' + td + ';text-align:right;color:var(--dorado)">' + (s.tnCanje ? vaTn(s.tnCanje) : '—') + '</td>' +
+          (esAceite ? '<td style="' + td + ';text-align:right">' + (s.pppUsd != null ? 'USD ' + Math.round(s.pppUsd).toLocaleString('es-AR') : '—') + '</td>' : '') +
+          '<td style="' + td + ';text-align:right">' + vaFm(s.pppBruto) + '</td>' +
+          '<td style="' + td + ';text-align:right;font-weight:700;color:var(--verde-oscuro)">' + vaFm(s.pppNeto) + '</td>' +
+          '<td style="' + td + ';text-align:right">' + vaFm(s.total) + '</td></tr>';
+      }).join('') + '</tbody></table>';
+  });
+  el.innerHTML = html;
+}
+
+// ── Formulario ──
+function vaToggleCampos() {
+  var esAceite = document.getElementById('va-producto').value === 'Aceite de Soja';
+  var esCanje = document.getElementById('va-tipo').value === 'Canje';
+  document.getElementById('va-tc-wrap').style.display = esAceite ? 'block' : 'none';
+  document.getElementById('va-precio-unit').textContent = esAceite ? 'USD' : '$';
+  document.getElementById('va-precio-label').innerHTML = 'Precio / tn' + (esCanje ? ' <span style="font-size:8px;color:var(--muted);text-transform:none;letter-spacing:0">(opcional en canje)</span>' : '');
+  vaPreview();
+}
+
+function vaLeerForm() {
+  var producto = document.getElementById('va-producto').value;
+  var esAceite = producto === 'Aceite de Soja';
+  var precio = v('va-precio'), tc = v('va-tc'), flete = v('va-flete');
+  return {
+    fecha: document.getElementById('va-fecha').value,
+    producto: producto,
+    tipo: document.getElementById('va-tipo').value,
+    cliente: document.getElementById('va-cliente').value.trim(),
+    tn: parseFloat(document.getElementById('va-tn').value) || 0,
+    moneda: esAceite ? 'USD' : 'ARS',
+    precio: precio === '' ? null : precio,
+    tc: esAceite && tc !== '' ? tc : null,
+    fleteTn: flete === '' ? 0 : flete,
+    fletePaga: flete > 0 ? document.getElementById('va-flete-paga').value : null,
+    condpago: document.getElementById('va-condpago').value,
+    circuito: document.getElementById('va-circuito').value,
+    contrato: document.getElementById('va-contrato').value.trim().toUpperCase(),
+    obs: document.getElementById('va-obs').value.trim()
+  };
+}
+
+function vaPreview() {
+  var el = document.getElementById('va-preview');
+  var o = vaLeerForm();
+  var c = vaCalc(o);
+  if (!o.tn || (c.precioArs == null && !o.fleteTn)) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.innerHTML =
+    (c.precioArs != null ? 'Precio: <b>' + vaFm(c.precioArs) + '/tn</b>' : 'Sin precio') +
+    (o.fleteTn ? ' · Flete: <b>' + vaFm(o.fleteTn) + '/tn</b> (' + (o.fletePaga === 'dm' ? 'paga DM' : 'paga cliente') + ')' : '') +
+    (c.netoArs != null ? '<br>Neto en planta: <b style="color:var(--verde-oscuro)">' + vaFm(c.netoArs) + '/tn</b>' : '') +
+    (c.totalArs != null ? ' · Total: <b>' + vaFm(c.totalArs) + '</b>' : '') +
+    (o.fletePaga === 'dm' && o.fleteTn ? ' · Flete total a cargo DM: <b style="color:#b83232">' + vaFm(c.fleteTotal) + '</b>' : '');
+}
+
+function abrirFormVentaAceitera(id) {
+  if (!checkEscritura('ventas')) { alert('Sin permisos.'); return; }
+  vaEditId = id || null;
+  var o = id ? vaData.find(function(x) { return x.id === id; }) : null;
+  document.getElementById('va-form-titulo').textContent = o ? 'Editar venta — ' + (o.cliente || '') : 'Nueva venta';
+  document.getElementById('va-fecha').value = o ? o.fecha : new Date().toISOString().split('T')[0];
+  document.getElementById('va-tipo').value = o ? o.tipo : 'Venta';
+  document.getElementById('va-producto').value = o ? o.producto : (vaFiltroProd !== 'Todos' ? vaFiltroProd : 'Expeller de Soja');
+  document.getElementById('va-cliente').value = o ? o.cliente : '';
+  document.getElementById('va-tn').value = o ? o.tn : '';
+  document.getElementById('va-precio').value = o && o.precio ? Math.round(o.precio).toLocaleString('es-AR') : '';
+  document.getElementById('va-tc').value = o && o.tc ? Math.round(o.tc).toLocaleString('es-AR') : '';
+  document.getElementById('va-flete').value = o && o.fleteTn ? Math.round(o.fleteTn).toLocaleString('es-AR') : '';
+  document.getElementById('va-flete-paga').value = o && o.fletePaga ? o.fletePaga : 'dm';
+  document.getElementById('va-condpago').value = o && o.condpago ? o.condpago : 'Contado';
+  document.getElementById('va-circuito').value = o && o.circuito ? o.circuito : '1';
+  document.getElementById('va-contrato').value = o ? o.contrato : '';
+  document.getElementById('va-obs').value = o ? o.obs : '';
+  document.getElementById('va-error').style.display = 'none';
+  var clientes = {};
+  vaData.forEach(function(x) { if (x.cliente) clientes[x.cliente] = true; });
+  document.getElementById('va-clientes-list').innerHTML = Object.keys(clientes).sort().map(function(n) { return '<option value="' + escHtml(n) + '">'; }).join('');
+  vaToggleCampos();
+  var f = document.getElementById('form-venta-aceitera');
+  f.style.display = 'block';
+  f.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function cerrarFormVentaAceitera() {
+  document.getElementById('form-venta-aceitera').style.display = 'none';
+  vaEditId = null;
+}
+
+async function guardarVentaAceitera() {
+  var errEl = document.getElementById('va-error');
+  function err(m) { errEl.textContent = m; errEl.style.display = 'block'; }
+  errEl.style.display = 'none';
+  var o = vaLeerForm();
+  if (!o.fecha) return err('Falta la fecha.');
+  if (!o.cliente) return err('Falta el cliente.');
+  if (!(o.tn > 0)) return err('Ingresá las toneladas.');
+  if (o.tipo === 'Venta' && !(o.precio > 0)) return err('Ingresá el precio por tonelada.');
+  if (o.moneda === 'USD' && o.precio > 0 && !(o.tc > 0)) return err('Para Aceite en USD ingresá el tipo de cambio.');
+
+  var c = vaCalc(o);
+  var body = {
+    fecha: o.fecha, producto: o.producto, tipo_operacion: o.tipo, cliente: o.cliente, tn: o.tn,
+    moneda: o.moneda, precio: o.precio, tipo_cambio: o.tc,
+    precio_ars: c.precioArs, flete_tn: o.fleteTn || null, flete_paga: o.fletePaga,
+    precio_neto_planta: c.netoArs, total_ars: c.totalArs,
+    condpago: o.condpago || null, circuito: o.circuito, contrato: o.contrato || null, obs: o.obs || null,
+    usuario: sesion ? sesion.nombre : null
+  };
+  try {
+    var res = vaEditId
+      ? await supaPatch('ventas_aceitera', vaEditId, body)
+      : await supaPost('ventas_aceitera', body, 'return=minimal');
+    if (!res.ok) { var t = await res.text(); return err('Error al guardar (' + res.status + '): ' + t.substring(0, 160)); }
+  } catch(e) { return err('Error de conexión: ' + e.message); }
+  // Si la fecha cae en otro mes, mostrar ese mes
+  document.getElementById('va-mes').value = o.fecha.slice(0,7);
+  cerrarFormVentaAceitera();
+  cargarVentasAceitera();
+}
+
+async function eliminarVentaAceitera(id) {
+  if (!(sesion && sesion.rol === 'admin')) { alert('Solo Admin puede eliminar.'); return; }
+  if (!confirm('¿Eliminar esta venta?')) return;
+  try {
+    var res = await supaDelete('ventas_aceitera', id);
+    if (!res.ok) { alert('Error al eliminar (' + res.status + ').'); return; }
+  } catch(e) { alert('Error: ' + e.message); return; }
+  cargarVentasAceitera();
+}
+
+// ── PDF mensual ──
+function exportarVentasAceiteraPDF() {
+  var jsPDFLib = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+  if (!jsPDFLib) { alert('Librería PDF no cargada. Verificá conexión.'); return; }
+  var mes = document.getElementById('va-mes').value || new Date().toISOString().slice(0,7);
+  var ops = vaOpsMes(mes, vaFiltroProd).slice().sort(function(a,b){ return a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0; });
+  if (!ops.length) { alert('No hay ventas en ' + vaMesLabel(mes) + (vaFiltroCliente ? ' para ' + vaFiltroCliente : '') + ' para exportar.'); return; }
+
+  var doc = new jsPDFLib({ orientation:'portrait', unit:'mm', format:'a4' });
+  var pw=210, ph=297, ml=14, mr=14, cw=182, y=0;
+  var hoy = new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  function checkY(n){ if (y+n > ph-16) { doc.addPage(); y = 18; } }
+
+  doc.setFillColor('#ffffff'); doc.rect(0,0,pw,38,'F');
+  doc.setFillColor('#1e4d2b'); doc.rect(0,36,pw,2,'F');
+  try { doc.addImage(LOGO_DM_B64,'JPEG',ml,4,28,28); } catch(e){}
+  doc.setTextColor('#1e4d2b'); doc.setFont('times','bold'); doc.setFontSize(24);
+  doc.text('Don Mauricio', ml+33, 17);
+  doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+  doc.setCharSpace(2.5); doc.text('AGROGANADERA  S.R.L.', ml+33, 24); doc.setCharSpace(0);
+  doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+  doc.text('VENTAS ACEITERA', pw-mr, 13, {align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  doc.text(vaMesLabel(mes) + (vaFiltroProd !== 'Todos' ? ' · ' + vaFiltroProd : '') + (vaFiltroCliente ? ' · ' + vaFiltroCliente : '') + (vaFiltroCirc ? ' · Solo ' + vaFiltroCirc : ''), pw-mr, 20, {align:'right'});
+  doc.setTextColor('#5a7262'); doc.setFontSize(8);
+  doc.text('Emitido: ' + hoy, pw-mr, 26, {align:'right'});
+  y = 46;
+
+  // Resumen por producto
+  vaProductosFiltrados().forEach(function(prod) {
+    var s = vaStats(vaOpsMes(mes, prod));
+    if (!s.ops) return;
+    checkY(34);
+    doc.setFillColor('#1e4d2b'); doc.rect(ml, y, cw, 7, 'F');
+    doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+    doc.text(prod.toUpperCase() + ' — ' + s.ops + ' operaciones', ml+3, y+5);
+    y += 7;
+    var items = [
+      ['Tn vendidas', vaTn(s.tnVenta)], [vaFiltroCirc ? 'Tn en canje' : 'Tn canje · en 1 / en 2', vaFiltroCirc ? vaTn(s.tnCanje) : vaTn(s.tnCanje) + ' · ' + vaTn(s.tn1) + ' / ' + vaTn(s.tn2)],
+      ['Prom. bruto', s.pppBruto != null ? vaFm(s.pppBruto) + '/tn' : '—'], ['Prom. neto planta', s.pppNeto != null ? vaFm(s.pppNeto) + '/tn' : '—'],
+      [prod === 'Aceite de Soja' ? 'Prom. USD' : 'Flete a cargo DM', prod === 'Aceite de Soja' ? (s.pppUsd != null ? 'USD ' + Math.round(s.pppUsd).toLocaleString('es-AR') + '/tn' : '—') : vaFm(s.fleteDM)],
+      ['Facturación', vaFm(s.total)]
+    ];
+    var colW = cw/3;
+    doc.setFillColor('#f4f8f5'); doc.rect(ml, y, cw, 22, 'F');
+    items.forEach(function(it, i) {
+      var cx = ml + (i%3)*colW + 4, cy = y + (i<3 ? 7 : 17);
+      doc.setTextColor('#5a7262'); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.text(it[0], cx, cy-3);
+      doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+      doc.text(it[1], cx, cy+1.5);
+    });
+    y += 27;
+  });
+
+  // Detalle de operaciones
+  checkY(16);
+  doc.setTextColor('#1e4d2b'); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text('DETALLE DE OPERACIONES', ml, y+3); y += 6;
+  var cols = [
+    {l:'Fecha',x:ml,w:17},{l:'Cliente',x:ml+17,w:33},{l:'1/2',x:ml+50,w:6},{l:'Prod.',x:ml+56,w:16},{l:'Tipo',x:ml+72,w:13},
+    {l:'Tn',x:ml+85,w:16,r:1},{l:'Precio $/tn',x:ml+101,w:22,r:1},{l:'Flete $/tn',x:ml+123,w:18,r:1},
+    {l:'Neto $/tn',x:ml+141,w:20,r:1},{l:'Total',x:ml+161,w:21,r:1}
+  ];
+  doc.setFillColor('#1e4d2b'); doc.rect(ml, y, cw, 6.5, 'F');
+  doc.setTextColor('#ffffff'); doc.setFont('helvetica','bold'); doc.setFontSize(6.8);
+  cols.forEach(function(c){ c.r ? doc.text(c.l, c.x+c.w-1.5, y+4.5, {align:'right'}) : doc.text(c.l, c.x+1.5, y+4.5); });
+  y += 6.5;
+  var num = function(n){ return n == null ? '—' : Math.round(n).toLocaleString('es-AR'); };
+  ops.forEach(function(o, i) {
+    checkY(7);
+    var c = vaCalc(o);
+    doc.setFillColor(i%2===0 ? '#f4f8f5' : '#ffffff'); doc.rect(ml, y, cw, 6.5, 'F');
+    doc.setTextColor('#1a2e1f'); doc.setFont('helvetica','normal'); doc.setFontSize(6.8);
+    var vals = [formatFecha(o.fecha), doc.splitTextToSize(o.cliente || '—', 31)[0], o.circuito || '1', vaCorto(o.producto), o.tipo,
+      (Math.round(o.tn*100)/100).toLocaleString('es-AR'), num(c.precioArs),
+      o.fleteTn ? num(o.fleteTn) + (o.fletePaga === 'dm' ? ' DM' : ' C') : '—', num(c.netoArs), num(c.totalArs)];
+    cols.forEach(function(col, k){
+      if (k === 4 && o.tipo === 'Canje') doc.setTextColor('#b8860b'); else doc.setTextColor('#1a2e1f');
+      if (k === 9) doc.setFont('helvetica','bold');
+      col.r ? doc.text(String(vals[k]), col.x+col.w-1.5, y+4.5, {align:'right'}) : doc.text(String(vals[k]), col.x+1.5, y+4.5);
+    });
+    y += 6.5;
+  });
+  checkY(8);
+  doc.setTextColor('#5a7262'); doc.setFont('helvetica','italic'); doc.setFontSize(6.5);
+  doc.text('Flete: DM = a cargo de Don Mauricio (se descuenta del neto) · C = a cargo del cliente. Promedios ponderados por tn, solo operaciones de Venta con precio.', ml, y+5);
+
+  var pgs = doc.internal.getNumberOfPages();
+  for (var pg = 1; pg <= pgs; pg++) {
+    doc.setPage(pg);
+    doc.setDrawColor('#c8ddd0'); doc.line(ml, ph-10, pw-mr, ph-10);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor('#5a7262');
+    doc.text('Don Mauricio Agroganadera SRL — Ventas Aceitera ' + vaMesLabel(mes) + ' — Uso interno', ml, ph-6);
+    doc.text('Pág. ' + pg + '/' + pgs, pw-mr, ph-6, {align:'right'});
+  }
+  doc.save('VentasAceitera_DM_' + mes + (vaFiltroCliente ? '_' + vaFiltroCliente.replace(/[^A-Za-z0-9]+/g, '-') : '') + (vaFiltroCirc ? '_' + vaFiltroCirc : '') + '.pdf');
+}
+
 function initCompraEst() {
   var periodoEl = document.getElementById('ce-periodo');
   if (periodoEl && !periodoEl.value) {
@@ -4488,6 +5264,52 @@ function toggleDetalle() {
   document.getElementById('toggle-btn').textContent = detalleVisible ? '▼ Ocultar detalle' : '▶ Ver cálculo detallado';
 }
 
+// ── Navegación en dos niveles: grupos → sub-pestañas ──
+var NAV_GRUPOS = {
+  inicio:    ['portal'],
+  aceitera:  ['cotizador','config','compraest','ventasac'],
+  comercial: ['comercial','historial','flete'],
+  acopio:    ['acopio','pesadas'],
+  finanzas:  ['vencimientos','tesoreria'],
+  rrhh:      ['rrhh'],
+  admin:     ['admin']
+};
+var TAB_GRUPO = {};
+Object.keys(NAV_GRUPOS).forEach(function(g){ NAV_GRUPOS[g].forEach(function(t){ TAB_GRUPO[t] = g; }); });
+var _ultimaTabGrupo = {};
+
+function tabPermitida(t) {
+  var perm = window._tabsPermitidos;
+  return !perm || perm.indexOf(t) !== -1;
+}
+function tabsVisiblesGrupo(g) {
+  return (NAV_GRUPOS[g] || []).filter(tabPermitida);
+}
+
+function switchGroup(g) {
+  var visibles = tabsVisiblesGrupo(g);
+  if (!visibles.length) return;
+  var ult = _ultimaTabGrupo[g];
+  switchTab(ult && visibles.indexOf(ult) !== -1 ? ult : visibles[0]);
+}
+
+function renderNav(tabActiva) {
+  var grupoActivo = tabActiva ? TAB_GRUPO[tabActiva] : null;
+  document.querySelectorAll('#nav-grupos .gtab').forEach(function(b){
+    var g = b.getAttribute('data-group');
+    b.style.display = tabsVisiblesGrupo(g).length ? '' : 'none';
+    b.classList.toggle('active', g === grupoActivo);
+  });
+  var visiblesGrupo = grupoActivo ? tabsVisiblesGrupo(grupoActivo) : [];
+  document.querySelectorAll('#nav-subtabs .tab').forEach(function(btn){
+    var m = (btn.getAttribute('onclick')||'').match(/switchTab\('([^']+)'\)/);
+    var t = m ? m[1] : null;
+    btn.style.display = (t && visiblesGrupo.indexOf(t) !== -1) ? '' : 'none';
+  });
+  var bar = document.getElementById('nav-subtabs');
+  if (bar) bar.style.display = visiblesGrupo.length > 1 ? 'flex' : 'none';
+}
+
 function switchTab(tab) {
   // If tab is a sub-tab, redirect to comercial and activate sub-tab
   var subTabs = ['compras','ventas','canje'];
@@ -4501,6 +5323,10 @@ function switchTab(tab) {
     var onclick = t.getAttribute('onclick') || '';
     t.classList.toggle('active', onclick.indexOf("'" + tab + "'") !== -1);
   });
+  window._tabActual = tab;
+  var _g = TAB_GRUPO[tab];
+  if (_g) _ultimaTabGrupo[_g] = tab;
+  renderNav(tab);
   document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
   var panelEl = document.getElementById('tab-' + tab);
   if (panelEl) panelEl.classList.add('active');
@@ -4519,6 +5345,7 @@ function switchTab(tab) {
   if (tab === 'tesoreria') { switchSubTabT('caja-diaria'); initTesoreria(); }
   if (tab === 'rrhh') { initRRHH(); }
   if (tab === 'compraest') { initCompraEst(); }
+  if (tab === 'ventasac') { initVentasAceitera(); }
 }
 
 function switchSubTab(subTab) {
@@ -10469,7 +11296,13 @@ function renderCajaResumen(ingresos, egresos, cerrado, puedeEditar, tIng, tEgr) 
 
   if (puedeEditar) {
     if (!cerrado) {
-      html += '<button onclick="cerrarCajaDia()" style="width:100%;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:11px;font-family:\'Outfit\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔒 Cerrar Día</button>';
+      var pendSist = cajaMovsSinPasar();
+      if (pendSist.length) {
+        html += '<div style="background:#fff4e0;border:1.5px solid #e0a030;border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:11px;font-weight:600;color:#8a5d00">⚠ Faltan pasar al sistema '+pendSist.length+' de '+cajaMovimientos.length+' movimiento'+(cajaMovimientos.length===1?'':'s')+'. Tildalos todos para poder cerrar el día.</div>';
+        html += '<button disabled title="Hay movimientos sin pasar al sistema" style="width:100%;background:var(--border);color:var(--muted);border:none;border-radius:8px;padding:11px;font-family:\'Outfit\',sans-serif;font-size:12px;font-weight:700;cursor:not-allowed">🔒 Cerrar Día ('+pendSist.length+' pendiente'+(pendSist.length===1?'':'s')+')</button>';
+      } else {
+        html += '<button onclick="cerrarCajaDia()" style="width:100%;background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:11px;font-family:\'Outfit\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔒 Cerrar Día</button>';
+      }
     } else if (esAdminGlobal()) {
       html += '<button onclick="reabrirCajaDia()" style="width:100%;background:none;border:1px solid #e0a030;color:#8a5d00;border-radius:8px;padding:11px;font-family:\'Outfit\',sans-serif;font-size:12px;font-weight:700;cursor:pointer">🔓 Reabrir Día</button>';
     }
@@ -10509,7 +11342,19 @@ function cajaResumenRecalc() {
 }
 
 // ── Cierre / reapertura del día ──
+function cajaMovsSinPasar() {
+  return (cajaMovimientos || []).filter(function(m){ return !m.pasado_sistema; });
+}
+
 async function cerrarCajaDia() {
+  var pend = cajaMovsSinPasar();
+  if (pend.length) {
+    var detalle = pend.slice(0, 10).map(function(m){
+      return '• ' + (m.tipo==='ingreso'?'Ingreso':'Egreso') + ' — ' + (m.entidad||'—') + ' — ' + (m.moneda==='U$D'?'U$D ':'$ ') + fmtNum2(m.importe);
+    }).join('\n');
+    alert('No se puede cerrar la caja: hay ' + pend.length + ' movimiento' + (pend.length===1?'':'s') + ' sin pasar al sistema de gestión.\n\n' + detalle + (pend.length>10?'\n…':'') + '\n\nTildá "Pasado al sistema" en cada uno y volvé a cerrar.');
+    return;
+  }
   var iniPEl = document.getElementById('caja-saldo-ini-pesos');
   var iniUEl = document.getElementById('caja-saldo-ini-usd');
   var iniEfEl = document.getElementById('caja-saldo-ini-efectivo');
