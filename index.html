@@ -207,6 +207,10 @@
   #tab-acopio {
     max-width: 100%;
   }
+  /* Entradas-Salidas: planillas una al lado de la otra */
+  .main:has(#tab-entsal.active) {
+    max-width: 1240px;
+  }
 
   /* SECTION LABEL */
   .section-label {
@@ -621,6 +625,7 @@
   <button class="tab" onclick="switchTab('flete')">Flete</button>
   <button class="tab" onclick="switchTab('vencimientos')">Vencimientos</button>
   <button class="tab" onclick="switchTab('tesoreria')">Tesorería</button>
+  <button class="tab" onclick="switchTab('entsal')">Entradas-Salidas</button>
   <button class="tab" onclick="switchTab('rrhh')">RRHH</button>
   <button class="tab" id="tab-btn-admin" onclick="switchTab('admin')">Usuarios</button>
 </div>
@@ -1958,6 +1963,70 @@
   </div>
 
   <!-- TESORERÍA -->
+
+  <!-- ENTRADAS / SALIDAS (planificación de tesorería) -->
+  <div class="panel" id="tab-entsal">
+    <style>
+      .es-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;align-items:start}.es-grid>.card{min-width:0;overflow-x:auto}.es-grid>.card:first-child{order:2}
+      @media(max-width:820px){.es-grid{grid-template-columns:1fr}}
+      .es-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+      @media(max-width:820px){.es-kpis{grid-template-columns:1fr 1fr}}
+      .es-kpi{background:white;border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+      .es-kpi .l{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+      .es-kpi .v{font-size:clamp(14px,1.6vw,18px);font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:2px;white-space:nowrap}
+      .es-kpi.saldo .v.neg{color:#c0392b}.es-kpi.saldo .v.pos{color:var(--verde-medio)}
+      .es-kpi input{width:100%;border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;margin-top:2px;text-align:right}
+      .es-tit{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;color:var(--ink);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:6px}
+      .es-tab{width:100%;border-collapse:collapse;font-size:13px}
+      .es-tab th{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);text-align:left;padding:4px 4px;font-weight:700}
+      .es-tab th.n,.es-tab td.n{text-align:right}
+      .es-tab td{padding:2px 4px;border-bottom:1px solid #eef2ef}
+      .es-tab input{width:100%;border:1px solid transparent;background:transparent;border-radius:6px;padding:6px 6px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--ink)}
+      .es-tab input:hover{border-color:var(--border)}.es-tab input:focus{border-color:var(--verde-claro);background:white;outline:none}
+      .es-tab input.num{text-align:right;font-variant-numeric:tabular-nums}
+      .es-tab td.n{width:1%}.es-tab td.n input{width:112px}.es-tab td.n.u input{width:80px}.es-tab td:first-child input{min-width:90px}
+      .es-tab input.num.cero{color:#b6c2b9}
+      .es-tab tr.tot td{border-top:2px solid var(--ink);border-bottom:none;font-weight:700;padding:8px 10px;font-variant-numeric:tabular-nums;white-space:nowrap}
+      .es-del{background:none;border:none;color:#c9d2cc;cursor:pointer;font-size:14px;padding:4px}
+      .es-del:hover{color:#c0392b}
+      .es-add{background:none;border:1px dashed var(--border);color:var(--verde-medio);border-radius:8px;padding:6px 10px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;margin-top:8px;width:100%}
+      .es-add:hover{background:var(--verde-bg)}
+    </style>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;flex-wrap:wrap;gap:8px">
+      <div>
+        <div class="section-label" style="margin:0;border:none">Entradas - Salidas</div>
+        <div id="es-estado" style="font-size:10px;color:var(--muted);margin-top:2px">Cargando…</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="esResetear(false)" style="background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">&#8634; Poner importes en cero</button>
+        <button onclick="esResetear(true)" style="background:none;border:1px solid #f0c4bf;color:#c0392b;border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:10px;font-weight:600;cursor:pointer">&#10005; Vaciar planilla</button>
+      </div>
+    </div>
+
+    <div class="es-kpis">
+      <div class="es-kpi"><div class="l">Entradas $ (incl. U$D)</div><div class="v" id="es-k-ent">$ 0</div><div id="es-k-ent-det" style="font-size:10px;color:var(--muted)"></div></div>
+      <div class="es-kpi"><div class="l">Salidas $ (incl. U$D)</div><div class="v" id="es-k-sal">$ 0</div><div id="es-k-sal-det" style="font-size:10px;color:var(--muted)"></div></div>
+      <div class="es-kpi"><div class="l">Dólar para U$D</div><input id="es-tc" class="num" inputmode="decimal" onchange="esSetTC(this.value)" onfocus="this.select()"></div>
+      <div class="es-kpi saldo"><div class="l">Saldo</div><div class="v" id="es-k-saldo">$ 0</div><div id="es-k-saldo-det" style="font-size:10px;color:var(--muted)"></div></div>
+    </div>
+
+    <div class="es-grid">
+      <div class="card" style="margin:0">
+        <div class="es-tit"><span>&#11015; ENTRADAS · Clientes</span><span id="es-cnt-ent" style="color:var(--muted);font-weight:600"></span></div>
+        <table class="es-tab"><thead><tr><th>Cliente</th><th class="n">Importe $</th><th class="n">U$D</th><th></th></tr></thead>
+          <tbody id="es-body-ent"></tbody></table>
+        <button class="es-add" onclick="esAgregar('entradas')">+ Agregar entrada</button>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="es-tit"><span>&#11014; SALIDAS · Proveedores</span><span id="es-cnt-sal" style="color:var(--muted);font-weight:600"></span></div>
+        <table class="es-tab"><thead><tr><th>Proveedor</th><th class="n">Importe $</th><th class="n">U$D</th><th></th></tr></thead>
+          <tbody id="es-body-sal"></tbody></table>
+        <button class="es-add" onclick="esAgregar('salidas')">+ Agregar salida</button>
+      </div>
+    </div>
+  </div>
+
   <div class="panel" id="tab-tesoreria">
 
     <!-- Sub-tabs (preparado para futuras secciones de tesorería) -->
@@ -3111,6 +3180,140 @@ function guardarVentaDB(reg) {
 function eliminarCompraDB(id) { supaDelete('compras',id); }
 function eliminarVentaDB(id)  { supaDelete('ventas',id); }
 
+
+// ══════════ ENTRADAS / SALIDAS ══════════
+// Se guarda como un solo registro JSON en la tabla config (clave es_planilla): compartido entre usuarios.
+var ES_CLAVE = 'es_planilla';
+var esData = null, esTimer = null, esCargado = false;
+function esInicial() {
+  var ent = [['Coelho',13000000],['Mendez',13000000],['Reitu',42000000],['Pingüino',42000000],['Pampa??',0],['Rumas??',0]];
+  var sal = [['Jony',0,0],['Valverde',0,0],['Dielh',0,0],['Yakushin',0,0],['Scopetta',0,0],['Zappia',20000000,0],['Rodriguez',0,0],
+    ['Andreoli',100000000,0],['Buffarini',35000000,0],['Campaña',15000000,0],['Copesna',0,0],['Colombanto',0,50000],['Sueldos',35000000,0],
+    ['Hernandez',0,0],['Abruzzini',0,0],['Aguilera',0,0],['Simbar',0,0],['MT',20000000,0]];
+  return { entradas: ent.map(function(r){return {n:r[0],ars:r[1],usd:0};}),
+           salidas: sal.map(function(r){return {n:r[0],ars:r[1],usd:r[2]};}), tc: 0 };
+}
+function esNum(v){ if (v==null) return 0; if (typeof v==='number') return v; var s=String(v).replace(/[$\s]/g,'').replace(/\./g,'').replace(',','.'); var n=parseFloat(s); return isNaN(n)?0:n; }
+function esFmt(n, dec){ return (Number(n)||0).toLocaleString('es-AR',{minimumFractionDigits:dec||0,maximumFractionDigits:dec||0}); }
+function esEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+async function initEntSal() {
+  document.getElementById('es-estado').textContent = 'Cargando…';
+  try {
+    var rows = await supaFetch('config', 'clave=eq.'+ES_CLAVE+'&select=valor');
+    if (!Array.isArray(rows)) throw new Error('respuesta inválida');
+    if (rows.length && rows[0].valor) {
+      esData = JSON.parse(rows[0].valor);
+    } else if (!esData) {
+      esData = esInicial();
+    }
+  } catch(e) {
+    if (!esData) { try { esData = JSON.parse(localStorage.getItem('dm_es')||'null'); } catch(_){} }
+    if (!esData) esData = esInicial();
+  }
+  esData.entradas = esData.entradas || []; esData.salidas = esData.salidas || [];
+  if (!esData.tc) {
+    var tcEl = document.getElementById('tipo_cambio');
+    esData.tc = tcEl ? esNum(tcEl.value) : 0;
+  }
+  esCargado = true;
+  esRender();
+  esEstadoTxt();
+}
+function esEstadoTxt(extra) {
+  var el = document.getElementById('es-estado'); if (!el) return;
+  if (extra) { el.textContent = extra; return; }
+  if (esData && esData.actualizado) {
+    var d = new Date(esData.actualizado);
+    el.textContent = 'Última modificación: ' + d.toLocaleDateString('es-AR') + ' ' + d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}) + (esData.usuario ? ' · ' + esData.usuario : '');
+  } else el.textContent = 'Sin cambios guardados todavía';
+}
+function esRender() {
+  if (!esData) return;
+  var be = document.getElementById('es-body-ent'), bs = document.getElementById('es-body-sal');
+  be.innerHTML = esData.entradas.map(function(r,i){
+    return '<tr><td><input value="'+esEsc(r.n)+'" placeholder="Cliente" oninput="esSet(\'entradas\','+i+',\'n\',this.value)"></td>'+
+      '<td class="n"><input class="num'+(esNum(r.ars)?'':' cero')+'" inputmode="decimal" value="'+esFmt(r.ars)+'" onfocus="esFoco(this)" onchange="esSetNum(this,\'entradas\','+i+',\'ars\')"></td>'+
+      '<td class="n u"><input class="num'+(esNum(r.usd)?'':' cero')+'" inputmode="decimal" value="'+esFmt(r.usd)+'" onfocus="esFoco(this)" onchange="esSetNum(this,\'entradas\','+i+',\'usd\')"></td>'+
+      '<td><button class="es-del" title="Quitar" onclick="esQuitar(\'entradas\','+i+')">&#10005;</button></td></tr>';
+  }).join('') + '<tr class="tot"><td>TOTAL</td><td class="n" id="es-tot-ent"></td><td class="n" id="es-tot-ent-usd"></td><td></td></tr>';
+  bs.innerHTML = esData.salidas.map(function(r,i){
+    return '<tr><td><input value="'+esEsc(r.n)+'" placeholder="Proveedor" oninput="esSet(\'salidas\','+i+',\'n\',this.value)"></td>'+
+      '<td class="n"><input class="num'+(esNum(r.ars)?'':' cero')+'" inputmode="decimal" value="'+esFmt(r.ars)+'" onfocus="esFoco(this)" onchange="esSetNum(this,\'salidas\','+i+',\'ars\')"></td>'+
+      '<td class="n u"><input class="num'+(esNum(r.usd)?'':' cero')+'" inputmode="decimal" value="'+esFmt(r.usd)+'" onfocus="esFoco(this)" onchange="esSetNum(this,\'salidas\','+i+',\'usd\')"></td>'+
+      '<td><button class="es-del" title="Quitar" onclick="esQuitar(\'salidas\','+i+')">&#10005;</button></td></tr>';
+  }).join('') + '<tr class="tot"><td>TOTAL</td><td class="n" id="es-tot-sal-ars"></td><td class="n" id="es-tot-sal-usd"></td><td></td></tr>';
+  esTotales();
+}
+function esTotales() {
+  var ears = 0, eusd = 0, sars = 0, susd = 0;
+  esData.entradas.forEach(function(r){ ears += esNum(r.ars); eusd += esNum(r.usd); });
+  esData.salidas.forEach(function(r){ sars += esNum(r.ars); susd += esNum(r.usd); });
+  var tc = esNum(esData.tc), ent = ears + eusd * tc, salTot = sars + susd * tc, saldo = ent - salTot;
+  document.getElementById('es-tot-ent').textContent = '$ ' + esFmt(ears);
+  document.getElementById('es-tot-ent-usd').textContent = 'U$D ' + esFmt(eusd);
+  document.getElementById('es-k-ent-det').textContent = eusd ? ('$ ' + esFmt(ears) + ' + U$D ' + esFmt(eusd) + (tc ? '' : ' (falta dólar)')) : '';
+  document.getElementById('es-tot-sal-ars').textContent = '$ ' + esFmt(sars);
+  document.getElementById('es-tot-sal-usd').textContent = 'U$D ' + esFmt(susd);
+  document.getElementById('es-k-ent').textContent = '$ ' + esFmt(ent);
+  document.getElementById('es-k-sal').textContent = '$ ' + esFmt(salTot);
+  document.getElementById('es-k-sal-det').textContent = susd ? ('$ ' + esFmt(sars) + ' + U$D ' + esFmt(susd) + (tc ? '' : ' (falta dólar)')) : '';
+  var tcEl = document.getElementById('es-tc'); if (document.activeElement !== tcEl) tcEl.value = tc ? esFmt(tc, 2) : '';
+  var sv = document.getElementById('es-k-saldo');
+  sv.textContent = (saldo < 0 ? '− $ ' : '$ ') + esFmt(Math.abs(saldo));
+  sv.className = 'v ' + (saldo < 0 ? 'neg' : 'pos');
+  document.getElementById('es-k-saldo-det').textContent = saldo < 0 ? 'Faltan fondos para cubrir las salidas' : (ent ? 'Sobrante después de pagar' : '');
+  var ce = esData.entradas.filter(function(r){return esNum(r.ars)||esNum(r.usd);}).length, cs = esData.salidas.filter(function(r){return esNum(r.ars)||esNum(r.usd);}).length;
+  document.getElementById('es-cnt-ent').textContent = ce + ' con importe';
+  document.getElementById('es-cnt-sal').textContent = cs + ' con importe';
+}
+function esFoco(el){ var n = esNum(el.value); el.value = n ? String(n).replace('.', ',') : ''; el.select(); }
+function esSet(lista, i, campo, v){ esData[lista][i][campo] = v; esGuardar(); }
+function esSetNum(el, lista, i, campo){
+  var n = esNum(el.value); esData[lista][i][campo] = n;
+  el.value = esFmt(n); el.classList.toggle('cero', !n);
+  esTotales(); esGuardar();
+}
+function esSetTC(v){ esData.tc = esNum(v); esTotales(); esGuardar(); }
+function esAgregar(lista){
+  esData[lista].push({n:'',ars:0,usd:0});
+  esRender(); esGuardar();
+  var body = document.getElementById(lista === 'salidas' ? 'es-body-sal' : 'es-body-ent');
+  var rows = body.querySelectorAll('tr:not(.tot)'); var inp = rows[rows.length-1] && rows[rows.length-1].querySelector('input'); if (inp) inp.focus();
+}
+function esQuitar(lista, i){
+  var r = esData[lista][i];
+  if ((r.n || esNum(r.ars) || esNum(r.usd)) && !confirm('¿Quitar "' + (r.n || 'fila sin nombre') + '"?')) return;
+  esData[lista].splice(i, 1); esRender(); esGuardar();
+}
+function esResetear(vaciar){
+  if (!esData) return;
+  if (vaciar) {
+    if (!confirm('¿Vaciar la planilla? Se borran todos los nombres e importes.')) return;
+    esData.entradas = []; esData.salidas = [];
+  } else {
+    if (!confirm('¿Poner todos los importes en cero? Los nombres de clientes y proveedores se mantienen.')) return;
+    esData.entradas.forEach(function(r){ r.ars = 0; r.usd = 0; });
+    esData.salidas.forEach(function(r){ r.ars = 0; r.usd = 0; });
+  }
+  esRender(); esGuardar(true);
+}
+function esGuardar(ya){
+  if (!esCargado) return;
+  esEstadoTxt('Guardando…');
+  clearTimeout(esTimer);
+  esTimer = setTimeout(async function(){
+    esData.actualizado = new Date().toISOString();
+    esData.usuario = sesion ? sesion.nombre : null;
+    try { localStorage.setItem('dm_es', JSON.stringify(esData)); } catch(e){}
+    try {
+      var r = await supaPost('config', {clave:ES_CLAVE, valor:JSON.stringify(esData), updated_by: sesion ? sesion.id : null});
+      if (!r.ok) throw new Error('HTTP '+r.status);
+      esEstadoTxt();
+    } catch(e) { esEstadoTxt('⚠ No se pudo guardar en la base (' + e.message + '). Quedó guardado en este equipo.'); }
+  }, ya ? 0 : 700);
+}
+
 function guardarConfigDB(clave,valor) {
   if(!sesion) return;
   supaPost('config',{clave:clave,valor:String(valor),updated_by:sesion.id});
@@ -3185,9 +3388,9 @@ function aplicarPermisosTabs() {
   if(!sesion) return;
   var rol=sesion.rol;
   var tabsVisibles={
-    admin:        ['portal','cotizador','compraest','ventasac','canje','config','flete','comercial','vencimientos','tesoreria','rrhh','historial','acopio','pesadas','balanza','pesadashist','admin'],
+    admin:        ['portal','cotizador','compraest','ventasac','canje','config','flete','comercial','vencimientos','tesoreria','entsal','rrhh','historial','acopio','pesadas','balanza','pesadashist','admin'],
     comercial:    ['portal','cotizador','compraest','ventasac','canje','config','flete','comercial','vencimientos','historial','acopio','pesadas','balanza','pesadashist'],
-    tesoreria:    ['portal','vencimientos','tesoreria'],
+    tesoreria:    ['portal','vencimientos','tesoreria','entsal'],
     mantenimiento:['portal','config'],
     rrhh:         ['portal','rrhh'],
     balanza:      ['pesadas','balanza'],
@@ -5315,7 +5518,7 @@ var NAV_GRUPOS = {
   aceitera:  ['cotizador','config','compraest','ventasac','canje','flete'],
   acopio:    ['comercial','acopio','pesadashist','historial','flete'],
   balanza:   ['pesadas','balanza'],
-  finanzas:  ['vencimientos','tesoreria'],
+  finanzas:  ['vencimientos','tesoreria','entsal'],
   rrhh:      ['rrhh'],
   admin:     ['admin']
 };
@@ -5403,6 +5606,7 @@ function switchTab(tab) {
   if (tab === 'compraest') { initCompraEst(); }
   if (tab === 'ventasac') { initVentasAceitera(); }
   if (tab === 'canje') { cargarCanjeYPesadas(); }
+  if (tab === 'entsal') { initEntSal(); }
 }
 
 function switchSubTab(subTab) {
