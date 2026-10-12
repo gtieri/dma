@@ -598,8 +598,8 @@
 <div class="tabs gtabs" id="nav-grupos">
   <button class="gtab" data-group="inicio" onclick="switchGroup('inicio')">&#127968; Inicio</button>
   <button class="gtab" data-group="aceitera" onclick="switchGroup('aceitera')">&#127981; Aceitera</button>
-  <button class="gtab" data-group="comercial" onclick="switchGroup('comercial')">&#128200; Comercial</button>
   <button class="gtab" data-group="acopio" onclick="switchGroup('acopio')">&#127806; Acopio</button>
+  <button class="gtab" data-group="balanza" onclick="switchGroup('balanza')">&#9878;&#65039; Balanza</button>
   <button class="gtab" data-group="finanzas" onclick="switchGroup('finanzas')">&#128176; Finanzas</button>
   <button class="gtab" data-group="rrhh" onclick="switchGroup('rrhh')">&#128101; RRHH</button>
   <button class="gtab" data-group="admin" onclick="switchGroup('admin')">&#9881; Admin</button>
@@ -611,11 +611,14 @@
   <button class="tab" onclick="switchTab('config')">Datos Planta</button>
   <button class="tab" onclick="switchTab('compraest')">Compras Estimadas</button>
   <button class="tab" onclick="switchTab('ventasac')">Ventas</button>
-  <button class="tab" id="tab-btn-comercial" onclick="switchTab('comercial')">Operaciones</button>
+  <button class="tab" onclick="switchTab('canje')">Canjes</button>
+  <button class="tab" id="tab-btn-comercial" onclick="switchTab('comercial')">Compras / Ventas</button>
+  <button class="tab" onclick="switchTab('acopio')">Negocios Acopio</button>
+  <button class="tab" onclick="switchTab('pesadashist')">Pesadas</button>
+  <button class="tab" onclick="switchTab('pesadas')">Pesar camiones</button>
+  <button class="tab" onclick="switchTab('balanza')">Conexión balanza</button>
   <button class="tab" onclick="switchTab('historial')">Historial</button>
   <button class="tab" onclick="switchTab('flete')">Flete</button>
-  <button class="tab" onclick="switchTab('acopio')">Compra-Venta</button>
-  <button class="tab" onclick="switchTab('pesadas')">Pesadas</button>
   <button class="tab" onclick="switchTab('vencimientos')">Vencimientos</button>
   <button class="tab" onclick="switchTab('tesoreria')">Tesorería</button>
   <button class="tab" onclick="switchTab('rrhh')">RRHH</button>
@@ -1482,7 +1485,6 @@
   <div id="comercial-subtabs" style="display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--border);padding-bottom:10px">
     <button class="sub-tab active" onclick="switchSubTab('compras')" id="subtab-btn-compras" style="background:var(--verde-medio);color:white;border:none;border-radius:6px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s">Compras</button>
     <button class="sub-tab" onclick="switchSubTab('ventas')" id="subtab-btn-ventas" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s">Ventas</button>
-    <button class="sub-tab" onclick="switchSubTab('canje')" id="subtab-btn-canje" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .2s">Canje</button>
   </div>
 
 <div class="sub-panel active" id="tab-compras">
@@ -1786,8 +1788,11 @@
     </div>
   </div>
 
-  <!-- CANJE -->
-  <div class="sub-panel" id="tab-canje">
+
+</div>
+
+  <!-- CANJE (Aceitera) -->
+  <div class="panel" id="tab-canje">
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
       <div class="section-label" style="margin:0;border:none">Negocios de Canje</div>
@@ -1869,8 +1874,6 @@
     </div>
 
   </div>
-
-</div>
 
 
   <!-- VENCIMIENTOS -->
@@ -2204,7 +2207,7 @@
 
     <!-- Header -->
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
-      <div class="section-label" style="margin:0;border:none">Compra-Venta Acopio</div>
+      <div class="section-label" style="margin:0;border:none">Negocios Acopio</div>
       <div style="display:flex;gap:8px"><button onclick="togglePizarra()" id="btn-toggle-pizarra" style="background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">📋 Ocultar pizarra</button><button onclick="abrirFormAcopio()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Nueva operación</button></div>
     </div>
 
@@ -2605,31 +2608,40 @@
 
   </div><!-- /tab-acopio -->
 
-  <div class="panel" id="tab-pesadas">
-
-    <!-- Header -->
+  <!-- BALANZA (lector) -->
+  <div class="panel" id="tab-balanza">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
-      <div class="section-label" style="margin:0;border:none">⚖️ Pesadas</div>
-      <div style="display:flex;gap:8px">
-        <div class="input-wrap" style="width:150px"><input type="date" id="pes-filtro-fecha" onchange="renderPesadasLista()" style="flex:1;border:none;background:transparent;padding:8px 10px;font-family:'Outfit',sans-serif;font-size:12px;outline:none;color:var(--ink)"></div>
-        <select id="pes-filtro-tipo" onchange="renderPesadasLista()" style="border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);background:white">
-          <option value="">Todos</option>
-          <option value="Ingreso">Ingreso</option>
-          <option value="Egreso">Egreso</option>
-        </select>
-        <button onclick="document.getElementById('pes-filtro-fecha').value='';document.getElementById('pes-filtro-tipo').value='';renderPesadasLista()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">✕ Limpiar</button>
-        <button onclick="abrirFormPesada()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Nueva pesada</button>
-        <button onclick="toggleLectorBalanza()" id="btn-lector-balanza" style="background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">🔌 Balanza</button>
-      </div>
+      <div class="section-label" style="margin:0;border:none">🔌 Balanza</div>
+      <button onclick="switchTab('pesadas')" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">Ir a Pesar camiones →</button>
     </div>
-
-    <!-- Lector de Balanza (Web Serial) -->
-    <div id="panel-lector-balanza" style="display:none;margin-top:12px" class="card">
+    <!-- Lector de Balanza -->
+    <div id="panel-lector-balanza" style="margin-top:12px" class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <div style="font-size:11px;font-weight:700;color:var(--ink)">🔌 Lector de Balanza — Conexión directa (Web Serial)</div>
+        <div style="font-size:11px;font-weight:700;color:var(--ink)">🔌 Lector de Balanza</div>
         <span id="lb-estado" style="font-size:9px;font-weight:700;padding:3px 10px;border-radius:12px;background:var(--bg);color:var(--muted)">● Desconectado</span>
       </div>
 
+      <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="piz-fbtn" data-lbmodo="puente" onclick="lbSetModo('puente')">🌐 Puente de red (KYASERV)</button>
+        <button class="piz-fbtn" data-lbmodo="serie" onclick="lbSetModo('serie')">🔌 Puerto serie (USB / COM)</button>
+      </div>
+
+      <div id="lb-modo-puente">
+        <div style="display:flex;gap:8px;align-items:end;flex-wrap:wrap">
+          <div class="field" style="margin-bottom:0;flex:1;min-width:200px;max-width:280px">
+            <label style="font-size:9px">Dirección del puente</label>
+            <div class="input-wrap"><input type="text" id="lb-puente-url" value="http://localhost:8765" style="flex:1;border:none;background:transparent;padding:8px 10px;font-family:'Outfit',sans-serif;font-size:12px;outline:none;color:var(--ink)"></div>
+          </div>
+          <button onclick="conectarPuente()" id="btn-lb-puente-on" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:9px 16px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">Conectar</button>
+          <button onclick="desconectarPuente()" id="btn-lb-puente-off" style="display:none;background:none;border:1px solid #842029;color:#842029;border-radius:8px;padding:9px 16px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">Desconectar</button>
+          <label style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--muted);text-transform:none;letter-spacing:0;margin:0 0 8px;cursor:pointer">
+            <input type="checkbox" id="lb-puente-auto" onchange="lbGuardarAuto()"> Conectar automáticamente al abrir Pesadas o Balanza
+          </label>
+        </div>
+        <div id="lb-puente-msg" style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5">El puente es el programa <b>iniciar-puente.bat</b> que corre en la PC de la balanza y lee el conversor KYASERV por la red.</div>
+      </div>
+
+      <div id="lb-modo-serie" style="display:none">
       <div id="lb-sin-soporte" style="display:none;background:#fff3cd;color:#856404;font-size:11px;padding:10px 12px;border-radius:8px;margin-bottom:10px">
         ⚠ Este navegador no soporta Web Serial. Abrí la app en <b>Chrome o Edge de escritorio</b> (no funciona en celular ni en Safari/Firefox).
       </div>
@@ -2651,6 +2663,7 @@
         <button onclick="conectarBalanza()" id="btn-lb-conectar" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:9px 16px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">Conectar puerto</button>
         <button onclick="desconectarBalanza()" id="btn-lb-desconectar" style="display:none;background:none;border:1px solid #842029;color:#842029;border-radius:8px;padding:9px 16px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">Desconectar</button>
       </div>
+      </div><!-- /lb-modo-serie -->
 
       <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div>
@@ -2659,13 +2672,26 @@
             <div id="lb-peso-detectado" style="font-family:Georgia,serif;font-size:32px;font-weight:700;color:var(--verde-oscuro)">—</div>
             <div style="font-size:9px;color:var(--muted);margin-top:2px">último valor numérico leído</div>
           </div>
-          <div style="font-size:9px;color:var(--muted);margin-top:8px">Este visor es la conexión — la toma de peso se hace desde el botón "⚖ Tomar peso" dentro de cada pesada (Nueva pesada / Cerrar pesada).</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:8px">Esta pantalla es la conexión. Mientras esté conectada, el peso se toma desde Pesadas con el botón "⚖ Tomar peso" (Nueva pesada / Cerrar pesada).</div>
         </div>
         <div>
           <div style="font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Datos crudos recibidos</div>
           <textarea id="lb-raw" readonly rows="6" style="width:100%;background:var(--ink);color:#7ec87e;font-family:'Courier New',monospace;font-size:10px;border:none;border-radius:8px;padding:10px;resize:none;box-sizing:border-box"></textarea>
           <div style="font-size:8.5px;color:var(--muted);margin-top:4px">Copiá y mandame unas líneas de acá para calibrar el interpretador exacto según el modelo del cabezal.</div>
         </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="panel" id="tab-pesadas">
+
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+      <div class="section-label" style="margin:0;border:none">⚖️ Pesar camiones</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="abrirFormPesada()" style="background:var(--verde-medio);color:white;border:none;border-radius:8px;padding:8px 14px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer">+ Nueva pesada</button>
+        <button onclick="switchTab('balanza')" title="Ver lector de balanza" id="btn-lector-balanza" style="background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">🔌 Balanza</button>
       </div>
     </div>
 
@@ -2875,14 +2901,33 @@
       <div id="pesadas-abiertas-lista"></div>
     </div>
 
-    <!-- Lista de pesadas -->
-    <div style="font-size:11px;font-weight:700;color:var(--ink);margin:18px 0 8px">Pesadas Cerradas</div>
-    <div id="pesadas-lista" style="margin-top:0"></div>
-    <div id="pesadas-empty" style="display:none;text-align:center;padding:24px 16px;color:var(--muted);font-size:12px;background:var(--bg);border-radius:10px;border:1px dashed var(--border)">
-      Sin pesadas registradas.<br>Tocá "+ Nueva pesada" para agregar.
-    </div>
+    <!-- Cerradas hoy (operativo) -->
+    <div style="font-size:11px;font-weight:700;color:var(--ink);margin:18px 0 8px">✓ Pesadas cerradas hoy</div>
+    <div id="pesadas-hoy-lista"></div>
 
   </div><!-- /tab-pesadas -->
+
+  <!-- HISTORIAL DE PESADAS (Acopio) -->
+  <div class="panel" id="tab-pesadashist">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;flex-wrap:wrap;gap:8px">
+      <div class="section-label" style="margin:0;border:none">⚖️ Historial de Pesadas</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div class="input-wrap" style="width:150px"><input type="date" id="pes-filtro-fecha" onchange="renderPesadasLista()" style="flex:1;border:none;background:transparent;padding:8px 10px;font-family:'Outfit',sans-serif;font-size:12px;outline:none;color:var(--ink)"></div>
+        <select id="pes-filtro-tipo" onchange="renderPesadasLista()" style="border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);background:white">
+          <option value="">Todos</option>
+          <option value="Ingreso">Ingreso</option>
+          <option value="Egreso">Egreso</option>
+        </select>
+        <div class="input-wrap" style="width:180px"><input type="text" id="pes-filtro-texto" oninput="renderPesadasLista()" placeholder="Cliente, patente, contrato..." style="flex:1;border:none;background:transparent;padding:8px 10px;font-family:'Outfit',sans-serif;font-size:12px;outline:none;color:var(--ink)"></div>
+        <button onclick="document.getElementById('pes-filtro-fecha').value='';document.getElementById('pes-filtro-tipo').value='';document.getElementById('pes-filtro-texto').value='';renderPesadasLista()" style="background:none;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;cursor:pointer;color:var(--muted)">✕ Limpiar</button>
+      </div>
+    </div>
+    <div id="pesadas-hist-resumen" style="font-size:11px;color:var(--muted);margin:12px 0 8px"></div>
+    <div id="pesadas-lista" style="margin-top:0"></div>
+    <div id="pesadas-empty" style="display:none;text-align:center;padding:24px 16px;color:var(--muted);font-size:12px;background:var(--bg);border-radius:10px;border:1px dashed var(--border)">
+      Sin pesadas cerradas para este filtro.
+    </div>
+  </div><!-- /tab-pesadashist -->
 
   <div class="panel" id="tab-admin">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;margin-bottom:16px">
@@ -3140,12 +3185,12 @@ function aplicarPermisosTabs() {
   if(!sesion) return;
   var rol=sesion.rol;
   var tabsVisibles={
-    admin:        ['portal','cotizador','compraest','ventasac','config','flete','comercial','vencimientos','tesoreria','rrhh','historial','acopio','pesadas','admin'],
-    comercial:    ['portal','cotizador','compraest','ventasac','config','flete','comercial','vencimientos','historial','acopio','pesadas'],
+    admin:        ['portal','cotizador','compraest','ventasac','canje','config','flete','comercial','vencimientos','tesoreria','rrhh','historial','acopio','pesadas','balanza','pesadashist','admin'],
+    comercial:    ['portal','cotizador','compraest','ventasac','canje','config','flete','comercial','vencimientos','historial','acopio','pesadas','balanza','pesadashist'],
     tesoreria:    ['portal','vencimientos','tesoreria'],
     mantenimiento:['portal','config'],
     rrhh:         ['portal','rrhh'],
-    balanza:      ['pesadas'],
+    balanza:      ['pesadas','balanza'],
   };
   var visibles=tabsVisibles[rol]||tabsVisibles.tesoreria;
   window._tabsPermitidos = visibles;
@@ -5267,16 +5312,23 @@ function toggleDetalle() {
 // ── Navegación en dos niveles: grupos → sub-pestañas ──
 var NAV_GRUPOS = {
   inicio:    ['portal'],
-  aceitera:  ['cotizador','config','compraest','ventasac'],
-  comercial: ['comercial','historial','flete'],
-  acopio:    ['acopio','pesadas'],
+  aceitera:  ['cotizador','config','compraest','ventasac','canje','flete'],
+  acopio:    ['comercial','acopio','pesadashist','historial','flete'],
+  balanza:   ['pesadas','balanza'],
   finanzas:  ['vencimientos','tesoreria'],
   rrhh:      ['rrhh'],
   admin:     ['admin']
 };
 var TAB_GRUPO = {};
-Object.keys(NAV_GRUPOS).forEach(function(g){ NAV_GRUPOS[g].forEach(function(t){ TAB_GRUPO[t] = g; }); });
+Object.keys(NAV_GRUPOS).forEach(function(g){ NAV_GRUPOS[g].forEach(function(t){ if (!TAB_GRUPO[t]) TAB_GRUPO[t] = g; }); });
 var _ultimaTabGrupo = {};
+var _grupoActual = null;
+
+// Si la pestaña pertenece al grupo abierto, se queda en ese grupo (ej. Flete en Aceitera y en Acopio)
+function grupoDeTab(t) {
+  if (_grupoActual && (NAV_GRUPOS[_grupoActual] || []).indexOf(t) !== -1) return _grupoActual;
+  return TAB_GRUPO[t] || null;
+}
 
 function tabPermitida(t) {
   var perm = window._tabsPermitidos;
@@ -5290,11 +5342,12 @@ function switchGroup(g) {
   var visibles = tabsVisiblesGrupo(g);
   if (!visibles.length) return;
   var ult = _ultimaTabGrupo[g];
+  _grupoActual = g;
   switchTab(ult && visibles.indexOf(ult) !== -1 ? ult : visibles[0]);
 }
 
 function renderNav(tabActiva) {
-  var grupoActivo = tabActiva ? TAB_GRUPO[tabActiva] : null;
+  var grupoActivo = tabActiva ? grupoDeTab(tabActiva) : null;
   document.querySelectorAll('#nav-grupos .gtab').forEach(function(b){
     var g = b.getAttribute('data-group');
     b.style.display = tabsVisiblesGrupo(g).length ? '' : 'none';
@@ -5312,7 +5365,7 @@ function renderNav(tabActiva) {
 
 function switchTab(tab) {
   // If tab is a sub-tab, redirect to comercial and activate sub-tab
-  var subTabs = ['compras','ventas','canje'];
+  var subTabs = ['compras','ventas'];
   if (subTabs.includes(tab)) {
     switchTab('comercial');
     switchSubTab(tab);
@@ -5324,7 +5377,8 @@ function switchTab(tab) {
     t.classList.toggle('active', onclick.indexOf("'" + tab + "'") !== -1);
   });
   window._tabActual = tab;
-  var _g = TAB_GRUPO[tab];
+  var _g = grupoDeTab(tab);
+  _grupoActual = _g;
   if (_g) _ultimaTabGrupo[_g] = tab;
   renderNav(tab);
   document.querySelectorAll('.panel').forEach(function(p) { p.classList.remove('active'); });
@@ -5340,12 +5394,15 @@ function switchTab(tab) {
   if (tab === 'admin') renderUsuarios();
   if (tab === 'portal') renderPortal();
   if (tab === 'acopio') { renderAcopioLista(); renderAcopioResumen(); renderPizarraCompradores(); }
-  if (tab === 'pesadas') { cargarPesadasDB(); }
+  if (tab === 'pesadas') { cargarPesadasDB(); lbAutoConectar(); }
+  if (tab === 'balanza') { initBalanzaTab(); lbAutoConectar(); }
+  if (tab === 'pesadashist') { cargarPesadasDB(); }
   if (tab === 'vencimientos') { switchSubTabV('liquidaciones'); }
   if (tab === 'tesoreria') { switchSubTabT('caja-diaria'); initTesoreria(); }
   if (tab === 'rrhh') { initRRHH(); }
   if (tab === 'compraest') { initCompraEst(); }
   if (tab === 'ventasac') { initVentasAceitera(); }
+  if (tab === 'canje') { cargarCanjeYPesadas(); }
 }
 
 function switchSubTab(subTab) {
@@ -5363,7 +5420,6 @@ function switchSubTab(subTab) {
   var subPanelEl = document.getElementById('tab-' + subTab);
   if (subPanelEl) subPanelEl.classList.add('active');
   // Render hooks
-  if (subTab === 'canje') cargarCanjeYPesadas();
 }
 
 
@@ -9263,6 +9319,7 @@ function actualizarLabelPeso() {
 
 function tomarPesoApertura() {
   if (lbUltimoPeso === null) { alert('No hay peso detectado todavía. Conectá la balanza (🔌 Balanza) y esperá una lectura estable.'); return; }
+  if (!lbConfirmarEstable()) return;
   document.getElementById('pes-peso-capturado').value = lbUltimoPeso;
   document.getElementById('pes-peso-capturado-display').textContent = lbUltimoPeso.toLocaleString('es-AR')+' kg';
   document.getElementById('pes-peso-capturado-ok').style.display = 'block';
@@ -9277,15 +9334,142 @@ var lbReader = null;
 var lbKeepReading = false;
 var lbUltimoPeso = null;
 
-function toggleLectorBalanza() {
-  var panel = document.getElementById('panel-lector-balanza');
-  var visible = panel.style.display !== 'none';
-  panel.style.display = visible ? 'none' : 'block';
-  if (!visible && !('serial' in navigator)) {
+var lbEstable = null;
+var lbModo = 'puente';
+var lbPuenteTimer = null;
+var lbPuenteRawTick = 0;
+try { lbModo = localStorage.getItem('dm_lb_modo') || 'puente'; } catch(e) {}
+
+function lbSetModo(m) {
+  lbModo = m;
+  try { localStorage.setItem('dm_lb_modo', m); } catch(e) {}
+  document.querySelectorAll('[data-lbmodo]').forEach(function(b) { b.classList.toggle('active-piz', b.getAttribute('data-lbmodo') === m); });
+  document.getElementById('lb-modo-puente').style.display = m === 'puente' ? 'block' : 'none';
+  document.getElementById('lb-modo-serie').style.display = m === 'serie' ? 'block' : 'none';
+  if (m === 'serie') desconectarPuente(); else { try { desconectarBalanza(); } catch(e) {} }
+  lbInitSerieSoporte();
+}
+
+function lbInitSerieSoporte() {
+  if (!('serial' in navigator)) {
     document.getElementById('lb-sin-soporte').style.display = 'block';
     document.getElementById('btn-lb-conectar').disabled = true;
     document.getElementById('btn-lb-conectar').style.opacity = '0.5';
   }
+}
+
+function toggleLectorBalanza() { switchTab('balanza'); }
+
+function initBalanzaTab() {
+  {
+    try {
+      var u = localStorage.getItem('dm_lb_url'); if (u) document.getElementById('lb-puente-url').value = u;
+      document.getElementById('lb-puente-auto').checked = localStorage.getItem('dm_lb_auto') === '1';
+    } catch(e) {}
+    lbSetModoUI();
+  }
+}
+
+function lbSetModoUI() {
+  document.querySelectorAll('[data-lbmodo]').forEach(function(b) { b.classList.toggle('active-piz', b.getAttribute('data-lbmodo') === lbModo); });
+  document.getElementById('lb-modo-puente').style.display = lbModo === 'puente' ? 'block' : 'none';
+  document.getElementById('lb-modo-serie').style.display = lbModo === 'serie' ? 'block' : 'none';
+  lbInitSerieSoporte();
+}
+
+function lbGuardarAuto() {
+  try { localStorage.setItem('dm_lb_auto', document.getElementById('lb-puente-auto').checked ? '1' : '0'); } catch(e) {}
+}
+
+// ── Puente de red (iniciar-puente.bat en la PC de la balanza) ──
+function lbPuenteUrl() {
+  var el = document.getElementById('lb-puente-url');
+  var u = (el && el.value.trim()) || 'http://localhost:8765';
+  return u.replace(/\/+$/, '');
+}
+
+function lbPuenteEstado(tipo, texto) {
+  var colores = { ok: ['#e8f3ec', 'var(--verde-medio)'], warn: ['#fff3cd', '#856404'], err: ['#f8d7da', '#842029'], off: ['var(--bg)', 'var(--muted)'] };
+  var c = colores[tipo] || colores.off;
+  var el = document.getElementById('lb-estado');
+  el.textContent = '● ' + texto; el.style.background = c[0]; el.style.color = c[1];
+  var btn = document.getElementById('btn-lector-balanza');
+  if (btn) {
+    btn.textContent = tipo === 'ok' && lbUltimoPeso !== null ? '🔌 ' + lbUltimoPeso.toLocaleString('es-AR') + ' kg' : '🔌 Balanza';
+    btn.style.color = tipo === 'ok' ? 'var(--verde-medio)' : (tipo === 'off' ? 'var(--muted)' : c[1]);
+    btn.style.borderColor = tipo === 'ok' ? 'var(--verde-medio)' : 'var(--border)';
+  }
+}
+
+function conectarPuente() {
+  try { localStorage.setItem('dm_lb_url', lbPuenteUrl()); } catch(e) {}
+  if (lbPuenteTimer) clearInterval(lbPuenteTimer);
+  document.getElementById('btn-lb-puente-on').style.display = 'none';
+  document.getElementById('btn-lb-puente-off').style.display = 'inline-block';
+  lbPuenteEstado('warn', 'Buscando puente...');
+  lbPuenteTick();
+  lbPuenteTimer = setInterval(lbPuenteTick, 700);
+}
+
+function desconectarPuente() {
+  if (lbPuenteTimer) { clearInterval(lbPuenteTimer); lbPuenteTimer = null; }
+  var on = document.getElementById('btn-lb-puente-on'), off = document.getElementById('btn-lb-puente-off');
+  if (on) on.style.display = 'inline-block';
+  if (off) off.style.display = 'none';
+  if (lbModo === 'puente') { lbUltimoPeso = null; lbEstable = null; lbPuenteEstado('off', 'Desconectado'); }
+}
+
+async function lbPuenteTick() {
+  var base = lbPuenteUrl();
+  var msg = document.getElementById('lb-puente-msg');
+  try {
+    var ctrl = new AbortController();
+    var to = setTimeout(function() { ctrl.abort(); }, 1500);
+    var r = await fetch(base + '/peso', { cache: 'no-store', signal: ctrl.signal });
+    clearTimeout(to);
+    var d = await r.json();
+    var fresco = d.peso !== null && d.edad_ms !== null && d.edad_ms < 3000;
+    if (d.conectado && fresco) {
+      lbUltimoPeso = d.peso; lbEstable = d.estable;
+      document.getElementById('lb-peso-detectado').textContent = d.peso.toLocaleString('es-AR');
+      lbPuenteEstado('ok', 'Conectado' + (d.estable === true ? ' · estable' : d.estable === false ? ' · en movimiento' : ''));
+      if (msg) msg.innerHTML = 'Leyendo de <b>' + escHtml(d.fuente || '') + '</b>. Último dato: <code>' + escHtml(d.ultima || '') + '</code>';
+    } else {
+      lbUltimoPeso = null; lbEstable = null;
+      document.getElementById('lb-peso-detectado').textContent = '—';
+      lbPuenteEstado('warn', d.conectado ? 'Puente OK · sin datos del visor' : 'Puente OK · conversor desconectado');
+      if (msg) msg.innerHTML = d.conectado
+        ? 'El puente está conectado al conversor pero no llegan pesos. Revisá que el visor esté transmitiendo.'
+        : 'El puente está abierto pero no logra conectarse al conversor (<b>' + escHtml(d.fuente || '') + '</b>). Revisá IP/puerto en iniciar-puente.bat o cerrá el software de KYASERV.';
+    }
+    lbPuenteRawTick++;
+    var _tb = document.getElementById('tab-balanza');
+    if (lbPuenteRawTick % 4 === 1 && _tb && _tb.classList.contains('active')) {
+      var rr = await fetch(base + '/raw', { cache: 'no-store' });
+      var lineas = await rr.json();
+      var ta = document.getElementById('lb-raw');
+      ta.value = (lineas || []).join('\n'); ta.scrollTop = ta.scrollHeight;
+    }
+  } catch(e) {
+    lbUltimoPeso = null; lbEstable = null;
+    document.getElementById('lb-peso-detectado').textContent = '—';
+    lbPuenteEstado('err', 'Puente no encontrado');
+    if (msg) msg.innerHTML = 'No responde <b>' + escHtml(base) + '</b>. En la PC de la balanza abrí <b>iniciar-puente.bat</b> → opción 3, y usá Chrome o Edge en esa misma PC.';
+  }
+}
+
+function lbAutoConectar() {
+  try {
+    if (lbModo === 'puente' && localStorage.getItem('dm_lb_auto') === '1' && !lbPuenteTimer) {
+      var u = localStorage.getItem('dm_lb_url'); if (u) document.getElementById('lb-puente-url').value = u;
+      conectarPuente();
+    }
+  } catch(e) {}
+}
+
+function lbConfirmarEstable() {
+  if (lbEstable === false) return confirm('La balanza indica peso EN MOVIMIENTO. ¿Tomar ' + lbUltimoPeso.toLocaleString('es-AR') + ' kg igual?');
+  return true;
 }
 
 async function conectarBalanza() {
@@ -9369,6 +9553,7 @@ function lbSetEstado(conectado) {
 
 function tomarPesoCierre() {
   if (lbUltimoPeso === null) { alert('No hay peso detectado todavía. Conectá la balanza y esperá una lectura estable.'); return; }
+  if (!lbConfirmarEstable()) return;
   document.getElementById('cierre-peso-valor').value = lbUltimoPeso;
   document.getElementById('cierre-peso-display').textContent = lbUltimoPeso.toLocaleString('es-AR')+' kg';
 }
@@ -9625,6 +9810,7 @@ async function eliminarPesada(id) {
 function renderPesadasTodo() {
   renderPesadasAbiertas();
   renderPesadasLista();
+  renderPesadasHoy();
   renderPesadasResumen();
 }
 
@@ -9667,47 +9853,83 @@ function renderPesadasAbiertas() {
   }).join('');
 }
 
+function pesadaCardHtml(r, desdeHistorial) {
+  var esIngreso = r.tipoMov === 'Ingreso';
+  var color = esIngreso ? 'var(--verde-medio)' : 'var(--dorado)';
+  var bg = esIngreso ? '#e8f3ec' : '#fdf3e0';
+  var puedeBorrar = sesion && sesion.rol === 'admin';
+  var editar = desdeHistorial ? "editarPesadaDesdeHistorial(" + r.id + ")" : "abrirFormPesada(" + r.id + ")";
+  return '<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;padding:12px 14px">' +
+    '<div style="flex:1">' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">' +
+        '<span style="font-size:9px;font-weight:700;color:'+color+';background:'+bg+';padding:2px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.5px">'+r.tipoMov+'</span>' +
+        '<span style="font-weight:700;color:var(--ink);font-size:13px">'+escHtml(r.cliente||'Sin cliente')+'</span>' +
+        (/^T-/i.test(r.contrato||'') ? '<span style="font-size:9px;font-weight:700;color:var(--dorado);background:#fdf3e0;padding:1px 7px;border-radius:5px">🚚 TERCEROS '+escHtml(r.contrato)+'</span>' : r.contrato ? '<span style="font-size:9px;color:var(--muted)">· Contrato '+escHtml(r.contrato)+'</span>' : '<span style="font-size:9px;color:#842029">· Sin vincular</span>') +
+      '</div>' +
+      '<div style="font-size:10px;color:var(--muted)">'+fmtFecha(r.fecha)+(r.horaIngreso?' '+r.horaIngreso+(r.horaSalida?' - '+r.horaSalida:''):'')+' · '+r.producto+' · '+escHtml(r.patente||'s/patente')+' · Ticket '+escHtml(r.ticket||'-')+' · Bruto '+(r.pesoBruto||0).toLocaleString('es-AR')+'kg · Tara '+(r.pesoTara||0).toLocaleString('es-AR')+'kg'+(r.humedad?' · Hum '+r.humedad+'%':'')+(r.mermaCalidad?' · Merma '+r.mermaCalidad+'%':'')+'</div>' +
+    '</div>' +
+    '<div style="text-align:right;margin-right:10px">' +
+      '<div style="font-family:Georgia,serif;font-weight:700;font-size:15px;color:var(--verde-oscuro)">'+((parseFloat(r.pesoNeto)||0)/1000).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2})+' tn</div>' +
+      '<div style="font-size:9px;color:var(--muted)">neto</div>' +
+    '</div>' +
+    '<div style="display:flex;gap:6px">' +
+      '<button onclick="imprimirPesada('+r.id+')" title="Imprimir ticket" style="background:none;border:1px solid var(--verde-medio);border-radius:6px;padding:6px 10px;font-size:10px;cursor:pointer;color:var(--verde-medio)">🖨</button>' +
+      '<button onclick="'+editar+'" title="Editar datos" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:10px;cursor:pointer;color:var(--muted)">✎</button>' +
+      (puedeBorrar ? '<button onclick="eliminarPesada('+r.id+')" title="Eliminar" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:10px;cursor:pointer;color:#842029">🗑</button>' : '') +
+    '</div>' +
+  '</div>';
+}
+
+function editarPesadaDesdeHistorial(id) {
+  switchTab('pesadas');
+  abrirFormPesada(id);
+  var f = document.getElementById('form-pesada');
+  if (f) f.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// Historial (Acopio): cerradas con filtros
 function renderPesadasLista() {
+  var el = document.getElementById('pesadas-lista');
+  if (!el) return;
   var fFecha = document.getElementById('pes-filtro-fecha').value;
   var fTipo = document.getElementById('pes-filtro-tipo').value;
+  var fTxt = (document.getElementById('pes-filtro-texto').value || '').trim().toLowerCase();
   var lista = pesadasData.filter(function(r){
     if ((r.estado||'Cerrada') !== 'Cerrada') return false;
     if (fFecha && r.fecha !== fFecha) return false;
     if (fTipo && r.tipoMov !== fTipo) return false;
+    if (fTxt) {
+      var hay = [r.cliente, r.patente, r.patenteAcoplado, r.contrato, r.ticket, r.chofer, r.producto].join(' ').toLowerCase();
+      if (hay.indexOf(fTxt) === -1) return false;
+    }
     return true;
   });
-  var el = document.getElementById('pesadas-lista');
   var emptyEl = document.getElementById('pesadas-empty');
+  var res = document.getElementById('pesadas-hist-resumen');
   if (lista.length === 0) {
     el.innerHTML = '';
     emptyEl.style.display = 'block';
+    if (res) res.textContent = '';
     return;
   }
   emptyEl.style.display = 'none';
-  el.innerHTML = lista.map(function(r) {
-    var esIngreso = r.tipoMov === 'Ingreso';
-    var color = esIngreso ? 'var(--verde-medio)' : 'var(--dorado)';
-    var bg = esIngreso ? '#e8f3ec' : '#fdf3e0';
-    return '<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;padding:12px 14px">' +
-      '<div style="flex:1">' +
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">' +
-          '<span style="font-size:9px;font-weight:700;color:'+color+';background:'+bg+';padding:2px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.5px">'+r.tipoMov+'</span>' +
-          '<span style="font-weight:700;color:var(--ink);font-size:13px">'+(r.cliente||'Sin cliente')+'</span>' +
-          (/^T-/i.test(r.contrato||'') ? '<span style="font-size:9px;font-weight:700;color:var(--dorado);background:#fdf3e0;padding:1px 7px;border-radius:5px">🚚 TERCEROS '+r.contrato+'</span>' : r.contrato ? '<span style="font-size:9px;color:var(--muted)">· Contrato '+r.contrato+'</span>' : '<span style="font-size:9px;color:#842029">· Sin vincular</span>') +
-        '</div>' +
-        '<div style="font-size:10px;color:var(--muted)">'+fmtFecha(r.fecha)+(r.horaIngreso?' '+r.horaIngreso+(r.horaSalida?' - '+r.horaSalida:''):'')+' · '+r.producto+' · '+(r.patente||'s/patente')+' · Ticket '+(r.ticket||'-')+' · Bruto '+(r.pesoBruto||0).toLocaleString('es-AR')+'kg · Tara '+(r.pesoTara||0).toLocaleString('es-AR')+'kg'+(r.humedad?' · Hum '+r.humedad+'%':'')+(r.mermaCalidad?' · Merma '+r.mermaCalidad+'%':'')+'</div>' +
-      '</div>' +
-      '<div style="text-align:right;margin-right:10px">' +
-        '<div style="font-family:Georgia,serif;font-weight:700;font-size:15px;color:var(--verde-oscuro)">'+((parseFloat(r.pesoNeto)||0)/1000).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2})+' tn</div>' +
-        '<div style="font-size:9px;color:var(--muted)">neto</div>' +
-      '</div>' +
-      '<div style="display:flex;gap:6px">' +
-        '<button onclick="imprimirPesada('+r.id+')" style="background:none;border:1px solid var(--verde-medio);border-radius:6px;padding:6px 10px;font-size:10px;cursor:pointer;color:var(--verde-medio)">🖨</button>' +
-        '<button onclick="abrirFormPesada('+r.id+')" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:10px;cursor:pointer;color:var(--muted)">✎</button>' +
-        '<button onclick="eliminarPesada('+r.id+')" style="background:none;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:10px;cursor:pointer;color:#842029">🗑</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+  if (res) {
+    var ing = 0, egr = 0;
+    lista.forEach(function(r){ var n = (parseFloat(r.pesoNeto)||0)/1000; if (r.tipoMov === 'Ingreso') ing += n; else egr += n; });
+    res.innerHTML = lista.length + ' pesada' + (lista.length===1?'':'s') + ' · Ingresos <b style="color:var(--verde-oscuro)">' + ing.toLocaleString('es-AR',{maximumFractionDigits:2}) + ' tn</b> · Egresos <b style="color:var(--dorado)">' + egr.toLocaleString('es-AR',{maximumFractionDigits:2}) + ' tn</b>';
+  }
+  el.innerHTML = lista.map(function(r){ return pesadaCardHtml(r, true); }).join('');
+}
+
+// Operativo (Balanza): cerradas de hoy, para reimprimir el ticket
+function renderPesadasHoy() {
+  var el = document.getElementById('pesadas-hoy-lista');
+  if (!el) return;
+  var hoy = new Date().toISOString().slice(0,10);
+  var lista = pesadasData.filter(function(r){ return (r.estado||'Cerrada') === 'Cerrada' && r.fecha === hoy; });
+  el.innerHTML = lista.length
+    ? lista.map(function(r){ return pesadaCardHtml(r, false); }).join('')
+    : '<div style="text-align:center;padding:18px 16px;color:var(--muted);font-size:12px;background:var(--bg);border-radius:10px;border:1px dashed var(--border)">Todavía no se cerró ninguna pesada hoy.</div>';
 }
 
 // ═══════════════════════════════════════════
